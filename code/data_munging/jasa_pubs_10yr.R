@@ -1,11 +1,12 @@
-#TODO: this is where things can be changed for experimentation
-# duplication level: start with 50, 30, 10 (can vary between dbs later)
-dup_level <- .05
-
-## TODO: if a string is chosen to be "distorted", how distorted do we want it?
-# start lower and ramp up the string distortion .05, .1, .15
-dist_level <- .15
-
+## command line args ---- 
+## duplication levels 5, 10, 30, 50; string distortion levels 5, 10, 15
+# Rscript code/data_munging/jasa_pubs_10yr.R 5 5
+args <- commandArgs(trailingOnly=TRUE)
+if (length(args) != 2) stop("Pass in the dup level (5, 10, 30, 50) and dist level (5, 10, 15).", call.=FALSE)
+if (!(args[1] %in% c(5, 10, 30, 50))) stop("Pass in the duplication level (5, 10, 30, 50)", call.=FALSE)
+if (!(args[2] %in% c(5, 10, 15))) stop("Pass in the distortion level (5, 10, 15)", call.=FALSE)
+dup_level <- as.numeric(args[1])/100
+dist_level <- as.numeric(args[2])/100
 
 # 0. libraries ----
 library(tidyverse) # general manipulation
@@ -24,7 +25,7 @@ jasa_10yr <- cr_journals(issn = jasa$data$issn, works = TRUE, filter = c(from_pu
 # separate issued date into year, month, day
 jasa_10yr$data %>%
   mutate(author = map_chr(author, ~ paste(.$given, .$family, collapse = " "))) %>%
-  separate(issued, into = c("year", "month", "day")) %>%
+  separate(issued, into = c("year", "month", "day"), fill = "right") %>%
   separate(page, into = c("page_begin", "page_end")) %>%
   mutate(year = as.integer(year), month = as.integer(month), issue = as.integer(issue), 
          page_begin = as.integer(page_begin), page_end = as.integer(page_end), volume = as.integer(volume)) %>%
@@ -49,7 +50,7 @@ population$partition <- sample(rep(seq_len(2^D), times = splits))[seq_len(nrow(p
 # 3. Get clean databases
 # join to the inclusion table to see which records are in which db
 population %>% 
-  left_join(inclusion) %>%
+  left_join(inclusion, by = "partition") %>%
   select(-p, -partition) -> record_db
 
 # construct undublicated dbs
@@ -159,5 +160,5 @@ for(i in seq_len(D)) {
   noisy_dup_db[[i]] <- add_noise(dup_db[[i]], idx = idx_dup[[i]], col_types = col_types)
 }
 
-save(noisy_dup_db, truth_db, truth_dup_db, population,
-     file = paste0("../../data/jasa_sim_datasets/jasa_pubs_10yr_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
+save(noisy_dup_db, truth_db, truth_dup_db, population, inclusion,
+     file = paste0("data/jasa_sim/jasa_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
