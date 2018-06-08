@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Generalized Bayesian Graphical Record Linkage}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{The Empirically Motivated Prior}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Equivalance of Partition Models}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{The Label Switching Issue}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{The Downstream Task}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Experiments}{}% 7
+\BOOKMARK [1][-]{section.5}{Generalized Post-linkage Analysis}{}% 8
+\BOOKMARK [1][-]{section.6}{Capture-recapture}{}% 9
+\BOOKMARK [2][-]{subsection.6.1}{Independence Model}{section.6}% 10
+\BOOKMARK [2][-]{subsection.6.2}{Modeling Heterogeneity using the NPLCM}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.3}{Capture-recapture as Post-linkage Analysis}{section.6}% 12
+\BOOKMARK [1][-]{section.7}{Experiments}{}% 13
+\BOOKMARK [2][-]{subsection.7.1}{Simulated Population with Varying Duplication}{section.7}% 14
+\BOOKMARK [2][-]{subsection.7.2}{Results}{section.7}% 15
+\BOOKMARK [1][-]{appendix.A}{Graphical Representation of the Empirically Motivated Record Linkage Model}{}% 16

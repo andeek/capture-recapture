@@ -1,0 +1,25 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Prior work}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Bayesian Record Linkage}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Notation}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{A Generalized Bayesian Graphical Record Linkage Model}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{The Record Linkage Uncertainty}{section.3}% 6
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Example to Population Sized Estimation}{subsection.3.1}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Empirically Motivated Bayesian Graphical Model}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Post-linkage Analysis}{}% 9
+\BOOKMARK [1][-]{section.5}{Experiments}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Data Sets}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Results}{section.5}% 12
+\BOOKMARK [1][-]{section.6}{Summary}{}% 13
+\BOOKMARK [1][-]{section.7}{Bayesian Record Linkage}{}% 14
+\BOOKMARK [2][-]{subsection.7.1}{Notation}{section.7}% 15
+\BOOKMARK [2][-]{subsection.7.2}{Empirical Bayesian Record Linkage}{section.7}% 16
+\BOOKMARK [2][-]{subsection.7.3}{Record Linkage Uncertainty}{section.7}% 17
+\BOOKMARK [1][-]{section.8}{Population Size Estimation}{}% 18
+\BOOKMARK [2][-]{subsection.8.1}{Capture Recapture Inclusion Patterns}{section.8}% 19
+\BOOKMARK [1][-]{section.9}{Population Sized Estimation Post Record Linkage}{}% 20
+\BOOKMARK [2][-]{subsection.9.1}{Details under particular models, like Madigan and York, Johndrow and Vallier}{section.9}% 21
+\BOOKMARK [1][-]{section.10}{Things to look at next}{}% 22
+\BOOKMARK [1][-]{section.11}{Issues with the approach}{}% 23
+\BOOKMARK [1][-]{section.12}{Small Area Estmation}{}% 24
+\BOOKMARK [1][-]{section.13}{Networks}{}% 25

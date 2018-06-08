@@ -1,0 +1,368 @@
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Exp}{\mathbb{E}}
+\newcommand{\Fe}{\mathscr{F}}
+\newcommand{\Borel}{\mathscr{B}}
+%\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Rd}{\mathbb{R}^{d}}
+\newcommand{\Rplus}{\mathbb{R}_{+}}
+%\newcommand{\cntblunion}{\bigcup_{i=1}^{\infty}}
+%\newcommand{\cntblinter}{\bigcap_{i=1}^{\infty}}
+%\newcommand{\cntblsum}{\sum_{i=1}^{\infty}}
+
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\der}[2]{\frac{d #1}{d #2}}
+%\newcommand{\ind}[1]{{\boldsymbol{1}}_{#1}}
+\newcommand{\jacobian}[3] {\begin{matrix}
+					\pd{#1_{1}}{#2_{1}} & \dots & \pd{#1_{1}}{#2_{#3}}\\
+					\vdots & \vdots \\
+					\pd{#1_{#3}}{#2_{1}} & \dots & \pd{#1_{#3}}{#2_{#3}}
+				\end{matrix}}
+%\newcommand{\lam}{\mathbf{\Lambda}}				
+\newcommand{\Abs}[1]{\left| #1 \right|}
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vX}{\mathbf{X}}
+\newcommand{\ds}[4]{#1_{#2}#4\ldots #4 #1_{#3}}
+\newcommand{\vW} {\mathbf{W}}
+\newcommand{\vA} {\mathbf{A}}
+\newcommand{\vB} {\mathbf{B}}
+\newcommand{\vZ} {\mathbf{Z}}
+\newcommand{\vY} {\mathbf{Y}}
+\newcommand{\vN} {\mathbf{N}}
+\newcommand{\vt} {\mathbf{t}}
+\newcommand{\vmu} {\mathbf{\mu}}
+\newcommand{\vga} {\mathbf{\gamma}}
+\newcommand{\vone} {\boldsymbol{1}}
+\newcommand{\Xbar} {\overline{X}}
+%\newcommand{\C}{\mathbb{C}}
+\newcommand{\Sp}{\mathbb{S}}
+
+%
+%\newcommand{\freccia}{$\blacktriangleright$}
+%\newcommand{\ol}{\overline}
+%\newcommand{\ul}{\underline}
+%\renewcommand{\baselinestretch}{1.3}
+%\newcommand{\expect}{\rm I\hspace{-.25em}E}
+%\newcommand{\bpf}{{\bf Proof. }}
+%\newcommand{\epf}{\vrule height10pt width5pt depth0pt}
+%\newcommand{\bea}{\begin{eqnarray*}}
+%\newcommand{\eea}{\end{eqnarray*}}
+%\newcommand{\bean}{\begin{eqnarray}}
+%\newcommand{\eean}{\end{eqnarray}}
+%\newcommand{\bdm}{\begin{displaymath}}
+%\newcommand{\edm}{\end{displaymath}}
+%\newcommand{\nc}{\nonumber\\}
+\def\ie{\emph{i.e.\/}}
+\def\eg{\emph{e.g.\/}}
+\def\xZ{{\cal Z}}
+\def\xA{{\cal A}}
+\def\R{\mathbb{R}}
+\def\I{1\!{\rm I}}             % indicatrice
+\def\ln{\ell_{n}}              % log-vraisemblance
+\def\lns{\ell_{n}^{\star}}     % log-vraisemblance
+\def\Ti{\Theta^{\infty}}       % Theta infini
+\def\T#1{\Theta_{#1}}          % Theta #1
+\def\p#1{\pi_{#1}}             % a priori pi #1
+\def\ft{f_{\theta}}            % densite
+\def\fs{f^{\star}}             % densite
+\def\lt{\ell_{\theta}}         % log-densite
+\def\ls{\ell^{\star}}          % log-densite
+\def\Pt{P_{\theta}}            % proba
+\def\Ps{P^{\star}}             % P etoile
+\def\Kn{\widehat{K_{n}}}       % estimateur
+\def\Ks{K^{\star}}             % K etoile
+\def\Es{\mathrm{E}^{\star}}    % E etoile
+\def\Et{\mathrm{E}_{\theta}}   % E theta
+\def\Etp{\mathrm{E}_{\theta'}}   % E theta prime
+\def\Dt{\Delta(\theta)}        % Delta theta
+\def\Xn{(X_1, \cdots, X_n)}        % X^n = (X_1,...,X_n)
+\def\cm{\left ( X_n; n\geq 0\right )}
+\def\xn{(x_1, \cdots, x_n)}        % 
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\def\boldfacefake #1{%
+        \hbox{%
+                \mathsurround=0pt
+                \hbox to 0.25pt{$#1$\hss}%
+                \hbox to 0.25pt{$#1$\hss}%
+                \hbox {$#1$}%
+        }%
+}
+\newenvironment{mybox}%
+{\hspace{-0.15 cm}
+\begin{Sbox}
+\begin{minipage}{12 cm}
+ \vspace{0.15 cm} }%
+{\vspace{0.15 cm} 
+\end{minipage}
+\end{Sbox}
+\fbox{\TheSbox}}
+
+\def\bfalpha{\mbox{$\boldfacefake{\alpha}$}}
+\def\bftheta{\mbox{$\boldfacefake{\theta}$}}
+\def\bflambda{\mbox{$\boldfacefake{\lambda}$}}
+\def\bfmu{\mbox{$\boldfacefake{\mu}$}}
+\def\bfnu{\mbox{$\boldfacefake{\nu}$}}
+\def\bfpsi{\mbox{$\boldfacefake{\psi}$}}
+\def\bfxi{\mbox{$\boldfacefake{\xi}$}}
+\def\bfepsilon{\mbox{$\boldfacefake{\epsilon}$}}
+\def\bfPsi{\mbox{$\boldfacefake{\Psi}$}}
+\def\bfTheta{\mbox{$\boldfacefake{\Theta}$}}
+
+\def\bfh{\mbox{$\boldfacefake{h}$}}
+\def\bfb{\mbox{$\boldfacefake{b}$}}
+\def\bfl{\mbox{$\boldfacefake{l}$}}
+\def\bfm{\mbox{$\boldfacefake{m}$}}
+\def\bfp{\mbox{$\boldfacefake{p}$}}
+\def\bfu{\mbox{$\boldfacefake{u}$}}
+\def\bfy{\mbox{$\boldfacefake{y}$}}
+\def\bfA{\mbox{$\boldfacefake{A}$}}
+\def\bfB{\mbox{$\boldfacefake{B}$}}
+\def\bfC{\mbox{$\boldfacefake{C}$}}
+\def\bfD{\mbox{$\boldfacefake{D}$}}
+\def\bfH{\mbox{$\boldfacefake{H}$}}
+\def\bfI{\mbox{$\boldfacefake{I}$}}
+\def\bfP{\mbox{$\boldfacefake{P}$}}
+\def\bfR{\mbox{$\boldfacefake{R}$}}
+\def\bfS{\mbox{$\boldfacefake{S}$}}
+
+%%% probability symbolism
+\newcommand{\proba}{\operatorname{Pr}}
+\newcommand{\esl}{\end{slide}}
+\newcommand{\bsl}{\begin{slide}}
+\newcommand{\ok}{\blacksquare}
+
+\newcommand{\prob}[1]{\operatorname{Pr}\left( #1 \right)}
+\newcommand{\hprob}[1]{\hat{Pr}\left( #1 \right)}
+\newcommand{\probpi}[1]{\operatorname{Pr}^{\pi}(#1)}
+\newcommand{\probte}[1]{\operatorname{Pr}_{\te}(#1)}
+\newcommand{\probstar}[1]{\operatorname{Pr}^*(#1)}
+\newcommand{\expi}[1]{\operatorname{I\hspace{-.25em}E^{\pi}}\left(#1\right)}
+\newcommand{\exy}[1]{\operatorname{I\hspace{-.25em}E_{Y}}\left(#1\right)}
+\newcommand{\exmu}[1]{\operatorname{I\hspace{-.25em}E^{\mu}}\left(#1\right)}
+\newcommand{\extet}[1]{\operatorname{I\hspace{-.25em}E_{\theta}}\left(#1\right)}
+\newcommand{\vartet}[1]{\operatorname{Var_{\theta}}\left(#1\right)}
+\newcommand{\extez}[1]{\operatorname{I\hspace{-.25em}E_{\theta_0}}\left(#1\right)}
+\newcommand{\expom}[1]{\operatorname{I\hspace{-.25em}E_{\omega}}\left(#1\right)}
+\newcommand{\expectsub}[2]{\operatorname{I\hspace{-.25em}E_{#1}}\left[#2\right]}
+\newcommand{\expectsugiu}[3]{{\operatorname{I\hspace{-.25em}E}_{#1}^{#2}}\left[#3\right]}
+\newcommand{\expectup}[2]{\operatorname{I\hspace{-.25em}E^{#1}}\left[#2\right ]}
+\newcommand{\bxii}{\bx_{(-i)}}
+\newcommand{\expe}[1]{\operatorname{\rm I\hspace{-.25em}E}\left(#1\right)}
+\newcommand{\diag}[1]{\operatorname{\rm diag}\left(#1\right)}
+\newcommand{\expeq}[1]{\operatorname{\rm I\hspace{-.25em}E}\left [#1\right]}
+\newcommand{\rea}{\operatorname{\rm I\hspace{-.25em}R}}
+\newcommand{\expeb}[1]{\operatorname{\rm I\hspace{-.25em}E}#1}
+%\newcommand{\expeb}[1]{\operatorname{E $#1$}}
+\newcommand{\expebb}[2]{\operatorname{\rm I\hspace{-.25em}E}\left(#1\right)^#2}
+\newcommand{\bsigma}{\text{\mathversion{bold}$\sigma$\mathversion{normal}}}
+\newcommand{\normaldensity}[3] {\frac1{\sqrt{2\pi#3}}\exp\left[-\frac1{2#3} (#1-#2)^2\right]}
+\newcommand{\trace}[1]{\operatorname{traccia}\left(#1\right)}
+%\newcommand{\tr}[1]{\operatorname{tr}\left(#1\right)}
+\newcommand{\etr}[1]{\operatorname{etr}\left(#1\right)}
+%%% different fields in mathematics
+\newcommand{\integers}{\mathbb{N}}
+\newcommand{\itemr}{\item[${\red \bullet}$]}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\Ec}{\`{E}\,\,}
+\newcommand{\argmax}{\mbox{\,argmax\,}}
+%\newcommand{\argmin}{\mbox{\,argmin\,}}
+\newcommand{\iid}{\stackrel{\texttt{iid}}{\sim}}
+\newcommand{\ind}{\stackrel{\texttt{ind}}{\sim}}
+\newcommand{\indic}[1]{{\boldsymbol{1}}_{#1}}
+\newcommand{\posreals}{\reals^+}
+\newcommand{\realvectors}[1]{\reals^{#1}}
+\newcommand{\complex}{\mathbf{C}}
+\newcommand{\ox}{\overline{X}\ }
+\newcommand{\id}{\mathbf{id}}
+%%% boldface symbolism for multivariate stuff
+%%% latin
+%\newcommand{\bx}{\mathbf{x}}
+%\newcommand{\bX}{\mathbf{X}}
+%\newcommand{\bg}{\mathbf{g}}
+%\newcommand{\bfG}{\mathbf{G}}
+%\newcommand{\bG}{\mathbf{G}}
+%\newcommand{\by}{\mathbf{y}}
+%\newcommand{\hby}{\hat{\mathbf{y}}}
+%\newcommand{\bY}{\mathbf{Y}}
+%\newcommand{\bV}{\mathbf{V}}
+%\newcommand{\bv}{\mathbf{v}}
+%\newcommand{\br}{\mathbf{r}}
+%\newcommand{\bR}{\mathbf{R}}
+%\newcommand{\bZ}{\mathbf{Z}}
+%\newcommand{\bz}{\mathbf{z}}
+%\newcommand{\bs}{\mathbf{s}}
+%\newcommand{\erre}{{\ttfamily{{\bf R}\,}}}
+%\newcommand{\bt}{\mathbf{t}}
+%\newcommand{\bT}{\mathbf{T}}
+%\newcommand{\bU}{\mathbf{U}}
+%\newcommand{\bA}{\mathbf{A}}
+%\newcommand{\ba}{\mathbf{a}}
+%\newcommand{\be}{\mathbf{e}}
+%\newcommand{\bb}{\mathbf{b}}
+%\newcommand{\bB}{\mathbf{B}}%
+%\newcommand{\bF}{\mathbf{F}}
+%\newcommand{\bH}{\mathbf{H}}
+%\newcommand{\bQ}{\mathbf{Q}}
+%\newcommand{\bc}{\mathbf{c}}
+%%\newcommand{\cab}{C_{ab}}
+%\newcommand{\gab}{g_{ab}}
+%\newcommand{\bC}{\mathbf{C}}
+%\newcommand{\bd}{\mathbf{d}}
+%%\newcommand{\bs}{\mathbf{s}}
+%\newcommand{\bw}{\mathbf{w}}
+%\newcommand{\hgz}{\hat{\gamma}_0}
+%\newcommand{\hgu}{\hat{\gamma}_1}
+%\newcommand{\hp}{\hat{p}}
+%\newcommand{\hbe}{\hat{\beta}}
+%\newcommand{\hbbe}{\hat{\bbeta}}
+%\newcommand{\hte}{\hat{\theta}}
+%\newcommand{\bi}{\mathbf{i}}
+%\newcommand{\bu}{\mathbf{u}}
+%%\newcommand{\bm}{\mathbf{m}}
+%\newcommand{\bD}{\mathbf{D}}
+%\newcommand{\beffe}{\mathbf{f}}
+%\newcommand{\bI}{\mathbf{I}}
+%\newcommand{\bM}{\mathbf{M}}
+%\newcommand{\bP}{\mathbf{P}}
+%\newcommand{\np}{\newpage}
+%\newcommand{\bp}{\mathbf{p}}
+%\newcommand{\bS}{\mathbf{S}}
+%\newcommand{\bJ}{\mathbf{J}}
+%\newcommand{\bW}{\mathbf{W}}
+%\newcommand{\bzero}
+%{\text{\mathversion{bold}$0$\mathversion{normal}}}
+%\newcommand{\buno}{
+%\text{\mathversion{bold}$1$\mathversion{normal}}}
+%%%% and greek
+%\newcommand{\bSigma}
+%{\text{\mathversion{bold}$\Sigma$\mathversion{normal}}}
+%\newcommand{\bmu}{\text{\mathversion{bold}$\mu$\mathversion{normal}}}
+%\newcommand{\bpi}{\text{\mathversion{bold}$\pi$\mathversion{normal}}}
+%\newcommand{\bnu}{\text{\mathversion{bold}$\nu$\mathversion{normal}}}
+%\newcommand{\btheta}{\text{\mathversion{bold}$\theta$\mathversion{normal}}}
+%%\newcommand{\erre}{\texttt{{\bf R\,\,}}}
+%\newcommand{\bphi}{\text{\mathversion{bold}$\phi$\mathversion{normal}}}
+%\newcommand{\bpsi}{\text{\mathversion{bold}$\psi$\mathversion{normal}}}
+%\newcommand{\bPsi}{\text{\mathversion{bold}$\Psi$\mathversion{normal}}}
+%\newcommand{\bxi}{\text{\mathversion{bold}$\xi$\mathversion{normal}}}
+%\newcommand{\balpha}{\text{\mathversion{bold}$\alpha$\mathversion{normal}}}
+%\newcommand{\bbeta}{\text{\mathversion{bold}$\beta$\mathversion{normal}}}
+%\newcommand{\bdelta}{\text{\mathversion{bold}$\delta$\mathversion{normal}}}
+%\newcommand{\boeta}{\text{\mathversion{bold}$\eta$\mathversion{normal}}}
+%\newcommand{\bGamma}{\text{\mathversion{bold}$\Gamma$\mathversion{normal}}}
+%\newcommand{\bve}{\text{\mathversion{bold}$\varepsilon$\mathversion{normal}}}
+%\newcommand{\bgamma}{\text{\mathversion{bold}$\gamma$\mathversion{normal}}}
+\newcommand{\blambda}{\text{\mathversion{bold}$\lambda$\mathversion{normal}}}
+%\newcommand{\bla}{\text{\mathversion{bold}$\lambda$\mathversion{normal}}}
+%\newcommand{\bLambda}{\text{\mathversion{bold}$\Lambda$\mathversion{normal}}}
+%\newcommand{\bOmega}{\text{\mathversion{bold}$\Omega$\mathversion{normal}}}
+%\newcommand{\bPhi}{\text{\mathversion{bold}$\Phi$\mathversion{normal}}}
+%\newcommand{\bomega}{\text{\mathversion{bold}$\omega$\mathversion{normal}}}
+%\newcommand{\om}{\omega}
+%\newcommand{\mez}{\frac 12}
+%\newcommand{\ome}{\omega}
+%\newcommand{\bDelta}{\text{\mathversion{bold}$\Delta$\mathversion{normal}}}
+%\newcommand{\bTheta}{\text{\mathversion{bold}$\Theta$\mathversion{normal}}}
+%\newcommand{\bte}{\text{\mathversion{bold}$\theta$\mathversion{normal}}}
+%\newcommand{\ecc}{\`{e}\ }
+%\newcommand{\eccvirg}{\`{e}. }
+%\newcommand{\eccpun}{\`{e}, }
+%\newcommand{\ecca}{\'{e}\ }
+%\newcommand{\eccavirg}{\'{e}, }
+%\newcommand{\eccapun}{\'{e}. }
+%\newcommand{\acc}{\`{a}\ }
+%\newcommand{\ac}{\`{a}\ }
+%\newcommand{\ic}{\`{\i}\ }
+%\newcommand{\ec}{\`{e}\ }
+%\newcommand{\oc}{\`{o}\ }
+%\newcommand{\uc}{\`{u}\ }
+%\newcommand{\accvirg}{\`{a}, }
+%\newcommand{\accpun}{\`{a}. }
+%\newcommand{\occ}{\`{o}\ }
+%\newcommand{\occvirg}{\`{o}, }
+%\newcommand{\occpun}{\`{o}. }
+%\newcommand{\card}{\text{\mathversion{bold}card\mathversion{normal}}}
+%\newcommand{\ucc}{\`{u}\ }
+%\newcommand{\uccvirg}{\`{u}, }
+%\newcommand{\uccpun}{\`{u}. }
+%\newcommand{\icc}{\`{\i}\ }
+%\newcommand{\iccvirg}{\`{\i}, }
+%\newcommand{\iccpun}{\`{\i}. }
+%\newcommand{\omk}{\hat{\omega}_k}
+%\newcommand{\te}{\theta}
+%\newcommand{\la}{\lambda}
+%\newcommand{\tpi}{\tilde{\pi}}
+%%\newcommand{\al}{\alpha}
+%\newcommand{\tauq}{\tau^2}
+%\newcommand{\cij}{c_{ij}}
+%\newcommand{\siq}{\sigma^2}
+%\newcommand{\vy}{\underline{\mathbf y}}
+%\newcommand{\vi}{\underline{\mathbf i}}
+%\newcommand{\htj}{\hat{\theta}_j}
+%\newcommand{\vep}{\varepsilon}
+%\newcommand{\bei}{\begin{itemize}}
+%\newcommand{\eni}{\end{itemize}}
+%\newcommand{\beq}{\begin{equation}}
+%\newcommand{\enq}{\end{equation}}
+%\newcommand{\eccdp}{\`{e}: }
+%\newcommand{\eccpv}{\`{e}; }
+%\newcommand{\accdp}{\`{a}: }
+%\newcommand{\accpv}{\`{a}; }
+%\newcommand{\Om}{\Omega}
+%\newcommand{\calx}{{\cal X}}
+%\newcommand{\calp}{{\cal P}}
+%\newcommand{\cale}{{\cal E}}
+%\newcommand{\vety}{{\bf y}}
+%\newcommand{\pin}{\pi^N}
+%\newcommand{\sigtwo}{\sigma^2}
+%\newcommand{\dev}[1]{\operatorname{Dev}\left(#1\right)}
+%\newcommand{\var}[1]{\operatorname{Var} \left(#1\right)}
+%\newcommand{\variance}[1]{\operatorname{Var}\left(#1\right)}
+%\newcommand{\cov}[2]{\operatorname{Cov}\left(#1,#2\right)}
+%\newcommand{\qqq}{z^2_{\alpha/2}}
+%\newcommand{\zq}{z^2_{1-\alpha/2}}
+%\newcommand{\ttt}[1]{t^{(#1)}_{1-\alpha/2}}
+%\newcommand {\bdot}{\hbox{\Huge .}}
+%\newcommand {\dotdot}{{\hbox{\Huge .}\kern-0.1667em\hbox{\Huge .}}}
+%\newcommand {\onedot}{1\kern-0.1667em\bdot}
+%\newcommand {\twodot}{2\kern-0.1667em\bdot}
+%\newcommand {\idot}{i\kern-0.1667em\bdot}
+%\newcommand {\jdot}{j\kern-0.1667em\bdot}
+%\newcommand {\mdot}{m\kern-0.1667em\bdot}
+%\newcommand {\dotj}{\kern-0.1667em\bdot\kern-0.1667em j}
+%
+%% Define sech, arc sin and arc cos
+%\newcommand{\sech}{\operatorname{sech}}
+%\renewcommand{\arcsin}{\operatorname{arc\,sin}}
+%\renewcommand{\arccos}{\operatorname{arc\,cos}}
+%\newcommand{\median}{\mbox{median\,}}
+%%\newcommand{\mode}{\mbox{mode\,}}
+%
+%% Define notation for evidence
+%\newcommand{\Ev}{\mbox{Ev}}
+%
+%% Define small common fractions for use in display formulae
+%\newcommand{\half}{\mbox{$\frac{1}{2}$}}
+%\newcommand{\smallhalf}{\mbox{\small$\frac{1}{2}$}}
+%\newcommand{\quarter}{\mbox{$\frac{1}{4}$}}
+%\newcommand{\threequarters}{\mbox{$\frac{3}{4}$}}
+%\newcommand{\third}{\mbox{$\frac{1}{3}$}}
+%\newcommand{\twothirds}{\mbox{$\frac{2}{3}$}}
+%\newcommand{\ninth}{\mbox{$\frac{1}{9}$}}
+%\newcommand{\slopefrac}[2]{\leavevmode\kern.1em
+%\raise .5ex\hbox{\the\scriptfont0 #1}\kern-.1em
+%/\kern-.15em\lower .25ex\hbox{\the\scriptfont0 #2}}
+
+%\theoremstyle{plain}
+%\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{condition}[theorem]{Condition}
+%\newtheorem{algorithm}[theorem]{Algorithm}
+% \newtheorem{conditions}[theorem]{Conditions}
+%\newtheorem{remark}{Remark}
+
+% Notation for beta funcion

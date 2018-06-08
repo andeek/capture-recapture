@@ -1,0 +1,200 @@
+\begin{thebibliography}{10}
+
+\bibitem{arnold2010capture}
+Richard Arnold, Yu~Hayakawa, and Paul Yip.
+\newblock Capture--recapture estimation using finite mixtures of arbitrary
+  dimension.
+\newblock {\em Biometrics}, 66(2):644--655, 2010.
+
+\bibitem{BilenkoMooney03}
+Mikhail Bilenko and Raymond~J. Mooney.
+\newblock {Adaptive Duplicate Detection Using Learnable String Similarity
+  Measures}.
+\newblock In {\em Proc. of the Ninth ACM SIGKDD International Conference on
+  Knowledge Discovery and Data Mining (KDD '03)}, pages 39--48. ACM, 2003.
+
+\bibitem{christen_2012}
+Peter Christen.
+\newblock A survey of indexing techniques for scalable record linkage and
+  deduplication.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering},
+  24(9):1537--1555, 2012.
+
+\bibitem{copas_1990}
+J.~Copas and {F.J.} Hilton.
+\newblock Record linkage: Statistical models for matching computer records.
+\newblock {\em Journal of the Royal Statistical Society, Series A},
+  153(3):287--320, 1990.
+
+\bibitem{dunson2009nonparametric}
+David~B Dunson and Chuanhua Xing.
+\newblock Nonparametric bayes modeling of multivariate categorical data.
+\newblock {\em Journal of the American Statistical Association},
+  104(487):1042--1051, 2009.
+
+\bibitem{fellegi_1969}
+I.~Fellegi and A.~Sunter.
+\newblock A theory for record linkage.
+\newblock {\em Journal of the American Statistical Association},
+  64(328):1183--1210, 1969.
+
+\bibitem{fienberg1972multiple}
+Stephen~E Fienberg.
+\newblock The multiple recapture census for closed populations and incomplete
+  2k contingency tables.
+\newblock {\em Biometrika}, 59(3):591--603, 1972.
+
+\bibitem{fienberg1999classical}
+Stephen~E Fienberg, Matthew~S Johnson, and Brian~W Junker.
+\newblock Classical multilevel and bayesian approaches to population size
+  estimation using multiple lists.
+\newblock {\em Journal of the Royal Statistical Society: Series A (Statistics
+  in Society)}, 162(3):383--405, 1999.
+
+\bibitem{gutman_2013}
+R.~Gutman, C.~Afendulis, and A.~Zaslavsky.
+\newblock A bayesian procedure for file linking to analyze end- of-life medical
+  costs.
+\newblock {\em Journal of the American Statistical Association},
+  108(501):34--47, 2013.
+
+\bibitem{Hsuetal00}
+Wynne Hsu, Mong~Li Lee, Bing Liu, and Tok~Wang Ling.
+\newblock {Exploration Mining in Diabetic Patients Databases: Findings and
+  Conclusions}.
+\newblock In {\em Proc. of the Sixth ACM SIGKDD International Conference on
+  Knowledge Discovery and Data Mining (KDD '00)}, pages 430--436. ACM, 2000.
+
+\bibitem{Jewelletal13}
+Nicholas~P. Jewell, Michael Spagat, and Britta~L. Jewell.
+\newblock {MSE and Casualty Counts: Assumptions, Interpretation, and
+  Challenges}.
+\newblock In Taylor~B. Seybolt, Jay~D. Aronson, and Baruch Fischhoff, editors,
+  {\em {Counting Civilian Casualties: An Introduction to Recording and
+  Estimating Nonmilitary Deaths in Conflict}}. Oxford University Press, Oxford,
+  UK, 2013.
+
+\bibitem{king2008bayesian}
+R~King and SP~Brooks.
+\newblock On the bayesian estimation of a closed population size in the
+  presence of heterogeneity and model uncertainty.
+\newblock {\em Biometrics}, 64(3):816--824, 2008.
+
+\bibitem{king2001bayesian}
+Ruth King and SP~Brooks.
+\newblock On the bayesian analysis of population size.
+\newblock {\em Biometrika}, 88(2):317--336, 2001.
+
+\bibitem{Larsen05}
+Michael~D. Larsen.
+\newblock {Advances in Record Linkage Theory: Hierarchical Bayesian Record
+  Linkage Theory}.
+\newblock In {\em Proceedings of the Joint Statistical Meetings, Section on
+  Survey Research Methods}, pages 3277--3284. The American Statistical
+  Association, 2005.
+
+\bibitem{LiseoTancredi11}
+Brunero Liseo and Andrea Tancredi.
+\newblock Bayesian estimation of population size via linkage of multivariate
+  normal data sets.
+\newblock {\em Journal of Official Statistics}, 27(3):491, 2011.
+
+\bibitem{LumPriceBanks13}
+Kristian Lum, Megan~Emily Price, and David Banks.
+\newblock {Applications of Multiple Systems Estimation in Human Rights
+  Research}.
+\newblock {\em The American Statistician}, 67(4):191--200, Nov 2013.
+
+\bibitem{manrique2016bayesian}
+Daniel Manrique-Vallier.
+\newblock Bayesian population size estimation using dirichlet process mixtures.
+\newblock {\em Biometrics}, 72(4):1246--1254, 2016.
+
+\bibitem{McCallumWellner04}
+Andrew McCallum and Ben Wellner.
+\newblock {Conditional Models of Identity Uncertainty with Application to Noun
+  Coreference}.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS
+  '04)}, pages 905--912. MIT Press, 2004.
+
+\bibitem{murray2016probabilistic}
+Jared~S Murray.
+\newblock Probabilistic record linkage and deduplication after indexing,
+  blocking, and filtering.
+\newblock {\em Journal of Privacy and Confidentiality}, 7(1):3--24, 2016.
+
+\bibitem{newcombe_1959}
+H.~B. Newcombe, J.~M. Kennedy, S.~J. Axford, and A.~P. James.
+\newblock Automatic linkage of vital records computers can be used to extract"
+  follow-up" statistics of families from files of routine records.
+\newblock {\em Science}, 130(3381):954--959, 1959.
+
+\bibitem{norris1996nonparametric}
+James~L Norris~III and Kenneth~H Pollock.
+\newblock Nonparametric mle under two closed capture-recapture models with
+  heterogeneity.
+\newblock {\em Biometrics}, pages 639--649, 1996.
+
+\bibitem{pitman06combinatorial}
+J.~Pitman.
+\newblock Combinatorial stochastic processes.
+\newblock {\em {\'E}cole d'{\'E}t{\'e} de Probabilit{\'e}s de Saint-Flour
+  XXXII---2002}, 2006.
+
+\bibitem{Sadinle14}
+Mauricio Sadinle.
+\newblock {Detecting Duplicates in a Homicide Registry Using a Bayesian
+  Partitioning Approach}.
+\newblock {\em Annals of Applied Statistics}, 8(4):2404--2434, 2014.
+
+\bibitem{sadinle2016bayesian}
+Mauricio Sadinle.
+\newblock Bayesian estimation of bipartite matchings for record linkage.
+\newblock {\em Journal of the American Statistical Association},
+  112(518):600--612, 2017.
+
+\bibitem{steorts15entity}
+R.~C. Steorts.
+\newblock Entity resolution with empirically motivated priors.
+\newblock {\em Bayesian Analysis}, 10(4):849--875, 2015.
+
+\bibitem{steorts14smered}
+R.~C. Steorts, R.~Hall, and S.~E. Fienberg.
+\newblock {SMERED}: A {B}ayesian approach to graphical record linkage and
+  de-duplication.
+\newblock {\em Proceedings of the 17th {I}nternational {C}onference on
+  {A}rtificial {I}ntelligence and {S}tatistics {(AISTATS)}}, 33:922--930, 2014.
+
+\bibitem{steorts??bayesian}
+R.~C. Steorts, R.~Hall, and S.~E. Fienberg.
+\newblock A {B}ayesian approach to graphical record linkage and de-duplication.
+\newblock {\em Journal of the American Statistical Society}, In press.
+
+\bibitem{liseo_2011}
+A.~Tancredi and B.~Liseo.
+\newblock A hierarchical {B}ayesian approach to record linkage and population
+  size problems.
+\newblock {\em Annals of Applied Statistics}, 5(2B):1553--1585, 2011.
+
+\bibitem{vermunt2008multiple}
+Jeroen~K Vermunt, Joost~R Van~Ginkel, Van Der~Ark, L~Andries, and Klaas
+  Sijtsma.
+\newblock Multiple imputation of incomplete categorical data using latent class
+  analysis.
+\newblock {\em Sociological Methodology}, 38(1):369--397, 2008.
+
+\bibitem{winkler_2000}
+W.E. Winkler.
+\newblock Machine learning, information retrieval, and record linkage.
+\newblock American Statistical Association, Proceedings of the Section on
+  Survey Research Methods, 20--29, 2000.
+
+\bibitem{zanella2016microclustering}
+Giacomo Zanella, Brenda Betancourt, Jeffrey~W Miller, Hanna Wallach, Abbas
+  Zaidi, and Rebecca Steorts.
+\newblock Flexible models for microclustering with application to entity
+  resolution.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  1417--1425, 2016.
+
+\end{thebibliography}

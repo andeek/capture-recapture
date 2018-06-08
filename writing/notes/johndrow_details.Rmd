@@ -1,0 +1,50 @@
+---
+title: "Johndrow et. al. Details"
+author: "Andee Kaplan"
+date: "12/15/2017"
+output: 
+  bookdown::pdf_document2:
+    toc: false
+bibliography: references.bib
+---
+
+# $M_{th}$ model with nonparametric prior
+Consider a sample of $m$ individuals captured from a population of unknown size $N$ in $T$ lists. $x_{it}$ is a binary representation of each individual's capture history for $i = 1, \dots, m$ and $t = 1, \dots, T$:
+$$
+x_{it} = \begin{cases} 1 & \text{individual $i$ is recorded in list $t$} \\ 0 & \text{otherwise.}\end{cases}
+$$
+These data can be summarized by a contingency table where each cell count is denoted $n(\boldsymbol x)$ for $\boldsymbol x \in \{0, 1\}^T$. We will let $\boldsymbol \zeta$ denote the zero vector of dimension $T$, such that $n(\boldsymbol \zeta)$ is the count of individuals not captured by any list, and is the focus of our inference. We then specify the following model, as in @johndrow2016estimating:
+\begin{align*}
+x_{it} \mid \theta_i, \beta_t &\stackrel{ind}{\sim} \text{Bern}(\varphi^{-1}(\theta_i + \beta_t)) \\
+\theta_i \mid G^* &\stackrel{iid}{\sim} G^* \\
+G^* &\sim \text{DP}(\alpha_0, N(0, \sigma^2_{G^*})) \\
+\beta_t &\stackrel{iid}{\sim} N(0, \sigma^2_\beta) \\
+\alpha_0 &\sim \text{Gamma}(a, b),
+\end{align*}
+where $\varphi^{-1}: \mathbb {R} \rightarrow [0,1]$ is a monotone nondecreasing transformation used to parameterize probabilities, such as the logit or probit function.
+
+# Conditional distribution of $n(\boldsymbol \zeta)$
+
+The count of individuals not captured by any list, $n(\boldsymbol \zeta)$, can be thought of as the number of elements not captured in a list *before* $m$ elements are captured by the $T$ lists. In this way, $n(\boldsymbol \zeta)$ can be thought of as the number of successes (elements not captured in a list) in a sequence of iid Bernoulli trials before a specific (non-random) number of failures (elements captured in a list, $m$). This leads $n(\boldsymbol \zeta)$ to be distributed negative binomial random *if* the probability of success (probability of not being captured by any list) is identical across trials (individuals). In general, this is not true, however conditional on the $K$-length truncation of the stick-breaking process (approximating the DP), it is.
+
+\begin{align*}
+p &= P(\text{an element not being captured by any list} \mid \text{$K$-length truncation of the stick-breaking process}) \\
+& = P(\boldsymbol x_i = \boldsymbol \zeta | \boldsymbol \theta^*_{[1:K]}, \boldsymbol \beta_{[1:T]}, \boldsymbol \nu_{[1:K]}) \\
+& = \int\limits_\Theta P(\boldsymbol x_i = \boldsymbol \zeta | \theta_i, \boldsymbol \beta_{[1:T]})P(\theta_i | \boldsymbol \theta^*_{[1:K]}, \boldsymbol \nu_{[1:K]}) d\theta_i \\
+& = \int\limits_\Theta \prod\limits_{t=1}^T\{1-\varphi^{-1}(\theta_i + \beta_t)\} \times \sum\limits_{h = 1}^K \nu_h \boldsymbol I(\theta_h^* = \theta_i) d\theta_i \\
+& = \int\limits_\Theta  \sum\limits_{h = 1}^K \prod\limits_{t=1}^T\{1-\varphi^{-1}(\theta_i + \beta_t)\} \nu_h \boldsymbol I(\theta_h^* = \theta_i) d\theta_i \\
+& = \int\limits_\Theta  \sum\limits_{h = 1}^K \nu_h \prod\limits_{t=1}^T\{1-\varphi^{-1}(\theta_h^* + \beta_t)\}  d\theta_i \\
+& = \sum\limits_{h = 1}^K \nu_h \prod\limits_{t=1}^T\{1-\varphi^{-1}(\theta_h^* + \beta_t)\}
+\end{align*}
+
+When $\varphi$ is the probit function (as used in @johndrow2016estimating), this results in
+$$
+p = \sum\limits_{h = 1}^K \nu_h \prod\limits_{t=1}^T\{1-\Phi(\theta_h^* + \beta_t)\} = \sum\limits_{h = 1}^K \nu_h \prod\limits_{t=1}^T\Phi(-\theta_h^* - \beta_t),
+$$
+where $\Phi$ is the standard normal cdf. The result is that $n(\boldsymbol \zeta)$ is conditionally a negative binomial rabdom variable with the following parameters
+$$
+n(\boldsymbol \zeta) | \boldsymbol \theta^*_{[1:K]}, \boldsymbol \beta_{[1:T]}, \boldsymbol \nu_{[1:K]} \sim \text{Neg-Bin}\left(m, \sum\limits_{h = 1}^K \nu_h \prod\limits_{t=1}^T\Phi(-\theta_h^* - \beta_t)\right)
+$$
+when the model assumptions above are made.
+
+# References {-}

@@ -1,0 +1,31 @@
+\begin{thebibliography}{1}
+
+\bibitem{kolchin71problem}
+V.~F. Kolchin.
+\newblock A problem of the allocation of particles in cells and cycles of
+  random permutations.
+\newblock {\em Theory of Probability \& Its Applications}, 16(1):74--90, 1971.
+
+\bibitem{pitman06combinatorial}
+J.~Pitman.
+\newblock Combinatorial stochastic processes.
+\newblock {\em {\'E}cole d'{\'E}t{\'e} de Probabilit{\'e}s de Saint-Flour
+  XXXII---2002}, 2006.
+
+\bibitem{steorts15entity}
+R.~C. Steorts.
+\newblock Entity resolution with empirically motivated priors.
+\newblock {\em Bayesian Analysis}, 10(4):849--875, 2015.
+
+\bibitem{steorts14smered}
+R.~C. Steorts, R.~Hall, and S.~E. Fienberg.
+\newblock {SMERED}: A {B}ayesian approach to graphical record linkage and
+  de-duplication.
+\newblock {\em Journal of Machine Learning Research}, 33:922--930, 2014.
+
+\bibitem{steorts??bayesian}
+R.~C. Steorts, R.~Hall, and S.~E. Fienberg.
+\newblock A {B}ayesian approach to graphical record linkage and de-duplication.
+\newblock {\em Journal of the American Statistical Society}, In press.
+
+\end{thebibliography}
