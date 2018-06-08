@@ -9,7 +9,6 @@ dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
 
 ## libraries ----
-library(tidyverse) # data manipulation
 library(eber) # record linkage
 
 ## data load ----
