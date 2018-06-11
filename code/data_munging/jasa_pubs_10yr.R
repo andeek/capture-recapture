@@ -9,7 +9,8 @@ dup_level <- as.numeric(args[1])/100
 dist_level <- as.numeric(args[2])/100
 
 # 0. libraries ----
-library(tidyverse) # general manipulation
+library(dplyr) # general manipulation
+library(tidyr)
 library(rcrossref) # get metadata from journals crossref
 set.seed(12345)
 
