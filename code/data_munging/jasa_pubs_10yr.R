@@ -11,6 +11,7 @@ dist_level <- as.numeric(args[2])/100
 # 0. libraries ----
 library(dplyr) # general manipulation
 library(tidyr)
+library(purrr)
 library(rcrossref) # get metadata from journals crossref
 set.seed(12345)
 
@@ -82,6 +83,20 @@ identity <- lapply(dup_db, function(db) {
         data.frame(id = population$DOI, rownum = seq_len(nrow(population))))$rownum # population row_num
   })
 
+# store truth of dups for later
+truth_dup_db <- lapply(dup_db, function(db) {
+  identity <- data.frame(record1 = numeric(0), record2 = numeric(0), doi = character(0))
+  for(i in seq_len(nrow(db))) {
+    for(j in seq_len(nrow(db))) {
+      if(i < j) {
+        if(db[i, "DOI"] == db[j, "DOI"]) {
+          identity <- rbind(identity, cbind(i, j, DOI = db[i, "DOI"]))
+        }
+      }
+    }
+  }
+  identity
+})
 
 # distort all of the duplicated records between and within dbs
 # get idx of all duplicated records
