@@ -10,6 +10,7 @@ dist_level <- as.numeric(args[2])
 
 ## libraries ----
 library(eber) # record linkage
+set.seed(1234)
 
 ## data load ----
 load(paste0("data/jasa_sim/jasa_", dup_level, "dup_", dist_level, "dist.Rdata"))
