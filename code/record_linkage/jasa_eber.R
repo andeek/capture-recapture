@@ -12,7 +12,7 @@ dist_level <- as.numeric(args[2])
 library(eber) # record linkage
 
 ## data load ----
-load(paste0("data/jasa_sim/jasa_pubs_10yr_", dup_level, "dup_", dist_level, "dist.Rdata"))
+load(paste0("data/jasa_sim/jasa_", dup_level, "dup_", dist_level, "dist.Rdata"))
 
 ## data format and params for use with eber ----
 data_all <- as.matrix(do.call(rbind, noisy_dup_db))

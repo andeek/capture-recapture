@@ -75,20 +75,12 @@ dup_db <- lapply(clean_db, function(db) {
   db[rep(row.names(db), db$duplicate + 1), -ncol(db)]
 })
 
-# store truth of dups for later
-truth_dup_db <- lapply(dup_db, function(db) {
-  identity <- data.frame(record1 = numeric(0), record2 = numeric(0), doi = character(0))
-  for(i in seq_len(nrow(db))) {
-    for(j in seq_len(nrow(db))) {
-      if(i < j) {
-        if(db[i, "DOI"] == db[j, "DOI"]) {
-          identity <- rbind(identity, cbind(i, j, DOI = db[i, "DOI"]))
-        }
-      }
-    }
-  }
-  identity
-})
+# create identity (population row_num) for each record
+identity <- lapply(dup_db, function(db) {
+  merge(data.frame(id = db$DOI), # these are the duplicated DOIs
+        data.frame(id = population$DOI, rownum = seq_len(nrow(population))))$rownum # population row_num
+  })
+
 
 # distort all of the duplicated records between and within dbs
 # get idx of all duplicated records
@@ -160,5 +152,5 @@ for(i in seq_len(D)) {
   noisy_dup_db[[i]] <- add_noise(dup_db[[i]], idx = idx_dup[[i]], col_types = col_types)
 }
 
-save(noisy_dup_db, truth_db, truth_dup_db, population, inclusion,
+save(noisy_dup_db, identity, population, inclusion,
      file = paste0("data/jasa_sim/jasa_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
