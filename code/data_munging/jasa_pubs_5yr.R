@@ -21,7 +21,7 @@ cols <- c('ISSN', 'DOI', 'issue', 'issued', 'page', 'publisher', 'title', 'volum
 
 # get JASA articles
 jasa <- cr_journals(query = "Journal of the American Statistical Association")
-jasa_10yr <- cr_journals(issn = jasa$data$issn, works = TRUE, filter = c(from_pub_date='2008-02-01'), select = cols, cursor = "*")
+jasa_10yr <- cr_journals(issn = jasa$data$issn, works = TRUE, filter = c(from_pub_date='2013-06-01'), select = cols, cursor = "*")
 
 # authors are their own tibble, change to character column
 # separate issued date into year, month, day
@@ -169,4 +169,4 @@ for(i in seq_len(D)) {
 }
 
 save(noisy_dup_db, identity, population, inclusion,
-     file = paste0("data/jasa_sim/jasa_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
+     file = paste0("data/jasa_sim_small/jasa_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
