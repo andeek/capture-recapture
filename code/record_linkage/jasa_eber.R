@@ -22,11 +22,11 @@ data_all <- as.matrix(do.call(rbind, noisy_dup_db))
 fields <- c("year", "month", "title", "author")
 string.fields <- c("title", "author")
 file.start <- head(cumsum(c(1, unlist(lapply(noisy_dup_db, nrow)))), -1)
-num.iter <- 30000
+num.iter <- 50000
 prior.alpha <- 1
 prior.beta <- 99
 pop.size <- nrow(data_all) # this might not be a good idea
-num.chains <- 3
+num.chains <- 1
 
 ## run eber ----
 out <- eber(data_all, fields, string.fields, file.start, num.iter, 
