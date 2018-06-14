@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Population Sized Record Linkage</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Andee Kaplan" />
+    <link href="isba2018_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="isba2018_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Population Sized Record Linkage
+## <a href="http://bit.ly/isba-2018" class="uri">http://bit.ly/isba-2018</a>
+### Andee Kaplan
+### ISBA 2018
+
+---
+
+
+
+
+# Motivating example
+
+.pull-left[
+
+![](figure/nytimes_syria.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+- Duplicated information regarding information about who has died from multiple sources (NGOs)
+- Messy overlapping datasets with errors
+- String data (names) as identifiers
+]
+
+ &gt;  Historically, these numbers matter... because they can have a direct impact on policy, accountability and a global sense of urgency.
+ 
+ **Goal:** We want to count the (population) of casualties and *quantify the uncertainty* in this estimate.
+
+.footnote[[1] https://www.nytimes.com/2018/04/13/world/middleeast/syria-death-toll.html]
+
+---
+
+# Probabilistic record linkage
+
+what is it
+
+---
+# Simple example
+
+picture example showing latent clustering idea
+
+---
+# Bayesian hierarchical model
+
+notation
+
+---
+# Bayesian hierarchical model
+
+model
+
+---
+# Capture-recapture
+
+what is it
+
+---
+# Simple example
+
+small example picture + contingency table
+
+---
+# Bayesian nonparametric latent class model
+
+---
+# Record linkage + capture-recapture
+ 
+simple example picture
+
+---
+# Propagating record linkage uncertainty
+
+
+---
+# Simulated example
+
+---
+# Future work
+
+---
+# Thank you
+
+## Questions?
+
+### Slides - &lt;http://bit.ly/isba-2018&gt;
+
+### Contact
+
+* Email - &lt;andrea.kaplan@duke.edu&gt;
+* Twitter - &lt;http://twitter.com/andeekaplan&gt;
+* GitHub - &lt;http://github.com/andeek&gt;
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
