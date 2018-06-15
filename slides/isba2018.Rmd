@@ -1,0 +1,99 @@
+---
+title: "Population Sized Record Linkage"
+subtitle: "<http://bit.ly/isba-2018>"
+author: "Andee Kaplan"
+date: "ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>"
+output: xaringan::moon_reader
+---
+
+```{r setup, echo = FALSE}
+library(knitr)
+
+opts_chunk$set(echo = FALSE)
+```
+
+# Motivating example
+
+.pull-left[
+```{r nytimes_image}
+knitr::include_graphics("figure/nytimes_syria.png")
+```
+]
+
+.pull-right[
+
+- Duplicated information regarding information about who has died from multiple sources (NGOs)
+- Messy overlapping datasets with errors
+- String data (names) as identifiers
+]
+
+ >  Historically, these numbers matter... because they can have a direct impact on policy, accountability and a global sense of urgency.
+ 
+ **Goal:** We want to count the (population) of casualties and *quantify the uncertainty* in this estimate.
+
+.footnote[[1] https://www.nytimes.com/2018/04/13/world/middleeast/syria-death-toll.html]
+
+---
+# Prior work
+
+
+---
+# Probabilistic record linkage
+
+what is it
+
+---
+# Simple example
+
+picture example showing latent clustering idea
+
+---
+# Bayesian hierarchical model
+
+notation
+
+---
+# Bayesian hierarchical model
+
+model
+
+---
+# Capture-recapture
+
+what is it
+
+---
+# Simple example
+
+small example picture + contingency table
+
+---
+# Bayesian nonparametric latent class model
+
+---
+# Record linkage + capture-recapture
+ 
+simple example picture
+
+---
+# Propagating record linkage uncertainty
+
+
+---
+# Simulated example
+
+---
+# Future work
+
+---
+# Thank you
+
+## Questions?
+
+### Slides - <http://bit.ly/isba-2018>
+
+### Contact
+
+* Email - <andrea.kaplan@duke.edu>
+* Twitter - <http://twitter.com/andeekaplan>
+* GitHub - <http://github.com/andeek>
