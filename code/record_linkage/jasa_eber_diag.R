@@ -75,7 +75,6 @@ get_diag <- function(dup_level, dist_level, nclust = 10) {
   
   ## results
   res <- list(eval = eval,
-              singletons = singletons,
               single_acf = single_acf,
               p.eval = p.eval,
               p.singletons = p.singleton)
