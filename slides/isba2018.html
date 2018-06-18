@@ -41,7 +41,30 @@ class: center, middle, inverse, title-slide
 .footnote[[1] https://www.nytimes.com/2018/04/13/world/middleeast/syria-death-toll.html]
 
 ---
+# General terminology
 
+![](figure/overall_process.png)
+
+* *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
+* A *downstream task* is inference, prediction, or post-linkage analysis on the linked data. 
+  - Examples: regression, clustering, small area estimation, sample size estimation, population size estimation, etc.
+
+* *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
+
+
+
+---
+# Proposed work
+
+* Much work has focused on sample size estimation as the downstream task [TODO: cite]
+  - Limited work on population size estimation post-linkage [TODO: cite]
+
+* We look at a general fully Bayesian approach, in the context of the downstream task
+
+* Provide framework for record linkage and CRC, where we crucially account for the record linkage and model uncertainty 
+
+---
 # Probabilistic record linkage
 
 what is it
@@ -54,12 +77,7 @@ picture example showing latent clustering idea
 ---
 # Bayesian hierarchical model
 
-notation
-
----
-# Bayesian hierarchical model
-
-model
+![](figure/recordLinkage_graphicalModel.svg)
 
 ---
 # Capture-recapture
@@ -75,7 +93,7 @@ small example picture + contingency table
 # Bayesian nonparametric latent class model
 
 ---
-# Record linkage + capture-recapture
+# Record linkage + CRC
  
 simple example picture
 
