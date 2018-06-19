@@ -13,34 +13,39 @@ library(purrr)
 set.seed(12345)
 
 # 1. Get population
-population <- read.csv("data/geco_sim/population.csv", stringsAsFactors = FALSE) %>%
-  mutate(bdate = as.Date(bdate, format = "%d-%m-%Y"))
+population <- read.csv("data/geco_sim/population.csv", stringsAsFactors = FALSE) 
 
-## some of these are not valid dates ?!?!?!?
-population[is.na(population$bdate), "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"), sum(is.na(population$bdate)))
-
+## add birth dates
+population[, "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"), sum(is.na(population$bdate)))
 
 # 2. Inclusion matrix
 # sample D "databases" from "population" with specified levels of overlap/inclusion
 D <- 3
+strata_prop <- .9
 
 # make the inclusion table
-inclusion <- expand.grid(rep(list(c(FALSE, TRUE)), times = D)) %>% mutate(partition = seq_len(2^D))
-names(inclusion)[seq_len(D)] <- paste0("db", seq_len(D))
+inclusion <- data.frame(strata = rep(c(1, 2), each = D),
+                        prop = rep(c(strata_prop, 1 - strata_prop), each = D),
+                        db = seq_len(D),
+                        inclusion = c(rbeta(D, 1, 10), rbeta(D, 10, 1)))
 
-# get incusion probabilities from generative model
-## TODO: this is where things can be changed for experimentation
-inclusion$p <- prop.table(runif(2^D))
 
-# partition the unique records
-splits <- ceiling(inclusion$p*nrow(population))
-population$partition <- sample(rep(seq_len(2^D), times = splits))[seq_len(nrow(population))] 
+# split population into strata
+population$strata <- (seq_len(nrow(population)) > strata_prop*nrow(population)) + 1
 
-# 3. Get clean databases
-# join to the inclusion table to see which records are in which db
-population %>% 
-  left_join(inclusion, by = "partition") %>%
-  select(-p, -partition) -> record_db
+# randomly select records from the population
+record_db <- population
+for(i in seq_len(D)) {
+  split_pop <- split(record_db, record_db$strata)
+  pop_list <- lapply(split_pop, function(pop) {
+    stra <- unique(pop$strata)
+    inc <- as.logical(rbinom(nrow(pop), 1, inclusion[inclusion$db == i & inclusion$strata == stra, "inclusion"]))
+    record_db[record_db$strata == stra, paste0("db", i)] <- inc
+    record_db[record_db$strata == stra,]
+  })
+  record_db <- do.call(rbind, pop_list)
+}
+
 
 # construct undublicated dbs
 clean_db <- list(D)
