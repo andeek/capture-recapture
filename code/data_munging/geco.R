@@ -16,6 +16,10 @@ set.seed(12345)
 population <- read.csv("data/geco_sim/population.csv", stringsAsFactors = FALSE) %>%
   mutate(bdate = as.Date(bdate, format = "%d-%m-%Y"))
 
+## some of these are not valid dates ?!?!?!?
+population[is.na(population$bdate), "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"), sum(is.na(population$bdate)))
+
+
 # 2. Inclusion matrix
 # sample D "databases" from "population" with specified levels of overlap/inclusion
 D <- 3
