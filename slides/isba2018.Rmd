@@ -34,8 +34,28 @@ knitr::include_graphics("figure/nytimes_syria.png")
 .footnote[[1] https://www.nytimes.com/2018/04/13/world/middleeast/syria-death-toll.html]
 
 ---
-# Prior work
+# General terminology
 
+![](figure/overall_process.png)
+
+* *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
+* A *downstream task* is inference, prediction, or post-linkage analysis on the linked data. 
+  - Examples: regression, clustering, small area estimation, sample size estimation, population size estimation, etc.
+
+* *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
+
+
+
+---
+# Proposed work
+
+* Much work has focused on sample size estimation as the downstream task [TODO: cite]
+  - Limited work on population size estimation post-linkage [TODO: cite]
+
+* We look at a general fully Bayesian approach, in the context of the downstream task
+
+* Provide framework for record linkage and CRC, where we crucially account for the record linkage and model uncertainty 
 
 ---
 # Probabilistic record linkage
@@ -50,12 +70,7 @@ picture example showing latent clustering idea
 ---
 # Bayesian hierarchical model
 
-notation
-
----
-# Bayesian hierarchical model
-
-model
+![](figure/recordLinkage_graphicalModel.svg)
 
 ---
 # Capture-recapture
@@ -71,13 +86,23 @@ small example picture + contingency table
 # Bayesian nonparametric latent class model
 
 ---
-# Record linkage + capture-recapture
+# Record linkage + CRC
  
 simple example picture
 
 ---
 # Propagating record linkage uncertainty
 
+**Recall Goal: ** We want to count the (population) of casualties and *quantify the uncertainty* in this estimate.
+
+**Challenge: ** How to quantify record linkage uncertainty after the record linkage task in finished and propagate this error into these subsequent analyses?
+
+**One way: **
+
+$$U(\eta) =: E_{\boldsymbol \lambda \mid \boldsymbol X} [p_C(\eta \mid f(\boldsymbol \lambda))] = \sum_{\boldsymbol \lambda} p_C(\eta \mid f(\boldsymbol \lambda)) p(\boldsymbol \lambda \mid \boldsymbol X) = p(\eta \mid \boldsymbol X)$$
+$$\text{Var} (\eta \mid \boldsymbol X) = \text{Var}_{\boldsymbol \lambda \mid \boldsymbol X} [E[\eta \mid \boldsymbol \lambda ]] + E_{\boldsymbol \lambda \mid \boldsymbol X} [\text{Var}[\eta \mid \boldsymbol \lambda ]]$$
+
+In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estimated by Markov chain Monte carlo.
 
 ---
 # Simulated example

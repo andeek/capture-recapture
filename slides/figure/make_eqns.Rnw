@@ -1,0 +1,43 @@
+\documentclass{article}
+
+\begin{document}
+
+\huge
+
+\boldmath
+$$
+{i = 1, \dots, D}
+$$
+
+\boldmath
+$$
+{j = 1, \dots, n_i}
+$$
+
+\boldmath
+$$
+{a}
+$$
+
+\boldmath
+$$
+{b}
+$$
+
+\boldmath
+$$
+{c}
+$$
+
+\boldmath
+$$
+{d()}
+$$
+
+\boldmath
+$$
+{j' = 1, \dots, M}
+$$
+
+
+\end{document}
