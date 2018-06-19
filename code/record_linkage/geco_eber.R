@@ -5,17 +5,15 @@ args <- commandArgs(trailingOnly=TRUE)
 if (length(args) != 3) stop("Pass in the dup level (5, 10, 30, 50) and dist level (5, 10, 15).", call.=FALSE)
 if (!(args[1] %in% c(5))) stop("Pass in the duplication level (5, 10, 30, 50)", call.=FALSE)
 if (!(args[2] %in% c(1, 3, 5))) stop("Pass in the distortion level (5, 10, 15)", call.=FALSE)
-if (!(args[3] %in% c("geco_sim"))) stop("Pass in the data folder name", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
-folder_name <- args[3]
 
 ## libraries ----
 library(eber) # record linkage
 set.seed(1234)
 
 ## data load ----
-load(paste0("data/", folder_name, "/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
+load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
 
 ## data format and params for use with eber ----
 data_all <- as.matrix(do.call(rbind, noisy_dup_db))
@@ -36,7 +34,7 @@ out.bind <- bind.chains(out)
 lambda <- out.bind$lambda.chain
 
 ## save results ----
-save(lambda, file = paste0("results/", folder_name, "/eber_", dup_level, "dup_", dist_level, "dist.Rdata"))
+save(lambda, file = paste0("results/geco_sim/eber_", dup_level, "dup_", dist_level, "dist.Rdata"))
 
 
 

@@ -16,7 +16,7 @@ set.seed(12345)
 population <- read.csv("data/geco_sim/population.csv", stringsAsFactors = FALSE) 
 
 ## add birth dates
-population[, "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"), sum(is.na(population$bdate)))
+population[, "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"), nrow(population))
 
 # 2. Inclusion matrix
 # sample D "databases" from "population" with specified levels of overlap/inclusion
