@@ -2,9 +2,9 @@
 ## duplication levels 5; string distortion levels 1, 3, 5; folder name
 # Rscript jasa_eber.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 3) stop("Pass in the dup level (5, 10, 30, 50) and dist level (5, 10, 15).", call.=FALSE)
-if (!(args[1] %in% c(5))) stop("Pass in the duplication level (5, 10, 30, 50)", call.=FALSE)
-if (!(args[2] %in% c(1, 3, 5))) stop("Pass in the distortion level (5, 10, 15)", call.=FALSE)
+if (length(args) != 2) stop("Pass in the dup level (5) and dist level (1, 3, 5).", call.=FALSE)
+if (!(args[1] %in% c(5))) stop("Pass in the duplication level (5)", call.=FALSE)
+if (!(args[2] %in% c(1, 3, 5))) stop("Pass in the distortion level (1, 3, 5)", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
 
