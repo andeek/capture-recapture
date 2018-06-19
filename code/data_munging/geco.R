@@ -20,14 +20,14 @@ population[, "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01')
 
 # 2. Inclusion matrix
 # sample D "databases" from "population" with specified levels of overlap/inclusion
-D <- 3
-strata_prop <- .9
+D <- 4
+strata_prop <- .75
 
 # make the inclusion table
 inclusion <- data.frame(strata = rep(c(1, 2), each = D),
                         prop = rep(c(strata_prop, 1 - strata_prop), each = D),
                         db = seq_len(D),
-                        inclusion = c(rbeta(D, 1, 10), rbeta(D, 10, 1)))
+                        inclusion = c(rbeta(D, 1, 10), rbeta(D, 5, 1)))
 
 
 # split population into strata
