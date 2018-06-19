@@ -36,7 +36,7 @@ out.bind <- bind.chains(out)
 lambda <- out.bind$lambda.chain
 
 ## save results ----
-save(lambda, file = paste0("results/", folder_name, "/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
+save(lambda, file = paste0("results/", folder_name, "/eber_", dup_level, "dup_", dist_level, "dist.Rdata"))
 
 
 
