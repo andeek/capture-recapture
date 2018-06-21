@@ -83,7 +83,7 @@ get_diag <- function(dup_level, dist_level, nclust = 10) {
 diag_res <- get_diag(dup_level, dist_level)
 
 ## save results
-save(diag_res, file = paste0("results/", folder_name, "/eber_diag_", dup_level, "dup_", dist_level, "dist.Rdata"))
+save(diag_res, file = paste0("results/geco_sim/eber_diag_", dup_level, "dup_", dist_level, "dist.Rdata"))
 
 
 
