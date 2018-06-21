@@ -9,10 +9,6 @@ dist_level <- as.numeric(args[2])
 
 ## libraries ----
 library(LCMCR) # crc
-library(foreach) # parallel computation
-library(doParallel)
-library(tidyr) # manipulation
-library(dplyr)
 
 set.seed(42)
 
