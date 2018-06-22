@@ -10,7 +10,7 @@ dist_level <- as.numeric(args[2])/100
 library(dplyr) # general manipulation
 library(tidyr)
 library(purrr)
-set.seed(12345)
+set.seed(1022)
 
 # 1. Get population
 population <- read.csv("data/geco_sim/population.csv", stringsAsFactors = FALSE) 
@@ -20,14 +20,14 @@ population[, "bdate"] <- sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01')
 
 # 2. Inclusion matrix
 # sample D "databases" from "population" with specified levels of overlap/inclusion
-D <- 4
+D <- 5
 strata_prop <- .75
 
 # make the inclusion table
 inclusion <- data.frame(strata = rep(c(1, 2), each = D),
                         prop = rep(c(strata_prop, 1 - strata_prop), each = D),
                         db = seq_len(D),
-                        inclusion = c(rbeta(D, 1, 10), rbeta(D, 5, 1)))
+                        inclusion = c(rbeta(D, 3, 15), rbeta(D, 15, 3)))
 
 
 # split population into strata
@@ -163,5 +163,5 @@ for(i in seq_len(D)) {
     separate(bdate, into = c("by", "bm", "bd"))
 }
 
-save(noisy_dup_db, identity, population, inclusion,
+save(noisy_dup_db, identity, population, inclusion, record_db,
      file = paste0("data/geco_sim/geco_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
