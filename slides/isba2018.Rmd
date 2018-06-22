@@ -104,6 +104,12 @@ $$\text{Var} (\eta \mid \boldsymbol X) = \text{Var}_{\boldsymbol \lambda \mid \b
 
 In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estimated by Markov chain Monte carlo.
 
+
+---
+# Another way
+
+
+
 ---
 # Simulated example
 
