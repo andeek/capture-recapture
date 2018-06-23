@@ -124,7 +124,7 @@ In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estima
 
 - Could also consider $p_C(\eta \mid f(\hat{\boldsymbol \lambda}))$, where $\hat{\boldsymbol \lambda}$ is the posterior mean of $\boldsymbol \lambda | \boldsymbol X$ (TODO: look up correct statement here) given my the shared most probable matching sets (TODO: cite mpmms)
 
-- Downside: error doesn't propogate through CRC task
+- Downside: error doesn't propogate through CRC task in an obvious way
 
 ---
 # Simulated examples
@@ -144,6 +144,12 @@ In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estima
 - Add additional duplicates within each database at a 5% level
 
 - Distort the duplicates (both between and within). String fields are distorted at three different levels: $5\%, 10\%, 15\%$ of characters
+
+```{r}
+noisy_dup_db[[1]] %>%
+  head(10) %>%
+  kable()
+```
 
 ---
 # Results
@@ -183,12 +189,36 @@ knitr::include_graphics("figure/do_this.gif")
 ---
 # Notation
 
+- $\boldsymbol X=(X_1,\ldots,X_n)$, records comprised of $D$ databases, indexed by $i$  
+- $i$th database has $n_i$ observed records, indexed by~$j$
+- Each record corresponds to one of $M$ latent entities, indexed by $j'$ 
+- Each record or latent entity has values on $p$~fields, indexed by~$\ell$, assumed to be categorical or string 
+- $M_\ell$, the number of possible categorical values for the $\ell$th field 
+- $X_{ij\ell}$, observed value of the $\ell$th field for the $j$th record in the $i$th database 
+- $Y_{j'\ell}$, true value of the $\ell$th field for the $j'$th latent entity 
+- $\Lambda_{ij}$, latent entity to which the $j$th record in the $i$th database corresponds
+- $\boldsymbol \Lambda = \{\Lambda_{ij}: i = 1, \dots, D, j = 1, \dots, n_i\}$ 
+- $z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})$, distortion indicator
+
 ---
 # Bayesian hierarchical model for record linkage
+
+$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases} $$
+$$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$
+$$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$
+$$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$
+$$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$$
+
+
 
 ---
 # Bayesian nonparametric latent class model
 
+$$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j},$$
+$$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$$
+$$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$$
+$$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$$
+$$p(N) \propto \frac{1}{N}$$
 
 ---
 # Trace plots
