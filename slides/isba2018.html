@@ -67,6 +67,8 @@ class: center, middle, inverse, title-slide
 ---
 # Probabilistic record linkage
 
+*Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
 what is it
 
 ---
@@ -82,7 +84,9 @@ picture example showing latent clustering idea
 ---
 # Capture-recapture
 
-what is it
+*Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
+
+![](figure/crc.png)
 
 ---
 # Simple example
@@ -96,9 +100,10 @@ small example picture + contingency table
 # Record linkage + CRC
  
 
+ 
+
 
 ![](figure/rl_crc.png)
-
 
 ---
 # Propagating record linkage uncertainty
@@ -298,7 +303,7 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 Each record corresponds to one of `\(M\)` latent entities, indexed by `\(j'\)`  
 
-Each record or latent entity has values on `\(p\)`~fields, indexed by `\(\ell\)`, assumed to be categorical or string  
+Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`, assumed to be categorical or string  
 
 `\(M_\ell\)`, the number of possible categorical values for the `\(\ell\)`th field  
 
