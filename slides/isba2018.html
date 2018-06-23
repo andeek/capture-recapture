@@ -20,6 +20,22 @@ class: center, middle, inverse, title-slide
 
 
 
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
 
 # Motivating example
 
@@ -57,8 +73,8 @@ class: center, middle, inverse, title-slide
 ---
 # Proposed work
 
-* Much work has focused on sample size estimation as the downstream task [TODO: cite]
-  - Limited work on population size estimation post-linkage [TODO: cite]
+* Much work has focused on sample size estimation as the downstream task [TODO: cite, include HRDAG]
+  - Limited work on population size estimation post-linkage with uncertainty quantification [TODO: cite]
 
 * We look at a general fully Bayesian approach, in the context of the downstream task
 
@@ -95,7 +111,17 @@ small example picture + contingency table
 ---
 # Record linkage + CRC
  
-simple example picture
+
+ list  fname     lname        by     bm   bd 
+-----  --------  -----------  -----  ---  ---
+    1  edward    zimmermann   1994   07   19 
+    1  edwa"d    zimm@rmann   1994   07   22 
+    1  ~dward    zimmeDmann   1994   07   16 
+    2  ed%ard    ziVmermann   1994   07   20 
+    2  finnbar   armanious    1980   03   03 
+    1  jack      campbell     1998   10   07 
+
+
 
 ---
 # Propagating record linkage uncertainty
@@ -109,13 +135,39 @@ simple example picture
 `$$U(\eta) =: E_{\boldsymbol \lambda \mid \boldsymbol X} [p_C(\eta \mid f(\boldsymbol \lambda))] = \sum_{\boldsymbol \lambda} p_C(\eta \mid f(\boldsymbol \lambda)) p(\boldsymbol \lambda \mid \boldsymbol X) = p(\eta \mid \boldsymbol X)$$`
 `$$\text{Var} (\eta \mid \boldsymbol X) = \text{Var}_{\boldsymbol \lambda \mid \boldsymbol X} [E[\eta \mid \boldsymbol \lambda ]] + E_{\boldsymbol \lambda \mid \boldsymbol X} [\text{Var}[\eta \mid \boldsymbol \lambda ]]$$`
 
-In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must be estimated by Markov chain Monte carlo.
+In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must be estimated by Markov chain Monte carlo (MCMC).
+
 
 ---
-# Simulated example
+# Another way
+
+- Estimating `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` through MCMC can be computationally burdensome.
+
+- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is the posterior mean of `\(\boldsymbol \lambda | \boldsymbol X\)` (TODO: look up correct statement here) given my the shared most probable matching sets (TODO: cite mpmms)
+
+- Downside: error doesn't propogate through CRC task
+
+---
+# Simulated examples
+
+
 
 ---
 # Future work
+
+
+- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
+
+- CRC method is for independent lists. How to extend for dependency between lists?
+
+- In our (limited) experience, this CRC method works best for many recaptures ( `\(\ge 4\)` ), but record linkage works best for smaller numbers of lists ( `\(\le 3\)` ). How to navigate this tradeoff?
+
+- Much more extensive simulation with different levels of duplication and list inclusion probabilities.
+
+- Do this on **real data**!
+
+&lt;img src="figure/do_this.gif" height="150px" /&gt;
+
 
 ---
 # Thank you
@@ -129,6 +181,18 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 * Email - &lt;andrea.kaplan@duke.edu&gt;
 * Twitter - &lt;http://twitter.com/andeekaplan&gt;
 * GitHub - &lt;http://github.com/andeek&gt;
+
+---
+# Notation
+
+---
+# Bayesian hierarchical model for record linkage
+
+---
+# Bayesian nonparametric latent class model
+
+---
+# References
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create();
