@@ -20,22 +20,6 @@ class: center, middle, inverse, title-slide
 
 
 
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
 
 # Motivating example
 
@@ -112,15 +96,8 @@ small example picture + contingency table
 # Record linkage + CRC
  
 
- list  fname     lname        by     bm   bd 
------  --------  -----------  -----  ---  ---
-    1  edward    zimmermann   1994   07   19 
-    1  edwa"d    zimm@rmann   1994   07   22 
-    1  ~dward    zimmeDmann   1994   07   16 
-    2  ed%ard    ziVmermann   1994   07   20 
-    2  finnbar   armanious    1980   03   03 
-    1  jack      campbell     1998   10   07 
 
+![](figure/rl_crc.png)
 
 
 ---
@@ -145,15 +122,145 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is the posterior mean of `\(\boldsymbol \lambda | \boldsymbol X\)` (TODO: look up correct statement here) given my the shared most probable matching sets (TODO: cite mpmms)
 
-- Downside: error doesn't propogate through CRC task
+- Downside: error doesn't propogate through CRC task in an obvious way
 
 ---
 # Simulated examples
 
+- Generated data in 5 lists according to the following stratified capture probabilities
 
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Strata &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Proportion &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.94 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.91 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- Strata correspond to (1) a large &amp; hard to capture population and (2) a small &amp; easy to capture population.
+
+- Add additional duplicates within each database at a 5% level
+
+- Distort the duplicates (both between and within). String fields are distorted at three different levels: `\(5\%, 10\%, 15\%\)` of characters
 
 ---
-# Future work
+# Simulated data
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; fname &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; lname &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; by &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; bm &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; bd &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; jacobiT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; aqns &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 30 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; jacobLe &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; znns &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 15 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; amaya &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; mcmellon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; daniel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; jetter &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 31 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; lachlan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ringland &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1992 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; nicholas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cadman &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; alessandria &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; wheatley &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1995 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tommy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; eglinton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1991 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 09 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ryan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1996 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; blake &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Results
+
+---
+# Future work &amp; Challenges
 
 
 - MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
@@ -185,11 +292,51 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 ---
 # Notation
 
+`\(\boldsymbol X=(X_1,\ldots,X_n)\)`, records comprised of `\(D\)` databases, indexed by `\(i\)`   
+
+`\(i\)`th database has `\(n_i\)` observed records, indexed by `\(j\)`  
+
+Each record corresponds to one of `\(M\)` latent entities, indexed by `\(j'\)`  
+
+Each record or latent entity has values on `\(p\)`~fields, indexed by `\(\ell\)`, assumed to be categorical or string  
+
+`\(M_\ell\)`, the number of possible categorical values for the `\(\ell\)`th field  
+
+`\(X_{ij\ell}\)`, observed value of the `\(\ell\)`th field for the `\(j\)`th record in the `\(i\)`th database  
+
+`\(Y_{j'\ell}\)`, true value of the `\(\ell\)`th field for the `\(j'\)`th latent entity  
+
+`\(\Lambda_{ij}\)`, latent entity to which the `\(j\)`th record in the `\(i\)`th database corresponds  
+
+`\(\boldsymbol \Lambda = \{\Lambda_{ij}: i = 1, \dots, D, j = 1, \dots, n_i\}\)`   
+
+`\(z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})\)`, distortion indicator  
+
 ---
-# Bayesian hierarchical model for record linkage
+# Bayesian hierarchical model for RL
+
+`$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&amp;\text{ if }z_{ij\ell}=1, \ell&gt;p_s\end{cases}$$`
+`$$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$`
+`$$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$`
+`$$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$`
+`$$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$$`
+
+
 
 ---
 # Bayesian nonparametric latent class model
+
+`$$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j},$$`
+`$$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$$`
+`$$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$$`
+`$$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$$`
+`$$p(N) \propto \frac{1}{N}$$`
+
+---
+# Trace plots
+
+---
+# Precision and recall
 
 ---
 # References
