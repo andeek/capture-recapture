@@ -6,13 +6,13 @@ date: "ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>"
 output: xaringan::moon_reader
 ---
 
-```{r setup, echo = FALSE}
+```{r setup, echo = FALSE, message=FALSE, warning=FALSE}
 library(knitr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-opts_chunk$set(echo = FALSE)
+opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 ```
 
 # Motivating example
@@ -63,6 +63,8 @@ knitr::include_graphics("figure/nytimes_syria.png")
 ---
 # Probabilistic record linkage
 
+*Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
 what is it
 
 ---
@@ -78,12 +80,9 @@ picture example showing latent clustering idea
 ---
 # Capture-recapture
 
-what is it
+*Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
----
-# Simple example
-
-small example picture + contingency table
+![](figure/crc.png)
 
 ---
 # Bayesian nonparametric latent class model
@@ -91,16 +90,18 @@ small example picture + contingency table
 ---
 # Record linkage + CRC
  
-```{r}
+
+ 
+```{r, results='hide'}
 load("../data/geco_sim/geco_5dup_5dist.Rdata")
 idx <- do.call(c, identity) == 2
 
 data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
   bind_cols(do.call(rbind, noisy_dup_db)[idx,] %>% bind_rows(noisy_dup_db[[1]][1:2,])) %>%
-  kable()
+  kable(format = "html", row.names = FALSE)
 ```
 
-
+![](figure/rl_crc.png)
 
 ---
 # Propagating record linkage uncertainty
@@ -131,24 +132,27 @@ In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estima
 
 - Generated data in `r length(noisy_dup_db)` lists according to the following stratified capture probabilities
 
-    ```{r}
-    inclusion %>%
-      mutate(db = paste("List", db)) %>%
-      spread(db, inclusion) %>%
-      rename(Strata = strata, Proportion = prop) %>%
-      kable(digits = 2)
-    ```
+```{r, results='asis'}
+inclusion %>%
+  mutate(db = paste("List", db)) %>%
+  spread(db, inclusion) %>%
+  rename(Strata = strata, Proportion = prop) %>%
+  kable(digits = 2, format = "html", row.names = FALSE)
+```
 
-- Strata correspond to a large & hard to capture population and a small & easy to capture population.
+- Strata correspond to (1) a large & hard to capture population and (2) a small & easy to capture population.
 
 - Add additional duplicates within each database at a 5% level
 
 - Distort the duplicates (both between and within). String fields are distorted at three different levels: $5\%, 10\%, 15\%$ of characters
 
-```{r}
+---
+# Simulated data
+
+```{r, results = 'asis'}
 noisy_dup_db[[1]] %>%
-  head(10) %>%
-  kable()
+  tail(10) %>%
+  kable(format = "html", row.names = FALSE)
 ```
 
 ---
@@ -189,21 +193,30 @@ knitr::include_graphics("figure/do_this.gif")
 ---
 # Notation
 
-- $\boldsymbol X=(X_1,\ldots,X_n)$, records comprised of $D$ databases, indexed by $i$  
-- $i$th database has $n_i$ observed records, indexed by~$j$
-- Each record corresponds to one of $M$ latent entities, indexed by $j'$ 
-- Each record or latent entity has values on $p$~fields, indexed by~$\ell$, assumed to be categorical or string 
-- $M_\ell$, the number of possible categorical values for the $\ell$th field 
-- $X_{ij\ell}$, observed value of the $\ell$th field for the $j$th record in the $i$th database 
-- $Y_{j'\ell}$, true value of the $\ell$th field for the $j'$th latent entity 
-- $\Lambda_{ij}$, latent entity to which the $j$th record in the $i$th database corresponds
-- $\boldsymbol \Lambda = \{\Lambda_{ij}: i = 1, \dots, D, j = 1, \dots, n_i\}$ 
-- $z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})$, distortion indicator
+$\boldsymbol X=(X_1,\ldots,X_n)$, records comprised of $D$ databases, indexed by $i$   
+
+$i$th database has $n_i$ observed records, indexed by $j$  
+
+Each record corresponds to one of $M$ latent entities, indexed by $j'$  
+
+Each record or latent entity has values on $p$ fields, indexed by $\ell$, assumed to be categorical or string  
+
+$M_\ell$, the number of possible categorical values for the $\ell$th field  
+
+$X_{ij\ell}$, observed value of the $\ell$th field for the $j$th record in the $i$th database  
+
+$Y_{j'\ell}$, true value of the $\ell$th field for the $j'$th latent entity  
+
+$\Lambda_{ij}$, latent entity to which the $j$th record in the $i$th database corresponds  
+
+$\boldsymbol \Lambda = \{\Lambda_{ij}: i = 1, \dots, D, j = 1, \dots, n_i\}$   
+
+$z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})$, distortion indicator  
 
 ---
-# Bayesian hierarchical model for record linkage
+# Bayesian hierarchical model for RL
 
-$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases} $$
+$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases}$$
 $$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$
 $$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$
 $$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$
