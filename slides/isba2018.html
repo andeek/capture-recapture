@@ -6,6 +6,7 @@
     <meta name="author" content="Andee Kaplan" />
     <link href="isba2018_files/remark-css/default.css" rel="stylesheet" />
     <link href="isba2018_files/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -53,7 +54,6 @@ class: center, middle, inverse, title-slide
 * *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
 
-
 ---
 # Proposed work
 
@@ -69,12 +69,12 @@ class: center, middle, inverse, title-slide
 
 *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
-what is it
+&lt;img src="figure/rl_links.png" height="400px" /&gt;
 
 ---
-# Simple example
+# Latent variable approach
 
-picture example showing latent clustering idea
+&lt;img src="figure/rl_latent.png" height="500px" /&gt;
 
 ---
 # Bayesian hierarchical model
@@ -89,7 +89,12 @@ picture example showing latent clustering idea
 ![](figure/crc.png)
 
 ---
-# Bayesian nonparametric latent class model
+# Bayesian model averaging (BMA)
+
+
+---
+# Bayesian nonparametric latent class model (NPLCM)
+
 
 ---
 # Record linkage + CRC
@@ -120,9 +125,9 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - Estimating `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` through MCMC can be computationally burdensome.
 
-- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is the posterior mean of `\(\boldsymbol \lambda | \boldsymbol X\)` (TODO: look up correct statement here) given my the shared most probable matching sets ([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian))
+- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is a point estimate for `\(\boldsymbol \lambda | \boldsymbol X\)` given by the shared most probable matching sets ([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian))
 
-- Upside: Much faster, only need to do MCMC estimation of the CRC for a single `\(\boldsymbol \lambda\)`
+- Upside: Much faster, only need to do MCMC estimation of the CRC for a single linkage value
 
 - Downside: error doesn't propogate through CRC task in an obvious way
 
@@ -267,9 +272,9 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
 
-- CRC method is for independent lists. How to extend for dependency between lists?
+- NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). Is very sensitive to errors from RL.
 
-- In our (limited) experience, this CRC method works best for many recaptures ( `\(\ge 4\)` ), but record linkage works best for smaller numbers of lists ( `\(\le 3\)` ). How to navigate this tradeoff?
+- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
 - Much more extensive simulation with different levels of duplication and list inclusion probabilities.
 
@@ -337,13 +342,15 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 ---
 # Trace plots
 
+
 ---
 # Precision and recall
+
 
 ---
 # References
 
-
+.tiny[
 &lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
 Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
 with Application to the Syrian Conflict". In: _arXiv preprint
@@ -375,6 +382,7 @@ _Journal of the American Statistical Association_ 111.516, pp.
 Liseo](#cite-tancredi2011hierarchical) (2011). "A hierarchical
 Bayesian approach to record linkage and population size problems".
 In: _The Annals of Applied Statistics_ 5.2B, pp. 1553-1585.
+]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create();

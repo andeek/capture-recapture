@@ -3,7 +3,9 @@ title: "Population Sized Record Linkage"
 subtitle: "<http://bit.ly/isba-2018>"
 author: "Andee Kaplan"
 date: "ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>"
-output: xaringan::moon_reader
+output: 
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "style.css"]
 ---
 
 ```{r setup, echo = FALSE, message=FALSE, warning=FALSE}
@@ -55,7 +57,6 @@ knitr::include_graphics("figure/nytimes_syria.png")
 * *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
 
-
 ---
 # Proposed work
 
@@ -71,12 +72,16 @@ knitr::include_graphics("figure/nytimes_syria.png")
 
 *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
-what is it
+```{r, out.height = "400px"}
+knitr::include_graphics("figure/rl_links.png")
+```
 
 ---
-# Simple example
+# Latent clustering approach
 
-picture example showing latent clustering idea
+```{r, out.height = "500px"}
+knitr::include_graphics("figure/rl_latent.png")
+```
 
 ---
 # Bayesian hierarchical model
@@ -91,7 +96,12 @@ picture example showing latent clustering idea
 ![](figure/crc.png)
 
 ---
-# Bayesian nonparametric latent class model
+# Bayesian model averaging (BMA)
+
+
+---
+# Bayesian nonparametric latent class model (NPLCM)
+
 
 ---
 # Record linkage + CRC
@@ -129,9 +139,9 @@ In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estima
 
 - Estimating $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ through MCMC can be computationally burdensome.
 
-- Could also consider $p_C(\eta \mid f(\hat{\boldsymbol \lambda}))$, where $\hat{\boldsymbol \lambda}$ is the posterior mean of $\boldsymbol \lambda | \boldsymbol X$ (TODO: look up correct statement here) given my the shared most probable matching sets `r Citep(bib, "steorts2016bayesian")`
+- Could also consider $p_C(\eta \mid f(\hat{\boldsymbol \lambda}))$, where $\hat{\boldsymbol \lambda}$ is a point estimate for $\boldsymbol \lambda | \boldsymbol X$ given by the shared most probable matching sets `r Citep(bib, "steorts2016bayesian")`
 
-- Upside: Much faster, only need to do MCMC estimation of the CRC for a single $\boldsymbol \lambda$
+- Upside: Much faster, only need to do MCMC estimation of the CRC for a single linkage value
 
 - Downside: error doesn't propogate through CRC task in an obvious way
 
@@ -172,9 +182,9 @@ noisy_dup_db[[1]] %>%
 
 - MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**. Explore how to propogate the error approximately.
 
-- CRC method is for independent lists. How to extend for dependency between lists?
+- NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). Is very sensitive to errors from RL.
 
-- In our (limited) experience, this CRC method works best for many recaptures ( $\ge 4$ ), but record linkage works best for smaller numbers of lists ( $\le 3$ ). How to navigate this tradeoff?
+- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
 - Much more extensive simulation with different levels of duplication and list inclusion probabilities.
 
@@ -244,13 +254,16 @@ $$p(N) \propto \frac{1}{N}$$
 ---
 # Trace plots
 
+
 ---
 # Precision and recall
+
 
 ---
 # References
 
-
+.tiny[
 ```{r print_refs, results='asis'}
 PrintBibliography(bib)
 ```
+]
