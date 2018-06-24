@@ -102,6 +102,22 @@ knitr::include_graphics("figure/rl_latent.png")
 ---
 # Bayesian nonparametric latent class model (NPLCM)
 
+- Proposed by `r Citet(bib, "manrique2016bayesian")` with a package on CRAN (`LCMCR`) `r Citep(bib, "LCMCR")`
+
+- Assumes independence between lists, used to model heterogeneity in the capture probabilities
+
+  - i.e. Homogenous strata in the population with different likelihood of being captured, but the same probability within
+  
+
+- **Likelihood** Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters 
+
+- **Priors** Dirichlet process model for strata mixture weights, $\text{Beta}(1,1)$ for stratum-specific capture probabilities
+
+- No need to specify the number of strata
+
+- Can handle large numbers of recapture with moderate sample size
+
+
 
 ---
 # Record linkage + CRC
@@ -176,8 +192,10 @@ noisy_dup_db[[1]] %>%
 ---
 # Results
 
+
+
 ---
-# Future work + challenges
+# Challenges
 
 
 - MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**. Explore how to propogate the error approximately.
@@ -186,13 +204,12 @@ noisy_dup_db[[1]] %>%
 
 - BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
+## To do
+
 - Much more extensive simulation with different levels of duplication and list inclusion probabilities.
 
 - Do this on **real data**!
 
-```{r, out.height = "150px"}
-knitr::include_graphics("figure/do_this.gif")
-```
 
 
 ---

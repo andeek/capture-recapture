@@ -95,6 +95,22 @@ class: center, middle, inverse, title-slide
 ---
 # Bayesian nonparametric latent class model (NPLCM)
 
+- Proposed by &lt;a name=cite-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier (2016)](#bib-manrique2016bayesian) with a package on CRAN (`LCMCR`) &lt;a name=cite-LCMCR&gt;&lt;/a&gt;([Manrique-Vallier, 2017](https://CRAN.R-project.org/package=LCMCR))
+
+- Assumes independence between lists, used to model heterogeneity in the capture probabilities
+
+  - i.e. Homogenous strata in the population with different likelihood of being captured, but the same probability within
+  
+
+- **Likelihood** Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters 
+
+- **Priors** Dirichlet process model for strata mixture weights, `\(\text{Beta}(1,1)\)` for stratum-specific capture probabilities
+
+- No need to specify the number of strata
+
+- Can handle large numbers of recapture with moderate sample size
+
+
 
 ---
 # Record linkage + CRC
@@ -266,8 +282,10 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 ---
 # Results
 
+
+
 ---
-# Future work + challenges
+# Challenges
 
 
 - MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
@@ -276,11 +294,12 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
+## To do
+
 - Much more extensive simulation with different levels of duplication and list inclusion probabilities.
 
 - Do this on **real data**!
 
-&lt;img src="figure/do_this.gif" height="150px" /&gt;
 
 
 ---
@@ -360,6 +379,16 @@ arXiv:1710.02690_.
 Tancredi](#cite-liseo2011bayesian) (2011). "Bayesian estimation of
 population size via linkage of multivariate normal data sets". In:
 _Journal of Official Statistics_ 27.3, p. 491.
+
+&lt;a name=bib-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier,
+D.](#cite-manrique2016bayesian) (2016). "Bayesian population size
+estimation using Dirichlet process mixtures". In: _Biometrics_
+72.4, pp. 1246-1254.
+
+&lt;a name=bib-LCMCR&gt;&lt;/a&gt;[Manrique-Vallier, D.](#cite-LCMCR) (2017).
+_LCMCR: Bayesian Non-Parametric Latent-Class Capture-Recapture_. R
+package version 0.4.3. URL:
+[https://CRAN.R-project.org/package=LCMCR](https://CRAN.R-project.org/package=LCMCR).
 
 &lt;a name=bib-price2014updated&gt;&lt;/a&gt;[Price, M, A. Gohdes and P.
 Ball](#cite-price2014updated) (2014). "Updated statistical
