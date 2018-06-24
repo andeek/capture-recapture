@@ -109,7 +109,7 @@ knitr::include_graphics("figure/rl_latent.png")
 
  
 ```{r, results='hide'}
-load("../data/geco_sim/geco_5dup_5dist.Rdata")
+load("../../data/geco_sim/geco_5dup_5dist.Rdata")
 idx <- do.call(c, identity) == 2
 
 data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
