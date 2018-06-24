@@ -92,6 +92,19 @@ class: center, middle, inverse, title-slide
 # Bayesian model averaging (BMA)
 
 
+
+- Method proposed by &lt;a name=cite-madigan1997bayesian&gt;&lt;/a&gt;[Madigan and York (1997)](#bib-madigan1997bayesian) with a package on CRAN (`dga`) &lt;a name=cite-dga&gt;&lt;/a&gt;([Johndrow, Lum, and Ball, 2015](https://CRAN.R-project.org/package=dga))
+
+- Allows for various types of dependency between lists through the use of decomposable Bayesian graphical models
+
+- **Likelihood** Bayesian hierarchical log-linear models given model with certain dependency between lists
+
+- **Priors** `\(t\)`-distribution for log-linear parameters, Jeffreys prior for `\(N\)`, `\(p(N) \propto N^{-1}\)`
+
+- Models averaged over all decomposable Bayesian graphical models to obtain final posterior distribution
+
+ - For `\(3\)` lists, this corresponds to 8 models, `\(4\)` lists - 61 models, `\(5\)` lists - 822 models
+
 ---
 # Bayesian nonparametric latent class model (NPLCM)
 
@@ -292,7 +305,7 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). Is very sensitive to errors from RL.
 
-- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
+- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
 ## To do
 
@@ -375,10 +388,20 @@ Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
 with Application to the Syrian Conflict". In: _arXiv preprint
 arXiv:1710.02690_.
 
+&lt;a name=bib-dga&gt;&lt;/a&gt;[Johndrow, J, K. Lum and P. Ball](#cite-dga)
+(2015). _dga: Capture-Recapture Estimation using Bayesian Model
+Averaging_. R package version 1.2. URL:
+[https://CRAN.R-project.org/package=dga](https://CRAN.R-project.org/package=dga).
+
 &lt;a name=bib-liseo2011bayesian&gt;&lt;/a&gt;[Liseo, B. and A.
 Tancredi](#cite-liseo2011bayesian) (2011). "Bayesian estimation of
 population size via linkage of multivariate normal data sets". In:
 _Journal of Official Statistics_ 27.3, p. 491.
+
+&lt;a name=bib-madigan1997bayesian&gt;&lt;/a&gt;[Madigan, D. and J. C.
+York](#cite-madigan1997bayesian) (1997). "Bayesian methods for
+estimation of the size of a closed population". In: _Biometrika_
+84.1, pp. 19-31.
 
 &lt;a name=bib-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier,
 D.](#cite-manrique2016bayesian) (2016). "Bayesian population size

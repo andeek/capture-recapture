@@ -14,6 +14,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(RefManageR)
+library(dga)
 
 opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 
@@ -98,6 +99,23 @@ knitr::include_graphics("figure/rl_latent.png")
 ---
 # Bayesian model averaging (BMA)
 
+```{r dga_graphs}
+data("graphs3")
+data("graphs4")
+data("graphs5")
+```
+
+- Method proposed by `r Citet(bib, "madigan1997bayesian")` with a package on CRAN (`dga`) `r Citep(bib, "dga")`
+
+- Allows for various types of dependency between lists through the use of decomposable Bayesian graphical models
+
+- **Likelihood** Bayesian hierarchical log-linear models given model with certain dependency between lists
+
+- **Priors** $t$-distribution for log-linear parameters, Jeffreys prior for $N$, $p(N) \propto N^{-1}$
+
+- Models averaged over all decomposable Bayesian graphical models to obtain final posterior distribution
+
+ - For $3$ lists, this corresponds to `r length(graphs3)` models, $4$ lists - `r length(graphs4)` models, $5$ lists - `r length(graphs5)` models
 
 ---
 # Bayesian nonparametric latent class model (NPLCM)
@@ -202,7 +220,7 @@ noisy_dup_db[[1]] %>%
 
 - NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). Is very sensitive to errors from RL.
 
-- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all possible dependencies between lists. Is less sensitive to errors from RL. [TODO we hope!]
+- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. Is less sensitive to errors from RL. [TODO we hope!]
 
 ## To do
 
