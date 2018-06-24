@@ -4,8 +4,8 @@
     <title>Population Sized Record Linkage</title>
     <meta charset="utf-8">
     <meta name="author" content="Andee Kaplan" />
-    <link href="isba2018_files/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="isba2018_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link href="isba2018_files/remark-css/default.css" rel="stylesheet" />
+    <link href="isba2018_files/remark-css/default-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -57,8 +57,8 @@ class: center, middle, inverse, title-slide
 ---
 # Proposed work
 
-* Much work has focused on sample size estimation as the downstream task [TODO: cite, include HRDAG]
-  - Limited work on population size estimation post-linkage with uncertainty quantification [TODO: cite]
+* Much work has focused on sample size estimation as the downstream task &lt;a name=cite-steorts2016bayesian&gt;&lt;/a&gt;&lt;a name=cite-chen2017unique&gt;&lt;/a&gt;&lt;a name=cite-price2014updated&gt;&lt;/a&gt;&lt;a name=cite-sadinle2013generalized&gt;&lt;/a&gt;([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian); [Chen, Shrivastava, and Steorts, 2017](#bib-chen2017unique); [Price, Gohdes, and Ball, 2014](#bib-price2014updated); [Sadinle and Fienberg, 2013](#bib-sadinle2013generalized))
+  - Some work on population size estimation post-linkage with uncertainty quantification &lt;a name=cite-tancredi2011hierarchical&gt;&lt;/a&gt;&lt;a name=cite-liseo2011bayesian&gt;&lt;/a&gt;([Tancredi and Liseo, 2011](#bib-tancredi2011hierarchical); [Liseo and Tancredi, 2011](#bib-liseo2011bayesian))
 
 * We look at a general fully Bayesian approach, in the context of the downstream task
 
@@ -87,11 +87,6 @@ picture example showing latent clustering idea
 *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
 ![](figure/crc.png)
-
----
-# Simple example
-
-small example picture + contingency table
 
 ---
 # Bayesian nonparametric latent class model
@@ -125,7 +120,9 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - Estimating `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` through MCMC can be computationally burdensome.
 
-- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is the posterior mean of `\(\boldsymbol \lambda | \boldsymbol X\)` (TODO: look up correct statement here) given my the shared most probable matching sets (TODO: cite mpmms)
+- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is the posterior mean of `\(\boldsymbol \lambda | \boldsymbol X\)` (TODO: look up correct statement here) given my the shared most probable matching sets ([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian))
+
+- Upside: Much faster, only need to do MCMC estimation of the CRC for a single `\(\boldsymbol \lambda\)`
 
 - Downside: error doesn't propogate through CRC task in an obvious way
 
@@ -265,7 +262,7 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 # Results
 
 ---
-# Future work &amp; Challenges
+# Future work + challenges
 
 
 - MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
@@ -345,6 +342,39 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 
 ---
 # References
+
+
+&lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
+Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
+with Application to the Syrian Conflict". In: _arXiv preprint
+arXiv:1710.02690_.
+
+&lt;a name=bib-liseo2011bayesian&gt;&lt;/a&gt;[Liseo, B. and A.
+Tancredi](#cite-liseo2011bayesian) (2011). "Bayesian estimation of
+population size via linkage of multivariate normal data sets". In:
+_Journal of Official Statistics_ 27.3, p. 491.
+
+&lt;a name=bib-price2014updated&gt;&lt;/a&gt;[Price, M, A. Gohdes and P.
+Ball](#cite-price2014updated) (2014). "Updated statistical
+analysis of documentation of killings in the Syrian Arab
+Republic". In: _Human Rights Data Analysis Group, Geneva_.
+
+&lt;a name=bib-sadinle2013generalized&gt;&lt;/a&gt;[Sadinle, M. and S. E.
+Fienberg](#cite-sadinle2013generalized) (2013). "A generalized
+Fellegi-Sunter framework for multiple record linkage with
+application to homicide record systems". In: _Journal of the
+American Statistical Association_ 108.502, pp. 385-397.
+
+&lt;a name=bib-steorts2016bayesian&gt;&lt;/a&gt;[Steorts, R. C, R. Hall and S.
+E. Fienberg](#cite-steorts2016bayesian) (2016). "A bayesian
+approach to graphical record linkage and deduplication". In:
+_Journal of the American Statistical Association_ 111.516, pp.
+1660-1672.
+
+&lt;a name=bib-tancredi2011hierarchical&gt;&lt;/a&gt;[Tancredi, A. and B.
+Liseo](#cite-tancredi2011hierarchical) (2011). "A hierarchical
+Bayesian approach to record linkage and population size problems".
+In: _The Annals of Applied Statistics_ 5.2B, pp. 1553-1585.
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create();
