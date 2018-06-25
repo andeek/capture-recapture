@@ -485,11 +485,13 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 # Challenges
 
 
-- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. Explore how to propogate the error approximately.
+- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. 
 
-- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). Is sensitive to errors from RL.
+- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). 
 
-- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. Is also sensitive to errors from RL. 
+- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. 
+
+- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS.
 
 ## To do
 
