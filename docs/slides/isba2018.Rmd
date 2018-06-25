@@ -15,8 +15,13 @@ library(dplyr)
 library(tidyr)
 library(RefManageR)
 library(dga)
+library(kableExtra)
 
+## chunk options
 opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+
+## plot options
+theme_set(theme_bw(base_family = "serif"))
 
 ## bibliography
 options(htmltools.dir.version = FALSE)
@@ -118,7 +123,7 @@ data("graphs5")
  - For $3$ lists, this corresponds to `r length(graphs3)` models, $4$ lists - `r length(graphs4)` models, $5$ lists - `r length(graphs5)` models
 
 ---
-# Bayesian nonparametric latent class model (NPLCM)
+# Bayesian NP latent class model (NPLCM)
 
 - Proposed by `r Citet(bib, "manrique2016bayesian")` with a package on CRAN (`LCMCR`) `r Citep(bib, "LCMCR")`
 
@@ -152,7 +157,7 @@ data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
 ```
 
 
-```{r, out.height = "500px"}
+```{r, out.height = "450px"}
 knitr::include_graphics("figure/rl_crc.png")
 ```
 
@@ -214,17 +219,231 @@ noisy_dup_db[[1]] %>%
 ---
 # Results
 
+```{r load-results, cache = TRUE}
+## load results ---
+## nplcm
+load("../../results/geco_sim/crc_5dup_5dist.Rdata")
+pop_N <- data.frame(dist = 5, crc_method = "NPLCM", method = "Truth", N = pop_N_truth)
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_5_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_5_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_5_nplcm <- pop_N_bayes
+pop_N_truth_5_nplcm <- pop_N_truth
+pop_N_mpmms_5_nplcm <- pop_N_mpmms
+
+load("../../results/geco_sim/crc_5dup_10dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_10_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_10_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_10_nplcm <- pop_N_bayes
+pop_N_truth_10_nplcm <- pop_N_truth
+pop_N_mpmms_10_nplcm <- pop_N_mpmms
+
+load("../../results/geco_sim/crc_5dup_15dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_15_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_15_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_15_nplcm <- pop_N_bayes
+pop_N_truth_15_nplcm <- pop_N_truth
+pop_N_mpmms_15_nplcm <- pop_N_mpmms
+
+## bma
+load("../../results/geco_sim/bma_5dup_5dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_5_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_5_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_5_bma <- pop_N_bayes
+pop_N_truth_5_bma <- pop_N_truth
+pop_N_mpmms_5_bma <- pop_N_mpmms
+
+load("../../results/geco_sim/bma_5dup_10dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_10_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_10_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_10_bma <- pop_N_bayes
+pop_N_truth_10_bma <- pop_N_truth
+pop_N_mpmms_10_bma <- pop_N_mpmms
+
+load("../../results/geco_sim/bma_5dup_15dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_15_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_15_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_15_bma <- pop_N_bayes
+pop_N_truth_15_bma <- pop_N_truth
+pop_N_mpmms_15_bma <- pop_N_mpmms
+
+## make densities
+n_bin <- 5000
+min_tot <- min(min_5_nplcm, min_10_nplcm, min_15_nplcm, min_5_bma, min_10_bma, min_15_bma)
+max_tot <- max(max_5_nplcm, max_10_nplcm, max_15_nplcm, max_5_bma, max_10_bma, max_15_bma)
+
+## truth
+pop_N_density <- rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_5_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 10, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_10_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 15, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_15_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])))
+names(pop_N_density) <- c("dist", "crc_method", "x", "truth")
+pop_N_density$x <- round(pop_N_density$x, 5)
+
+## add mmpms
+rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_5_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_10_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_15_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(mpmms = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density, by = c("dist","crc_method", "x")) -> pop_N_density
+
+## add joint posterior
+rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_5_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_10_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_15_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(joint_post = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density, by = c("dist", "crc_method", "x")) -> pop_N_density
+
+##bma
+## truth
+pop_N_density2 <- rbind(data.frame(dist = 5, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_5_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 10, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_10_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 15, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_15_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])))
+names(pop_N_density2) <- c("dist", "crc_method", "x", "truth")
+pop_N_density2$x <- round(pop_N_density2$x, 5)
+
+## add mmpms
+rbind(data.frame(dist = 5, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_5_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_10_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_15_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(mpmms = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density2, by = c("dist", "crc_method", "x")) -> pop_N_density2
+
+## add joint posterior
+rbind(data.frame(dist = 5, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_5_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_10_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_15_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(joint_post = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density2, by = c("dist", "crc_method", "x")) -> pop_N_density2
+
+pop_N_density <- rbind(pop_N_density, pop_N_density2)
+```
+
+```{r plot-results}
+pop_N_density %>%
+  gather(method, y, -dist, -x, -crc_method) %>% 
+  ggplot() +
+  geom_line(aes(x, y, colour = method, linetype = crc_method)) +
+  geom_polygon(aes(x, y, fill = method), alpha = .2) +
+  geom_vline(aes(xintercept = 1000), lty = 1) +
+  facet_wrap(~dist) +
+  xlim(c(750, 1500)) +
+  scale_fill_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
+  scale_colour_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
+  scale_linetype_discrete("CRC Method") +
+  xlab("N") + ylab("")
+
+```
+
+---
+# Results (Distortion Level = 5)
+
+```{r results-table-5, results='asis'}
+pop_N %>%
+  group_by(dist, crc_method, method) %>%
+  summarise(mean_N = mean(N), q05_N = quantile(N, probs = 0.025), q95_N = quantile(N, probs = 0.975), MSE = mean((N - 1000)^2)) -> pop_N_summary_stats
+
+
+pop_N_summary_stats %>% 
+  group_by(method, add = TRUE) %>% 
+  transmute(bold = 1000 >= q05_N & 1000 <= q95_N) %>%
+  arrange(dist, method, crc_method) -> which_bold
+  
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 5) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 5) %>% .$bold), bold = TRUE)
+```
+
+---
+# Results (Distortion Level = 10)
+
+```{r results-table-10, results='asis'}
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 10) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 10) %>% .$bold), bold = TRUE)
+```
+
+
+---
+# Results (Distortion Level = 15)
+
+```{r results-table-15, results='asis'}
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 15) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 15) %>% .$bold), bold = TRUE)
+```
 
 
 ---
 # Challenges
 
 
-- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**. Explore how to propogate the error approximately.
+- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**, but using the shared MPMMS does not work very well. Explore how to propogate the error approximately.
 
-- NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). Is very sensitive to errors from RL.
+- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). Is sensitive to errors from RL.
 
-- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. Is less sensitive to errors from RL. [TODO we hope!]
+- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. Is also sensitive to errors from RL. 
 
 ## To do
 
@@ -301,7 +520,7 @@ $$p(N) \propto \frac{1}{N}$$
 ---
 # References
 
-.tiny[
+.small[
 ```{r print_refs, results='asis'}
 PrintBibliography(bib)
 ```

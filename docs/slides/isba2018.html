@@ -6,6 +6,7 @@
     <meta name="author" content="Andee Kaplan" />
     <link href="isba2018_files/remark-css/default.css" rel="stylesheet" />
     <link href="isba2018_files/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="isba2018_files/kePrint/kePrint.js"></script>
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
   <body>
@@ -106,7 +107,7 @@ class: center, middle, inverse, title-slide
  - For `\(3\)` lists, this corresponds to 8 models, `\(4\)` lists - 61 models, `\(5\)` lists - 822 models
 
 ---
-# Bayesian nonparametric latent class model (NPLCM)
+# Bayesian NP latent class model (NPLCM)
 
 - Proposed by &lt;a name=cite-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier (2016)](#bib-manrique2016bayesian) with a package on CRAN (`LCMCR`) &lt;a name=cite-LCMCR&gt;&lt;/a&gt;([Manrique-Vallier, 2017](https://CRAN.R-project.org/package=LCMCR))
 
@@ -133,7 +134,7 @@ class: center, middle, inverse, title-slide
 
 
 
-&lt;img src="figure/rl_crc.png" height="500px" /&gt;
+&lt;img src="figure/rl_crc.png" height="450px" /&gt;
 
 
 ---
@@ -299,15 +300,196 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 
 
+&lt;img src="isba2018_files/figure-html/plot-results-1.png" width="672" /&gt;
+
+---
+# Results (Distortion Level = 5)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.5606 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2732.599 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (899, 1049) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1167.4932 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29843.118 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1093, 1258.02) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1119.4261 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16165.454 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1043, 1214) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1068.0052 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 6262.197 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (996, 1155) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1045.1825 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3669.376 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (974, 1132) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Results (Distortion Level = 10)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.5606 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2732.599 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (899, 1049) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1272.1005 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76688.897 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1181, 1381) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1247.2681 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65189.755 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1138, 1386) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1122.4366 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17327.180 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1037, 1226) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1100.4263 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12808.128 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1012, 1217) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+# Results (Distortion Level = 15)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.5606 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2732.599 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (899, 1049) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1254.6658 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68034.287 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1158.98, 1379) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1232.2298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57540.843 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1126, 1361) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1130.5057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19408.835 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1045, 1236) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1104.1264 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13843.451 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1010, 1225) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
 ---
 # Challenges
 
 
-- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**. Explore how to propogate the error approximately.
+- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. Explore how to propogate the error approximately.
 
-- NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). Is very sensitive to errors from RL.
+- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). Is sensitive to errors from RL.
 
-- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. Is less sensitive to errors from RL. [TODO we hope!]
+- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. Is also sensitive to errors from RL. 
 
 ## To do
 
@@ -384,7 +566,7 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 ---
 # References
 
-.tiny[
+.small[
 &lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
 Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
 with Application to the Syrian Conflict". In: _arXiv preprint

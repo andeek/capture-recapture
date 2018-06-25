@@ -48,7 +48,7 @@ get_pop_N <- function(clusters) {
   Nmissing <- 0:(nrow(included)*fac)
   weights <- bma.cr(table(included[, -1]), Nmissing, delta, graphs5)
   
-  sample(nrow(included) + Nmissing, 100000, prob = colSums(weights), replace = TRUE)
+  sample(nrow(included) + Nmissing, 10000, prob = colSums(weights), replace = TRUE)
 }
 
 ## truth ----
