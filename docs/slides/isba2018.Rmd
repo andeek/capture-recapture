@@ -151,7 +151,11 @@ data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
   kable(format = "html", row.names = FALSE)
 ```
 
-![](figure/rl_crc.png)
+
+```{r, out.height = "500px"}
+knitr::include_graphics("figure/rl_crc.png")
+```
+
 
 ---
 # Propagating record linkage uncertainty
