@@ -3,7 +3,7 @@
   <head>
     <title>Population Sized Record Linkage</title>
     <meta charset="utf-8">
-    <meta name="author" content="Andee Kaplan" />
+    <meta name="author" content="Andee Kaplan  Duke University" />
     <link href="isba2018_files/remark-css/default.css" rel="stylesheet" />
     <link href="isba2018_files/remark-css/default-fonts.css" rel="stylesheet" />
     <script src="isba2018_files/kePrint/kePrint.js"></script>
@@ -15,8 +15,8 @@ class: center, middle, inverse, title-slide
 
 # Population Sized Record Linkage
 ## <a href="http://bit.ly/isba-2018" class="uri">http://bit.ly/isba-2018</a>
-### Andee Kaplan
-### ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>
+### Andee Kaplan<br/><br/><small>Duke University</small>
+### <small>Joint work with Rebecca C. Steorts</small>
 
 ---
 
@@ -544,22 +544,46 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 ---
 # Bayesian hierarchical model for RL
 
-`$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&amp;\text{ if }z_{ij\ell}=1, \ell&gt;p_s\end{cases}$$`
-`$$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$`
-`$$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$`
-`$$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$`
-`$$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$$`
+`\(X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&amp;\text{ if }z_{ij\ell}=1, \ell&gt;p_s\end{cases}\)`
 
+`\(Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell\)`
 
+`\(z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})\)`
+
+`\(\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)\)`
+
+`\(\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)\)`
+
+---
+# Bayesian model averaging
+`\(\mathcal{M} = \{1, 2, \dots, k\}\)`, enumerated possible models for cell probabilities for which the conditional independence relationships can be represented by an undirected, chordal graph  
+
+`\(M \sim \text{Uniform}(1, \dots, k)\)` for `\(M \in \mathcal{M}\)`  
+
+`\(\boldsymbol q \sim \text{Multinomial}(n, \boldsymbol \theta)\)`, cell counts 
+
+`\(\boldsymbol \theta \sim \text{Hyper-Dirichlet}(\boldsymbol \alpha)\)` ( `\(\theta_{C} \sim \text{Dirichlet}(\boldsymbol \alpha_C)\)` for each clique in the undirected, chordal graph)  
+
+`\(\boldsymbol \alpha_C\)` found by summing out the appropriate variables from the saturated hyperparameters, which is set to a constant, `\(\delta = 0.5\)`
+
+`\(p(N) \propto N^{-1}\)`  
+
+`\(p(N|\boldsymbol q, M = m) \propto p(\boldsymbol q|N, M = m)p(N)\)`
+
+`\(p(N|\boldsymbol q) = \sum\limits_{m}  p(\boldsymbol q|N, M = m)p(N)p(m)/p(\boldsymbol q)\)`
 
 ---
 # Bayesian nonparametric latent class model
 
-`$$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j},$$`
-`$$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$$`
-`$$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$$`
-`$$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$$`
-`$$p(N) \propto \frac{1}{N}$$`
+`\(f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j}\)`
+
+`\((\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)\)`
+
+`\(\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)\)`
+
+`\(\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)\)`
+
+`\(p(N) \propto \frac{1}{N}\)`
 
 ---
 # Trace plots

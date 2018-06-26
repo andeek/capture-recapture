@@ -1,8 +1,8 @@
 ---
 title: "Population Sized Record Linkage"
 subtitle: "<http://bit.ly/isba-2018>"
-author: "Andee Kaplan"
-date: "ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>"
+author: "Andee Kaplan<br/><br/><small>Duke University</small>"
+date: "<small>Joint work with Rebecca C. Steorts</small>"
 output: 
   xaringan::moon_reader:
     css: ["default", "default-fonts", "style.css"]
@@ -511,16 +511,27 @@ diff_df <- truth_diff %>%
   bind_rows(mpmms_diff) %>%
   bind_rows(bayes_diff)
 
+# diff_df %>% ungroup() %>%
+#   mutate(multi_db = factor(num_include > 1, labels = c("Singletons", "One or more db"))) %>%
+#   mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
+#   group_by(multi_db, dist, method, crc_method, iter) %>%
+#   summarise(truth_clust_diff = sum(truth_clust_diff),
+#             mean_diff = mean(mean_diff)) %>%
+#   ggplot() +
+#   geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
+#   geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
+#   facet_grid(dist~multi_db, scales = "free") +
+#   scale_colour_discrete("Record linkage") +
+#   xlab("Number missed in RL") +
+#   ylab(expression(E~group("(", N|X, ")") - 1000))
+
 diff_df %>% ungroup() %>%
-  mutate(multi_db = factor(num_include > 1, labels = c("Singletons", "One or more db"))) %>%
+  mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
   mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
-  group_by(multi_db, dist, method, crc_method, iter) %>%
-  summarise(truth_clust_diff = sum(truth_clust_diff),
-            mean_diff = mean(mean_diff)) %>%
   ggplot() +
   geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
   geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
-  facet_grid(dist~multi_db, scales = "free") +
+  facet_grid(dist~num_include, scales = "free") +
   scale_colour_discrete("Record linkage") +
   xlab("Number missed in RL") +
   ylab(expression(E~group("(", N|X, ")") - 1000))
@@ -587,22 +598,46 @@ $z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})$, distortion indicator
 ---
 # Bayesian hierarchical model for RL
 
-$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases}$$
-$$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$
-$$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$
-$$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$
-$$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$$
+$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases}$
 
+$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$
 
+$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$
+
+$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$
+
+$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$
+
+---
+# Bayesian model averaging
+$\mathcal{M} = \{1, 2, \dots, k\}$, enumerated possible models for cell probabilities for which the conditional independence relationships can be represented by an undirected, chordal graph  
+
+$M \sim \text{Uniform}(1, \dots, k)$ for $M \in \mathcal{M}$  
+
+$\boldsymbol q \sim \text{Multinomial}(n, \boldsymbol \theta)$, cell counts 
+
+$\boldsymbol \theta \sim \text{Hyper-Dirichlet}(\boldsymbol \alpha)$ ( $\theta_{C} \sim \text{Dirichlet}(\boldsymbol \alpha_C)$ for each clique in the undirected, chordal graph)  
+
+$\boldsymbol \alpha_C$ found by summing out the appropriate variables from the saturated hyperparameters, which is set to a constant, $\delta = 0.5$
+
+$p(N) \propto N^{-1}$  
+
+$p(N|\boldsymbol q, M = m) \propto p(\boldsymbol q|N, M = m)p(N)$
+
+$p(N|\boldsymbol q) = \sum\limits_{m}  p(\boldsymbol q|N, M = m)p(N)p(m)/p(\boldsymbol q)$
 
 ---
 # Bayesian nonparametric latent class model
 
-$$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j},$$
-$$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$$
-$$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$$
-$$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$$
-$$p(N) \propto \frac{1}{N}$$
+$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j}$
+
+$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$
+
+$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$
+
+$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$
+
+$p(N) \propto \frac{1}{N}$
 
 ---
 # Trace plots
