@@ -434,6 +434,99 @@ pop_N_summary_stats %>%
   row_spec(which(which_bold %>% filter(dist == 15) %>% .$bold), bold = TRUE)
 ```
 
+---
+# Intuition on performance
+
+```{r performance}
+# load number incorrect
+load("../../results/geco_sim/crc_diag_5dup_5dist.Rdata")
+mpmms_dsn_5 <- mpmms_dsn
+lambda_dsn_5 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_10dist.Rdata")
+mpmms_dsn_10 <- mpmms_dsn
+lambda_dsn_10 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_15dist.Rdata")
+mpmms_dsn_15 <- mpmms_dsn
+lambda_dsn_15 <- lambda_dsn
+
+## make dsn dfs
+mpmms_dsn <- rbind(data.frame(dist = 5, mpmms_dsn_5), 
+                   data.frame(dist = 10, mpmms_dsn_10), 
+                   data.frame(dist = 15, mpmms_dsn_10))
+
+bayes_dsn <- rbind(data.frame(dist = 5, lambda_dsn_5), 
+                    data.frame(dist = 10, lambda_dsn_10), 
+                    data.frame(dist = 15, lambda_dsn_10))
+
+truth_dsn <- mpmms_dsn
+truth_dsn$truth_clust_diff <- 0
+
+## get MSE for N
+## truth
+pop_N %>%
+  filter(method == "Truth") %>%
+  group_by(dist, method, crc_method) %>%
+  summarise(mean_diff = mean(N - 1000)) %>%
+  mutate(iter = 1) -> truth_diff
+
+## add dsn of rl errors
+truth_diff <- truth_diff %>% left_join(truth_dsn)
+
+## mpmms
+pop_N %>%
+  filter(method == "Shared MPMMS") %>%
+  group_by(dist, method, crc_method) %>%
+  summarise(mean_diff = mean(N - 1000)) %>%
+  mutate(iter = 1) -> mpmms_diff
+
+## add dsn of rl errors
+mpmms_diff <- mpmms_diff %>% left_join(mpmms_dsn)
+
+## bayes
+data.frame(dist = 5, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_5_nplcm, 2, function(N) mean(N - 1000))) %>%
+  mutate(iter = 1:n()) %>%
+  bind_rows(data.frame(dist = 5, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_5_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_10_nplcm, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_10_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+    bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_10_nplcm, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_10_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) -> bayes_diff
+
+## add dsn of rl errors
+bayes_diff <- bayes_diff %>% left_join(bayes_dsn)
+
+diff_df <- truth_diff %>%
+  bind_rows(mpmms_diff) %>%
+  bind_rows(bayes_diff)
+
+diff_df %>% ungroup() %>%
+  mutate(multi_db = factor(num_include > 1, labels = c("Singletons", "One or more db"))) %>%
+  mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
+  group_by(multi_db, dist, method, crc_method, iter) %>%
+  summarise(truth_clust_diff = sum(truth_clust_diff),
+            mean_diff = mean(mean_diff)) %>%
+  ggplot() +
+  geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
+  geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
+  facet_grid(dist~multi_db, scales = "free") +
+  scale_colour_discrete("Record linkage") +
+  xlab("Number missed in RL") +
+  ylab(expression(E~group("(", N|X, ")") - 1000))
+
+
+```
 
 ---
 # Challenges

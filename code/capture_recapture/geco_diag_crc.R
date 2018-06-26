@@ -35,7 +35,7 @@ get_diag <- function(clusters, identity_freq) {
     dplyr::mutate(num_include = db1 + db2 + db3 + db4 + db5) %>%
     dplyr::group_by(num_include) %>%
     dplyr::summarise(truth_clust_diff = sum(diff)) %>%
-    dplyr::filter(truth_clust_diff > 0)
+    dplyr::filter(num_include > 0)
 }
 
 ## data & results load ----
