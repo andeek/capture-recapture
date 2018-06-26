@@ -640,12 +640,89 @@ $\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$
 $p(N) \propto \frac{1}{N}$
 
 ---
-# Trace plots
+# Convergence + mixing
+
+```{r, cache = TRUE}
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+num_single_5 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+num_single_10 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+num_single_15 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+data.frame(dist = "5", iter = 1:length(num_single_5), singletons = num_single_5) %>%
+  bind_rows(data.frame(dist = "10", iter = 1:length(num_single_10), singletons = num_single_10)) %>%
+  bind_rows(data.frame(dist = "15", iter = 1:length(num_single_15), singletons = num_single_15)) -> singletons_df
+```
+
+```{r trace-acf, results='hold', out.width='49%'}
+singletons_df %>%
+  ggplot() +
+  geom_line(aes(iter, singletons, colour = dist)) +
+  xlab("Iterations") + ylab("Singletons") + 
+  scale_color_discrete("Distortion Level") +
+  theme(legend.position = "bottom")
+
+m <- ncol(lambda)
+burnin <- 10000
+thinning <- 40
+burnin_thin <- seq_len(m) > burnin & seq_len(m) %% thinning == 0
+
+par(mfrow = c(1, 3))
+plot(acf(num_single_5[burnin_thin], lag.max = 100, plot = FALSE))
+plot(acf(num_single_10[burnin_thin], lag.max = 100, plot = FALSE))
+plot(acf(num_single_15[burnin_thin], lag.max = 100, plot = FALSE))
+```
 
 
 ---
 # Precision and recall
 
+$$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{tp + fp}$$
+
+```{r mpmms-precision-recall, results='asis'}
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- data.frame(dist = 5, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP))
+
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- rbind(prec_rec, data.frame(dist = 10, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- rbind(prec_rec, data.frame(dist = 15, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+
+prec_rec %>%
+  rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
+  kable(format = 'html')
+```
 
 ---
 # References
