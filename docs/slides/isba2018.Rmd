@@ -1,8 +1,8 @@
 ---
 title: "Population Sized Record Linkage"
 subtitle: "<http://bit.ly/isba-2018>"
-author: "Andee Kaplan"
-date: "ISBA 2018 <br/><br/><small>Joint work with Rebecca C. Steorts</small>"
+author: "Andee Kaplan<br/><br/><small>Duke University</small>"
+date: "<small>Joint work with Rebecca C. Steorts</small>"
 output: 
   xaringan::moon_reader:
     css: ["default", "default-fonts", "style.css"]
@@ -15,8 +15,13 @@ library(dplyr)
 library(tidyr)
 library(RefManageR)
 library(dga)
+library(kableExtra)
 
+## chunk options
 opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+
+## plot options
+theme_set(theme_bw(base_family = "serif"))
 
 ## bibliography
 options(htmltools.dir.version = FALSE)
@@ -118,7 +123,7 @@ data("graphs5")
  - For $3$ lists, this corresponds to `r length(graphs3)` models, $4$ lists - `r length(graphs4)` models, $5$ lists - `r length(graphs5)` models
 
 ---
-# Bayesian nonparametric latent class model (NPLCM)
+# Bayesian NP latent class model (NPLCM)
 
 - Proposed by `r Citet(bib, "manrique2016bayesian")` with a package on CRAN (`LCMCR`) `r Citep(bib, "LCMCR")`
 
@@ -152,7 +157,7 @@ data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
 ```
 
 
-```{r, out.height = "500px"}
+```{r, out.height = "450px"}
 knitr::include_graphics("figure/rl_crc.png")
 ```
 
@@ -214,17 +219,337 @@ noisy_dup_db[[1]] %>%
 ---
 # Results
 
+```{r load-results, cache = TRUE}
+## load results ---
+## nplcm
+load("../../results/geco_sim/crc_5dup_5dist.Rdata")
+pop_N <- data.frame(dist = 5, crc_method = "NPLCM", method = "Truth", N = pop_N_truth)
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_5_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_5_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_5_nplcm <- pop_N_bayes
+pop_N_truth_5_nplcm <- pop_N_truth
+pop_N_mpmms_5_nplcm <- pop_N_mpmms
 
+load("../../results/geco_sim/crc_5dup_10dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_10_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_10_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_10_nplcm <- pop_N_bayes
+pop_N_truth_10_nplcm <- pop_N_truth
+pop_N_mpmms_10_nplcm <- pop_N_mpmms
+
+load("../../results/geco_sim/crc_5dup_15dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_15_nplcm <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_15_nplcm <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_15_nplcm <- pop_N_bayes
+pop_N_truth_15_nplcm <- pop_N_truth
+pop_N_mpmms_15_nplcm <- pop_N_mpmms
+
+## bma
+load("../../results/geco_sim/bma_5dup_5dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 5, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_5_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_5_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_5_bma <- pop_N_bayes
+pop_N_truth_5_bma <- pop_N_truth
+pop_N_mpmms_5_bma <- pop_N_mpmms
+
+load("../../results/geco_sim/bma_5dup_10dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 10, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_10_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_10_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_10_bma <- pop_N_bayes
+pop_N_truth_10_bma <- pop_N_truth
+pop_N_mpmms_10_bma <- pop_N_mpmms
+
+load("../../results/geco_sim/bma_5dup_15dist.Rdata")
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "Truth", N = pop_N_truth))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "Shared MPMMS", N = pop_N_mpmms))
+pop_N <- rbind(pop_N, data.frame(dist = 15, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
+min_15_bma <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+max_15_bma <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+pop_N_bayes_15_bma <- pop_N_bayes
+pop_N_truth_15_bma <- pop_N_truth
+pop_N_mpmms_15_bma <- pop_N_mpmms
+
+## make densities
+n_bin <- 5000
+min_tot <- min(min_5_nplcm, min_10_nplcm, min_15_nplcm, min_5_bma, min_10_bma, min_15_bma)
+max_tot <- max(max_5_nplcm, max_10_nplcm, max_15_nplcm, max_5_bma, max_10_bma, max_15_bma)
+
+## truth
+pop_N_density <- rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_5_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 10, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_10_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 15, crc_method = "NPLCM",
+                                  data.frame(density(pop_N_truth_15_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])))
+names(pop_N_density) <- c("dist", "crc_method", "x", "truth")
+pop_N_density$x <- round(pop_N_density$x, 5)
+
+## add mmpms
+rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_5_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_10_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "NPLCM",
+                 data.frame(density(pop_N_mpmms_15_nplcm, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(mpmms = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density, by = c("dist","crc_method", "x")) -> pop_N_density
+
+## add joint posterior
+rbind(data.frame(dist = 5, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_5_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_10_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "NPLCM",
+                 data.frame(density(as.numeric(pop_N_bayes_15_nplcm), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(joint_post = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density, by = c("dist", "crc_method", "x")) -> pop_N_density
+
+##bma
+## truth
+pop_N_density2 <- rbind(data.frame(dist = 5, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_5_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 10, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_10_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+                       data.frame(dist = 15, crc_method = "BMA",
+                                  data.frame(density(pop_N_truth_15_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])))
+names(pop_N_density2) <- c("dist", "crc_method", "x", "truth")
+pop_N_density2$x <- round(pop_N_density2$x, 5)
+
+## add mmpms
+rbind(data.frame(dist = 5, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_5_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_10_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "BMA",
+                 data.frame(density(pop_N_mpmms_15_bma, from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(mpmms = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density2, by = c("dist", "crc_method", "x")) -> pop_N_density2
+
+## add joint posterior
+rbind(data.frame(dist = 5, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_5_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 10, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_10_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")])),
+      data.frame(dist = 15, crc_method = "BMA",
+                 data.frame(density(as.numeric(pop_N_bayes_15_bma), from = min_tot, to = max_tot, n = n_bin)[c("x", "y")]))) %>%
+  rename(joint_post = y) %>% 
+  mutate(x = round(x, 5)) %>%
+  left_join(pop_N_density2, by = c("dist", "crc_method", "x")) -> pop_N_density2
+
+pop_N_density <- rbind(pop_N_density, pop_N_density2)
+```
+
+```{r plot-results}
+pop_N_density %>%
+  gather(method, y, -dist, -x, -crc_method) %>% 
+  ggplot() +
+  geom_line(aes(x, y, colour = method, linetype = crc_method)) +
+  geom_polygon(aes(x, y, fill = method), alpha = .2) +
+  geom_vline(aes(xintercept = 1000), lty = 1) +
+  facet_wrap(~dist) +
+  xlim(c(750, 1500)) +
+  scale_fill_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
+  scale_colour_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
+  scale_linetype_discrete("CRC Method") +
+  xlab("N") + ylab("")
+
+```
+
+---
+# Results (Distortion Level = 5)
+
+```{r results-table-5, results='asis'}
+pop_N %>%
+  group_by(dist, crc_method, method) %>%
+  summarise(mean_N = mean(N), q05_N = quantile(N, probs = 0.025), q95_N = quantile(N, probs = 0.975), MSE = mean((N - 1000)^2)) -> pop_N_summary_stats
+
+
+pop_N_summary_stats %>% 
+  group_by(method, add = TRUE) %>% 
+  transmute(bold = 1000 >= q05_N & 1000 <= q95_N) %>%
+  arrange(dist, method, crc_method) -> which_bold
+  
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 5) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 5) %>% .$bold), bold = TRUE)
+```
+
+---
+# Results (Distortion Level = 10)
+
+```{r results-table-10, results='asis'}
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 10) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 10) %>% .$bold), bold = TRUE)
+```
+
+
+---
+# Results (Distortion Level = 15)
+
+```{r results-table-15, results='asis'}
+
+pop_N_summary_stats %>% 
+  arrange(dist, method, crc_method) %>% 
+  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
+  filter(dist == 15) %>%
+  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
+          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
+  ungroup() %>%
+  select(-q05_N, -q95_N, -dist) %>%
+  kable(format = "html", row.names = FALSE) %>%
+  row_spec(which(which_bold %>% filter(dist == 15) %>% .$bold), bold = TRUE)
+```
+
+---
+# Intuition on performance
+
+```{r performance}
+# load number incorrect
+load("../../results/geco_sim/crc_diag_5dup_5dist.Rdata")
+mpmms_dsn_5 <- mpmms_dsn
+lambda_dsn_5 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_10dist.Rdata")
+mpmms_dsn_10 <- mpmms_dsn
+lambda_dsn_10 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_15dist.Rdata")
+mpmms_dsn_15 <- mpmms_dsn
+lambda_dsn_15 <- lambda_dsn
+
+## make dsn dfs
+mpmms_dsn <- rbind(data.frame(dist = 5, mpmms_dsn_5), 
+                   data.frame(dist = 10, mpmms_dsn_10), 
+                   data.frame(dist = 15, mpmms_dsn_10))
+
+bayes_dsn <- rbind(data.frame(dist = 5, lambda_dsn_5), 
+                    data.frame(dist = 10, lambda_dsn_10), 
+                    data.frame(dist = 15, lambda_dsn_10))
+
+truth_dsn <- mpmms_dsn
+truth_dsn$truth_clust_diff <- 0
+
+## get MSE for N
+## truth
+pop_N %>%
+  filter(method == "Truth") %>%
+  group_by(dist, method, crc_method) %>%
+  summarise(mean_diff = mean(N - 1000)) %>%
+  mutate(iter = 1) -> truth_diff
+
+## add dsn of rl errors
+truth_diff <- truth_diff %>% left_join(truth_dsn)
+
+## mpmms
+pop_N %>%
+  filter(method == "Shared MPMMS") %>%
+  group_by(dist, method, crc_method) %>%
+  summarise(mean_diff = mean(N - 1000)) %>%
+  mutate(iter = 1) -> mpmms_diff
+
+## add dsn of rl errors
+mpmms_diff <- mpmms_diff %>% left_join(mpmms_dsn)
+
+## bayes
+data.frame(dist = 5, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_5_nplcm, 2, function(N) mean(N - 1000))) %>%
+  mutate(iter = 1:n()) %>%
+  bind_rows(data.frame(dist = 5, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_5_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_10_nplcm, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_10_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+    bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(pop_N_bayes_10_nplcm, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "BMA", 
+           mean_diff = apply(pop_N_bayes_10_bma, 2, function(N) mean(N - 1000))) %>%
+             mutate(iter = 1:n())) -> bayes_diff
+
+## add dsn of rl errors
+bayes_diff <- bayes_diff %>% left_join(bayes_dsn)
+
+diff_df <- truth_diff %>%
+  bind_rows(mpmms_diff) %>%
+  bind_rows(bayes_diff)
+
+# diff_df %>% ungroup() %>%
+#   mutate(multi_db = factor(num_include > 1, labels = c("Singletons", "One or more db"))) %>%
+#   mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
+#   group_by(multi_db, dist, method, crc_method, iter) %>%
+#   summarise(truth_clust_diff = sum(truth_clust_diff),
+#             mean_diff = mean(mean_diff)) %>%
+#   ggplot() +
+#   geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
+#   geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
+#   facet_grid(dist~multi_db, scales = "free") +
+#   scale_colour_discrete("Record linkage") +
+#   xlab("Number missed in RL") +
+#   ylab(expression(E~group("(", N|X, ")") - 1000))
+
+diff_df %>% ungroup() %>%
+  mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
+  mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
+  ggplot() +
+  geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
+  geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
+  facet_grid(dist~num_include, scales = "free") +
+  scale_colour_discrete("Record linkage") +
+  xlab("Number missed in RL") +
+  ylab(expression(E~group("(", N|X, ")") - 1000))
+
+
+```
 
 ---
 # Challenges
 
 
-- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**. Explore how to propogate the error approximately.
+- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**, but using the shared MPMMS does not work very well. 
 
-- NPLCM CRC method is for independent lists. How to extend for dependency between lists and in our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). Is very sensitive to errors from RL.
+- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). 
 
-- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. Is less sensitive to errors from RL. [TODO we hope!]
+- BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. 
+
+- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS.
 
 ## To do
 
@@ -273,35 +598,136 @@ $z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})$, distortion indicator
 ---
 # Bayesian hierarchical model for RL
 
-$$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases}$$
-$$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$$
-$$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$$
-$$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$$
-$$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$$
+$X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&\text{ if }z_{ij\ell}=1, \ell>p_s\end{cases}$
 
+$Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell$
 
+$z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})$
+
+$\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)$
+
+$\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)$
+
+---
+# Bayesian model averaging
+$\mathcal{M} = \{1, 2, \dots, k\}$, enumerated possible models for cell probabilities for which the conditional independence relationships can be represented by an undirected, chordal graph  
+
+$M \sim \text{Uniform}(1, \dots, k)$ for $M \in \mathcal{M}$  
+
+$\boldsymbol q \sim \text{Multinomial}(n, \boldsymbol \theta)$, cell counts 
+
+$\boldsymbol \theta \sim \text{Hyper-Dirichlet}(\boldsymbol \alpha)$ ( $\theta_{C} \sim \text{Dirichlet}(\boldsymbol \alpha_C)$ for each clique in the undirected, chordal graph)  
+
+$\boldsymbol \alpha_C$ found by summing out the appropriate variables from the saturated hyperparameters, which is set to a constant, $\delta = 0.5$
+
+$p(N) \propto N^{-1}$  
+
+$p(N|\boldsymbol q, M = m) \propto p(\boldsymbol q|N, M = m)p(N)$
+
+$p(N|\boldsymbol q) = \sum\limits_{m}  p(\boldsymbol q|N, M = m)p(N)p(m)/p(\boldsymbol q)$
 
 ---
 # Bayesian nonparametric latent class model
 
-$$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j},$$
-$$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$$
-$$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$$
-$$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$$
-$$p(N) \propto \frac{1}{N}$$
+$f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j}$
+
+$(\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)$
+
+$\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)$
+
+$\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)$
+
+$p(N) \propto \frac{1}{N}$
 
 ---
-# Trace plots
+# Convergence + mixing
+
+```{r, cache = TRUE}
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+num_single_5 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+num_single_10 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+num_single_15 <- apply(lambda, 2, function(x) sum(table(x) == 1))
+
+data.frame(dist = "5", iter = 1:length(num_single_5), singletons = num_single_5) %>%
+  bind_rows(data.frame(dist = "10", iter = 1:length(num_single_10), singletons = num_single_10)) %>%
+  bind_rows(data.frame(dist = "15", iter = 1:length(num_single_15), singletons = num_single_15)) -> singletons_df
+```
+
+```{r trace-acf, results='hold', out.width='49%'}
+singletons_df %>%
+  ggplot() +
+  geom_line(aes(iter, singletons, colour = dist)) +
+  xlab("Iterations") + ylab("Singletons") + 
+  scale_color_discrete("Distortion Level") +
+  theme(legend.position = "bottom")
+
+m <- ncol(lambda)
+burnin <- 10000
+thinning <- 40
+burnin_thin <- seq_len(m) > burnin & seq_len(m) %% thinning == 0
+
+par(mfrow = c(1, 3))
+plot(acf(num_single_5[burnin_thin], lag.max = 100, plot = FALSE))
+plot(acf(num_single_10[burnin_thin], lag.max = 100, plot = FALSE))
+plot(acf(num_single_15[burnin_thin], lag.max = 100, plot = FALSE))
+```
 
 
 ---
 # Precision and recall
 
+$$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{tp + fp}$$
+
+```{r mpmms-precision-recall, results='asis'}
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+load("../../results/geco_sim/eber_5dup_5dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- data.frame(dist = 5, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP))
+
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+load("../../results/geco_sim/eber_5dup_10dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- rbind(prec_rec, data.frame(dist = 10, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+
+## get the mpmms
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+load("../../results/geco_sim/eber_5dup_15dist.Rdata")
+identity_vec <- do.call(c, identity)
+identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+lambda <- lambda[, burnin_thin]
+mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+    
+## precision and recall
+conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+prec_rec <- rbind(prec_rec, data.frame(dist = 15, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+
+prec_rec %>%
+  rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
+  kable(format = 'html')
+```
 
 ---
 # References
 
-.tiny[
+.small[
 ```{r print_refs, results='asis'}
 PrintBibliography(bib)
 ```
