@@ -80,6 +80,8 @@ class: center, middle, inverse, title-slide
 ---
 # Bayesian hierarchical model
 
+Proposed by &lt;a name=cite-steorts2015entity&gt;&lt;/a&gt;[Steorts (2015)](#bib-steorts2015entity) with a package on CRAN (`blink`) &lt;a name=cite-blink&gt;&lt;/a&gt;([Steorts, 2017](https://CRAN.R-project.org/package=blink))
+
 ![](figure/recordLinkage_graphicalModel.svg)
 
 ---
@@ -486,7 +488,7 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 &lt;img src="isba2018_files/figure-html/performance-1.png" width="672" /&gt;
 
 ---
-# Challenges
+# Takeaways
 
 
 - MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. 
@@ -598,6 +600,9 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 
 `$$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{tp + fp}$$`
 
+#### Shared MPMMS
+
+.small[
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -609,24 +614,58 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8171496 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9909782 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.7748630 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9880180 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.7979640 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.9840657 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.98 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+]
+
+#### U(N)
+
+.small[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Distortion Level &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Precision &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Recall &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.96 ( 0.01 ) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.81 ( 0.01 ) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.96 ( 0.01 ) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.79 ( 0.01 ) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.95 ( 0.01 ) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.79 ( 0.01 ) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
 
 ---
 # References
+
+
 
 .small[
 &lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
@@ -669,6 +708,19 @@ Fienberg](#cite-sadinle2013generalized) (2013). "A generalized
 Fellegi-Sunter framework for multiple record linkage with
 application to homicide record systems". In: _Journal of the
 American Statistical Association_ 108.502, pp. 385-397.
+
+&lt;a name=bib-eber&gt;&lt;/a&gt;[Statistics, A. B. of](#cite-eber) _eber:
+Empirical Bayes Entity Resolution_. R package version 0.1.
+
+&lt;a name=bib-blink&gt;&lt;/a&gt;[Steorts, R.](#cite-blink) (2017). _blink:
+Record Linkage for Empirically Motivated Priors_. R package
+version 0.1.0. URL:
+[https://CRAN.R-project.org/package=blink](https://CRAN.R-project.org/package=blink).
+
+&lt;a name=bib-steorts2015entity&gt;&lt;/a&gt;[Steorts, R.
+C.](#cite-steorts2015entity) (2015). "Entity resolution with
+empirically motivated priors". In: _Bayesian Analysis_ 10.4, pp.
+849-875.
 
 &lt;a name=bib-steorts2016bayesian&gt;&lt;/a&gt;[Steorts, R. C, R. Hall and S.
 E. Fienberg](#cite-steorts2016bayesian) (2016). "A bayesian

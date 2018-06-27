@@ -92,6 +92,8 @@ knitr::include_graphics("figure/rl_latent.png")
 ---
 # Bayesian hierarchical model
 
+Proposed by `r Citet(bib, "steorts2015entity")` with a package on CRAN (`blink`) `r Citep(bib, "blink")`
+
 ![](figure/recordLinkage_graphicalModel.svg)
 
 ---
@@ -533,14 +535,14 @@ diff_df %>% ungroup() %>%
   geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
   facet_grid(dist~num_include, scales = "free") +
   scale_colour_discrete("Record linkage") +
-  xlab("Number missed in RL") +
-  ylab(expression(E~group("(", N|X, ")") - 1000))
+  xlab("Truth - RL Freq") +
+  ylab(expression(E~group("(", N~ "|" ~X, ")") - 1000))
 
 
 ```
 
 ---
-# Challenges
+# Takeaways
 
 
 - MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**, but using the shared MPMMS does not work very well. 
@@ -682,6 +684,9 @@ plot(acf(num_single_15[burnin_thin], lag.max = 100, plot = FALSE))
 
 $$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{tp + fp}$$
 
+#### Shared MPMMS
+
+.small[
 ```{r mpmms-precision-recall, results='asis'}
 ## get the mpmms
 load("../../results/geco_sim/eber_5dup_5dist.Rdata")
@@ -721,11 +726,42 @@ prec_rec <- rbind(prec_rec, data.frame(dist = 15, recall = conf$TP/(conf$TP + co
 
 prec_rec %>%
   rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
-  kable(format = 'html')
+  kable(format = 'html', digits = 2)
 ```
+]
+
+#### U(N)
+
+.small[
+```{r bayes-precision-recall}
+load("../../results/geco_sim/eber_diag_5dup_5dist.Rdata")
+diag <- data.frame(dist = 5, diag_res$eval[burnin_thin, c("recall", "precision")])
+
+load("../../results/geco_sim/eber_diag_5dup_10dist.Rdata")
+diag <- rbind(diag, data.frame(dist = 10, diag_res$eval[burnin_thin, c("recall", "precision")]))
+
+load("../../results/geco_sim/eber_diag_5dup_15dist.Rdata")
+diag <- rbind(diag, data.frame(dist = 15, diag_res$eval[burnin_thin, c("recall", "precision")]))
+
+diag$precision[is.nan(diag$precision)] <- 0
+diag$precision[is.na(diag$precision)] <- 0
+
+diag %>%
+  group_by(dist) %>%
+  summarise_at(vars(recall, precision), funs(mean, sd), na.rm = TRUE) %>%
+  group_by(dist) %>%
+  transmute(precision = paste0(round(precision_mean, 2), " ( ", round(precision_sd, 2), " )"),
+         recall = paste0(round(recall_mean, 2), " ( ", round(recall_sd, 2), " )")) %>%
+  rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
+  kable(format = 'html')
+
+```
+]
 
 ---
 # References
+
+`r NoCite(bib = bib, title = "eber")`
 
 .small[
 ```{r print_refs, results='asis'}
