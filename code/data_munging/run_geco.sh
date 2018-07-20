@@ -1,9 +1,9 @@
 screen -d -m -S rl-5-5 Rscript code/data_munging/geco.R 5 5 1
 screen -d -m -S rl-5-10 Rscript code/data_munging/geco.R 5 10 1
 screen -d -m -S rl-5-15 Rscript code/data_munging/geco.R 5 15 1
+screen -d -m -S rl-5-5 Rscript code/data_munging/geco.R 5 5 2
+screen -d -m -S rl-5-10 Rscript code/data_munging/geco.R 5 10 2
+screen -d -m -S rl-5-15 Rscript code/data_munging/geco.R 5 15 2
 screen -d -m -S rl-5-5 Rscript code/data_munging/geco.R 5 5 3
 screen -d -m -S rl-5-10 Rscript code/data_munging/geco.R 5 10 3
 screen -d -m -S rl-5-15 Rscript code/data_munging/geco.R 5 15 3
-screen -d -m -S rl-5-5 Rscript code/data_munging/geco.R 5 5 5
-screen -d -m -S rl-5-10 Rscript code/data_munging/geco.R 5 10 5
-screen -d -m -S rl-5-15 Rscript code/data_munging/geco.R 5 15 5
