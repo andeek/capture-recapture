@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Population Sized Record Linkage</title>
+    <style type="text/css">code{white-space: pre;}</style>
+    <link rel="stylesheet" href="drposter_files//drposter.css" />
+    <link rel="stylesheet" href="custom.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<div class="slides ">
+
+<header>
+    <h1 class="title">Population Sized Record Linkage</h1>
+    <h2 class="author"><span class="presenter">Andee Kaplan</span> and Rebecca C. Steorts
+<ol class="affiliations">
+<li>
+Department of Statistical Science, Duke University
+</li>
+</ol></h2>
+</header>
+
+<div id="section" class="section level1 col-2" style="grid-row: span 4;">
+<h1></h1>
+<!-- Span the first column for four rows, that way we can capture the usage block, two rows of template examples, and refs/footer information -->
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>Provide an estimate for population size from multiple noisy capture datasets and quantify uncertainty in that estimate using Bayesian methods.</p>
+</div>
+<div id="motivating-example" class="section level2">
+<h2>Motivating example</h2>
+<p><img src="../../resources/figure/nytimes_syria.png" /><!-- --></p>
+<ul>
+<li>“Historically, these numbers matter… because they can have a direct impact on policy, accountability and a global sense of urgency.”<span class="citation"><sup>1</sup></span></li>
+<li>Duplicated information regarding information about who has died from multiple sources (NGOs)</li>
+<li>Messy overlapping datasets with errors</li>
+<li>String data (names) as identifiers</li>
+</ul>
+<p><strong>Goal: </strong> Count the (population of) casualties and <em>quantify the uncertainty</em> in the estimate.</p>
+</div>
+<div id="graphical-record-linkage-rl" class="section level2">
+<h2>Graphical Record Linkage (RL)</h2>
+<div id="section-1" class="section level4 fullwidth">
+<h4></h4>
+<p><em>Record linkage</em> is merging together multiple datasets that have duplicate entries, often in the absence of a unique identifier.</p>
+<p style="text-align:center;">
+<img src="../../resources/figure/rl_latent_wide.png" style="width:75%;" />
+</p>
+</div>
+<div id="bayesian-hierarchical-model" class="section level3">
+<h3>Bayesian Hierarchical Model</h3>
+<p>Latent clustering approach<span class="citation"><sup>2</sup></span> with a package on CRAN (<code>blink</code>)<span class="citation"><sup>3</sup></span></p>
+<p style="text-align:center;">
+<img src="../../resources/figure/recordLinkage_graphicalModel.svg" style="width:60%;" />
+</p>
+</div>
+</div>
+<div id="capture-recapture-methods-crc" class="section level2">
+<h2>Capture-recapture Methods (CRC)</h2>
+<div id="section-2" class="section level4 fullwidth">
+<h4></h4>
+<p><em>Capture-recapture (CRC)</em> is a method used to estimate a closed population’s size through the use of mark-release-recapture.</p>
+<p><img src="../../resources/figure/crc.png" /></p>
+</div>
+<div id="bayesian-model-averaging-bma" class="section level3">
+<h3>Bayesian Model Averaging (BMA)</h3>
+<ul>
+<li>Model averaging approach allows for various types of dependency between lists through the use of decomposable Bayesian graphical models<span class="citation"><sup>4</sup></span> with a package on CRAN (<code>dga</code>)<span class="citation"><sup>5</sup></span></li>
+<li><strong>Likelihood</strong> Bayesian hierarchical log-linear models given model with certain dependency between lists</li>
+<li><strong>Priors</strong> <span class="math inline">\(t\)</span>-distribution for log-linear parameters, <span class="math inline">\(p(N) \propto N^{-1}\)</span></li>
+<li>Models averaged over all decomposable Bayesian graphical models to obtain final posterior distribution</li>
+<li>For <span class="math inline">\(3\)</span> lists, this corresponds to 8 models, <span class="math inline">\(4\)</span> lists - 61 models, <span class="math inline">\(5\)</span> lists - 822 models</li>
+</ul>
+</div>
+<div id="bayesian-np-latent-class-model-nplcm" class="section level3">
+<h3>Bayesian NP Latent Class Model (NPLCM)</h3>
+<ul>
+<li>Assumes independence between lists, used to model heterogeneity in the capture probabilities<span class="citation"><sup>6</sup></span> with a package on CRAN (<code>LCMCR</code>)<span class="citation"><sup>7</sup></span></li>
+<li><strong>Likelihood</strong> Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters</li>
+<li><strong>Priors</strong> Dirichlet process model for strata mixture weights, <span class="math inline">\(\text{Beta}(1,1)\)</span> for stratum-specific capture probabilities</li>
+<li>No need to specify the number of strata</li>
+<li>Can handle large numbers of recapture with moderate sample size</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="section-3" class="section level1 col-2">
+<h1></h1>
+<div id="rl-crc" class="section level2">
+<h2>RL + CRC</h2>
+<p><img src="../../resources/figure/rl_crc_wide.png" /></p>
+</div>
+<div id="simulated-data-example" class="section level2">
+<h2>Simulated Data Example</h2>
+<ul>
+<li>Generated data in 5 lists according to the following stratified capture probabilities</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+Strata
+</th>
+<th style="text-align:right;">
+Proportion
+</th>
+<th style="text-align:right;">
+List 1
+</th>
+<th style="text-align:right;">
+List 2
+</th>
+<th style="text-align:right;">
+List 3
+</th>
+<th style="text-align:right;">
+List 4
+</th>
+<th style="text-align:right;">
+List 5
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.31
+</td>
+<td style="text-align:right;">
+0.17
+</td>
+<td style="text-align:right;">
+0.31
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:right;">
+0.77
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+0.90
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+</tr>
+</tbody>
+</table>
+<div id="section-4" class="section level4 fullwidth">
+<h4></h4>
+<ul>
+<li>Strata are (1) large &amp; hard to capture and (2) small &amp; easy to capture population</li>
+<li>Add additional duplicates within each database at a 5% level</li>
+<li>Distort the duplicates – strings are distorted at three levels: <span class="math inline">\(5\%, 10\%, 15\%\)</span> of characters</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+fname
+</th>
+<th style="text-align:left;">
+lname
+</th>
+<th style="text-align:left;">
+by
+</th>
+<th style="text-align:left;">
+bm
+</th>
+<th style="text-align:left;">
+bd
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+jacobiT
+</td>
+<td style="text-align:left;">
+aqns
+</td>
+<td style="text-align:left;">
+1981
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+jacobLe
+</td>
+<td style="text-align:left;">
+znns
+</td>
+<td style="text-align:left;">
+1981
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+amaya
+</td>
+<td style="text-align:left;">
+mcmellon
+</td>
+<td style="text-align:left;">
+1985
+</td>
+<td style="text-align:left;">
+08
+</td>
+<td style="text-align:left;">
+17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="results-and-performance" class="section level2">
+<h2>Results and Performance</h2>
+<div id="section-5" class="section level4 fullwidth">
+<h4></h4>
+<p><img src="nrc2018_files/figure-html/plot-results-1.png" width="672" /></p>
+<p><img src="nrc2018_files/figure-html/performance-1.png" width="672" /></p>
+</div>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<div id="takeaways" class="section level3">
+<h3>Takeaways</h3>
+<ul>
+<li>Full posterior estimation via MCMC is <strong>computationally expensive</strong>, but using point estimate from RL for CRC poor performance</li>
+<li>NPLCM CRC method is for independent lists; works best for many lists ( <span class="math inline">\(\ge 4\)</span> )</li>
+<li>BMA CRC method does not scale beyond <span class="math inline">\(5\)</span> lists easily because need to precompute all valid dependencies between lists</li>
+<li>Both CRC methods sensitive to errors from RL and become biased</li>
+</ul>
+</div>
+<div id="to-do" class="section level3">
+<h3>To do</h3>
+<ul>
+<li>Much more extensive simulation with different levels of duplication and list inclusion probabilities</li>
+<li>Alternative prior specification for Bayesian RL that prioritizes singletons</li>
+<li>Investigate CRC methods that are robust to misspecifications and incorporating additional information (duplication) from RL</li>
+<li>Do this on <strong>real data</strong>!</li>
+</ul>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-nytimes">
+<p>(1) Specia, M. How Syrian’s Death Toll Is Lost in the Fog of War. <em>The New York Times</em> <strong>2018</strong>.</p>
+</div>
+<div id="ref-steorts2015entity">
+<p>(2) Steorts, R. C. Entity Resolution with Empirically Motivated Priors. <em>Bayesian Analysis</em> <strong>2015</strong>, <em>10</em> (4), 849–875.</p>
+</div>
+<div id="ref-blink">
+<p>(3) Steorts, R. <em>Blink: Record Linkage for Empirically Motivated Priors</em>; 2017.</p>
+</div>
+<div id="ref-madigan1997bayesian">
+<p>(4) Madigan, D.; York, J. C. Bayesian Methods for Estimation of the Size of a Closed Population. <em>Biometrika</em> <strong>1997</strong>, <em>84</em> (1), 19–31.</p>
+</div>
+<div id="ref-dga">
+<p>(5) Johndrow, J.; Lum, K.; Ball, P. <em>Dga: Capture-Recapture Estimation Using Bayesian Model Averaging</em>; 2015.</p>
+</div>
+<div id="ref-manrique2016bayesian">
+<p>(6) Manrique-Vallier, D. Bayesian Population Size Estimation Using Dirichlet Process Mixtures. <em>Biometrics</em> <strong>2016</strong>, <em>72</em> (4), 1246–1254.</p>
+</div>
+<div id="ref-LCMCR">
+<p>(7) Manrique-Vallier, D. <em>LCMCR: Bayesian Non-Parametric Latent-Class Capture-Recapture</em>; 2017.</p>
+</div>
+<div id="ref-eber">
+<p>(8) Australian Bureau of Statistics. <em>Eber: Empirical Bayes Entity Resolution</em>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+  </body>
+</html>

@@ -26,7 +26,7 @@ class: center, middle, inverse, title-slide
 # Motivating example
 
 .pull-left[
-![](figure/nytimes_syria.png)&lt;!-- --&gt;
+![](../resources/figure/nytimes_syria.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -45,7 +45,7 @@ class: center, middle, inverse, title-slide
 ---
 # General terminology
 
-![](figure/overall_process.png)
+![](../resources/figure/overall_process.png)
 
 * *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
@@ -70,26 +70,26 @@ class: center, middle, inverse, title-slide
 
 *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
-&lt;img src="figure/rl_links.png" height="400px" /&gt;
+&lt;img src="../resources/figure/rl_links.png" height="400px" /&gt;
 
 ---
 # Latent clustering approach
 
-&lt;img src="figure/rl_latent.png" height="500px" /&gt;
+&lt;img src="../resources/figure/rl_latent.png" height="500px" /&gt;
 
 ---
 # Bayesian hierarchical model
 
 Proposed by &lt;a name=cite-steorts2015entity&gt;&lt;/a&gt;[Steorts (2015)](#bib-steorts2015entity) with a package on CRAN (`blink`) &lt;a name=cite-blink&gt;&lt;/a&gt;([Steorts, 2017](https://CRAN.R-project.org/package=blink))
 
-![](figure/recordLinkage_graphicalModel.svg)
+![](../resources/figure/recordLinkage_graphicalModel.svg)
 
 ---
 # Capture-recapture
 
 *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
-![](figure/crc.png)
+![](../resources/figure/crc.png)
 
 ---
 # Bayesian model averaging (BMA)
@@ -136,7 +136,7 @@ Proposed by &lt;a name=cite-steorts2015entity&gt;&lt;/a&gt;[Steorts (2015)](#bib
 
 
 
-&lt;img src="figure/rl_crc.png" height="450px" /&gt;
+&lt;img src="../resources/figure/rl_crc.png" height="450px" /&gt;
 
 
 ---
@@ -668,6 +668,9 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 
 
 .tiny[
+&lt;a name=bib-eber&gt;&lt;/a&gt;[Australian Bureau of Statistics](#cite-eber)
+_eber: Empirical Bayes Entity Resolution_. R package version 0.1.
+
 &lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
 Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
 with Application to the Syrian Conflict". In: _arXiv preprint
@@ -708,9 +711,6 @@ Fienberg](#cite-sadinle2013generalized) (2013). "A generalized
 Fellegi-Sunter framework for multiple record linkage with
 application to homicide record systems". In: _Journal of the
 American Statistical Association_ 108.502, pp. 385-397.
-
-&lt;a name=bib-eber&gt;&lt;/a&gt;[Statistics, A. B. of](#cite-eber) _eber:
-Empirical Bayes Entity Resolution_. R package version 0.1.
 
 &lt;a name=bib-blink&gt;&lt;/a&gt;[Steorts, R.](#cite-blink) (2017). _blink:
 Record Linkage for Empirically Motivated Priors_. R package

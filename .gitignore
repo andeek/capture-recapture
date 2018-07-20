@@ -29,6 +29,7 @@ vignettes/*.pdf
 /*_cache/
 /cache/
 docs/slides/*_cache/
+docs/posters/nrc2018/*_cache
 
 # Temporary files created by R markdown
 *.utf8.md

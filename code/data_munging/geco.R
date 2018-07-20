@@ -1,10 +1,11 @@
 ## command line args ---- 
-## within db duplication levels 5; string distortion levels 5, 10, 15
+## within db duplication levels 5; string distortion levels 5, 10, 15; num_dist 1, 3, 5
 # Rscript code/data_munging/jasa_pubs_10yr.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 2) stop("Pass in the dup level and dist level.", call.=FALSE)
+if (length(args) != 3) stop("Pass in the dup level and dist level.", call.=FALSE)
 dup_level <- as.numeric(args[1])/100
 dist_level <- as.numeric(args[2])/100
+num_dist <- as.numeric(args[3])
 
 # 0. libraries ----
 library(dplyr) # general manipulation
@@ -112,12 +113,15 @@ dup_db <- lapply(dup_db, function(db) {
 })
 
 # function to add distortion to a subset of the fields in each db
-## TODO: this is where things can be changed for experimentation
-add_noise <- function(db, idx, col_types) {
+# Only distort some number of fields
+add_noise <- function(db, idx, col_types, num_dist) {
   p <- ncol(db)
   n <- nrow(db)
   
-  for(i in seq_len(p)) {
+  stopifnot(num_dist <= p)
+  idx_dist <- sample(seq_len(p), num_dist)
+  
+  for(i in idx_dist) {
     type <- col_types[i]
     if(type == "integer") {
       # if column in integer, add Normal noise then round to integer
@@ -159,9 +163,9 @@ add_noise <- function(db, idx, col_types) {
 col_types <- c("string", "string", "date")
 noisy_dup_db <- list()
 for(i in seq_len(D)) {
-  noisy_dup_db[[i]] <- add_noise(dup_db[[i]], idx = idx_dup[[i]], col_types = col_types) %>%
+  noisy_dup_db[[i]] <- add_noise(dup_db[[i]], idx = idx_dup[[i]], col_types = col_types, num_dist = num_dist) %>%
     separate(bdate, into = c("by", "bm", "bd"))
 }
 
 save(noisy_dup_db, identity, population, inclusion, record_db,
-     file = paste0("data/geco_sim/geco_", dup_level*100, "dup_", dist_level*100, "dist.Rdata"))
+     file = paste0("data/geco_sim/geco_", dup_level*100, "dup_", dist_level*100, "dist_", num_dist, "num.Rdata"))

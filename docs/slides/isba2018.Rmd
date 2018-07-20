@@ -26,14 +26,14 @@ theme_set(theme_bw(base_family = "serif"))
 ## bibliography
 options(htmltools.dir.version = FALSE)
 BibOptions(check.entries = FALSE, bib.style = "authoryear", style = "markdown", dashed = TRUE)
-bib <- ReadBib("refs.bib", check = FALSE)
+bib <- ReadBib("../resources/refs.bib", check = FALSE)
 ```
 
 # Motivating example
 
 .pull-left[
 ```{r nytimes_image}
-knitr::include_graphics("figure/nytimes_syria.png")
+knitr::include_graphics("../resources/figure/nytimes_syria.png")
 ```
 ]
 
@@ -53,7 +53,7 @@ knitr::include_graphics("figure/nytimes_syria.png")
 ---
 # General terminology
 
-![](figure/overall_process.png)
+![](../resources/figure/overall_process.png)
 
 * *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
@@ -79,14 +79,14 @@ knitr::include_graphics("figure/nytimes_syria.png")
 *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
 
 ```{r, out.height = "400px"}
-knitr::include_graphics("figure/rl_links.png")
+knitr::include_graphics("../resources/figure/rl_links.png")
 ```
 
 ---
 # Latent clustering approach
 
 ```{r, out.height = "500px"}
-knitr::include_graphics("figure/rl_latent.png")
+knitr::include_graphics("../resources/figure/rl_latent.png")
 ```
 
 ---
@@ -94,14 +94,14 @@ knitr::include_graphics("figure/rl_latent.png")
 
 Proposed by `r Citet(bib, "steorts2015entity")` with a package on CRAN (`blink`) `r Citep(bib, "blink")`
 
-![](figure/recordLinkage_graphicalModel.svg)
+![](../resources/figure/recordLinkage_graphicalModel.svg)
 
 ---
 # Capture-recapture
 
 *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
-![](figure/crc.png)
+![](../resources/figure/crc.png)
 
 ---
 # Bayesian model averaging (BMA)
@@ -160,7 +160,7 @@ data.frame(list = c(1, 1, 1, 2, 2, 1)) %>%
 
 
 ```{r, out.height = "450px"}
-knitr::include_graphics("figure/rl_crc.png")
+knitr::include_graphics("../resources/figure/rl_crc.png")
 ```
 
 
