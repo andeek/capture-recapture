@@ -5,13 +5,14 @@ args <- commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
+num_dist <- as.numeric(args[3])
 
 ## libraries ----
 library(eber) # record linkage
 set.seed(1234)
 
 ## data load ----
-load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
+load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
 
 ## data format and params for use with eber ----
 data_all <- as.matrix(do.call(rbind, noisy_dup_db))
