@@ -1,8 +1,8 @@
 ## command line args ---- 
-## duplication levels 5; string distortion levels 5, 10, 15
-# Rscript jasa_eber.R 5 5
+## within db duplication levels 5; string distortion levels 5, 10, 15; num_dist 1, 2, 3
+# Rscript code/data_munging/jasa_pubs_10yr.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 2) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
+if (length(args) != 3) stop("Pass in the dup level and dist level.", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
 num_dist <- as.numeric(args[3])
