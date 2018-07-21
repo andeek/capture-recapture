@@ -1,10 +1,11 @@
 ## command line args ---- 
-## duplication levels 5; string distortion levels 5, 10, 15
+## within db duplication levels 5; string distortion levels 5, 10, 15; num_dist 1, 2, 3
 # Rscript jasa_eber.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 2) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
+if (length(args) != 3) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
+num_dist <- as.numeric(args[3])
 
 
 ## libraries ----
@@ -17,8 +18,8 @@ library(dplyr)
 
 get_diag <- function(dup_level, dist_level, nclust = 10) {
   ## data & results load ----
-  load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
-  load(paste0("results/geco_sim/eber_", dup_level, "dup_", dist_level, "dist.Rdata"))
+  load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
+  load(paste0("results/geco_sim/eber_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
   
   ## construct identity vector & combine data
   data <- do.call(rbind, noisy_dup_db)
@@ -81,7 +82,7 @@ get_diag <- function(dup_level, dist_level, nclust = 10) {
 diag_res <- get_diag(dup_level, dist_level)
 
 ## save results
-save(diag_res, file = paste0("results/geco_sim/eber_diag_", dup_level, "dup_", dist_level, "dist.Rdata"))
+save(diag_res, file = paste0("results/geco_sim/eber_diag_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
 
 
 
