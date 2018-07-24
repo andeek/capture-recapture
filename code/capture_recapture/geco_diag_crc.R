@@ -2,9 +2,10 @@
 ## duplication levels f; string distortion levels 5, 10, 15
 # Rscript jasa_eber.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 2) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
+if (length(args) != 3) stop("Pass in the dup level (5) and dist level (5, 10, 15).", call.=FALSE)
 dup_level <- as.numeric(args[1])
 dist_level <- as.numeric(args[2])
+num_dist <- as.numeric(args[3])
 
 
 ## libraries ----
@@ -39,8 +40,8 @@ get_diag <- function(clusters, identity_freq) {
 }
 
 ## data & results load ----
-load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist.Rdata"))
-load(paste0("results/geco_sim/eber_", dup_level, "dup_", dist_level, "dist.Rdata"))
+load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
+load(paste0("results/geco_sim/eber_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
 
 ## construct identity vector & get dsn
 identity_vec <- do.call(c, identity)
@@ -78,7 +79,7 @@ lambda_dsn <- foreach(i = seq_len(ncol(lambda)), .combine = rbind) %dopar% {
 
 
 ## save results
-save(mpmms_dsn, lambda_dsn, file = paste0("results/geco_sim/crc_diag_", dup_level, "dup_", dist_level, "dist.Rdata"))
+save(mpmms_dsn, lambda_dsn, file = paste0("results/geco_sim/crc_diag_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
 
 
 
