@@ -31,7 +31,7 @@ Department of Statistical Science, Duke University
 </div>
 <div id="motivating-example" class="section level2">
 <h2>Motivating example</h2>
-<p><img src="../../resources/figure/nytimes_syria.png" /><!-- --></p>
+<p><img src="../../resources/figure/nytimes_syria.png" /></p>
 <ul>
 <li>“Historically, these numbers matter… because they can have a direct impact on policy, accountability and a global sense of urgency.”<span class="citation"><sup>1</sup></span></li>
 <li>Duplicated information regarding information about who has died from multiple sources (NGOs)</li>
@@ -62,7 +62,9 @@ Department of Statistical Science, Duke University
 <div id="section-2" class="section level4 fullwidth">
 <h4></h4>
 <p><em>Capture-recapture (CRC)</em> is a method used to estimate a closed population’s size through the use of mark-release-recapture.</p>
-<p><img src="../../resources/figure/crc.png" /></p>
+<p style="text-align:center;">
+<img src="../../resources/figure/crc.png" style="width:75%;" />
+</p>
 </div>
 <div id="bayesian-model-averaging-bma" class="section level3">
 <h3>Bayesian Model Averaging (BMA)</h3>
@@ -202,27 +204,10 @@ bd
 <tbody>
 <tr>
 <td style="text-align:left;">
-jacobiT
+jacobie
 </td>
 <td style="text-align:left;">
-aqns
-</td>
-<td style="text-align:left;">
-1981
-</td>
-<td style="text-align:left;">
-11
-</td>
-<td style="text-align:left;">
-30
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-jacobLe
-</td>
-<td style="text-align:left;">
-znns
+annL
 </td>
 <td style="text-align:left;">
 1981
@@ -231,7 +216,24 @@ znns
 12
 </td>
 <td style="text-align:left;">
-15
+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+jacobie
+</td>
+<td style="text-align:left;">
+annK
+</td>
+<td style="text-align:left;">
+1981
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+17
 </td>
 </tr>
 <tr>
@@ -268,9 +270,9 @@ mcmellon
 <div id="takeaways" class="section level3">
 <h3>Takeaways</h3>
 <ul>
-<li>Full posterior estimation via MCMC is <strong>computationally expensive</strong>, but using point estimate from RL for CRC poor performance</li>
+<li>Full posterior estimation via MCMC is <strong>computationally expensive</strong>, point estimate from RL for CRC, less valid intervals</li>
 <li>NPLCM CRC method is for independent lists; works best for many lists ( <span class="math inline">\(\ge 4\)</span> )</li>
-<li>BMA CRC method does not scale beyond <span class="math inline">\(5\)</span> lists easily because need to precompute all valid dependencies between lists</li>
+<li>BMA CRC method does not scale beyond <span class="math inline">\(5\)</span> lists easily because need to precompute valid dependencies</li>
 <li>Both CRC methods sensitive to errors from RL and become biased</li>
 </ul>
 </div>

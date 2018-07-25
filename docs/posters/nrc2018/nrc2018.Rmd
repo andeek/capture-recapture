@@ -37,9 +37,7 @@ Provide an estimate for population size from multiple noisy capture datasets and
 
 ## Motivating example
 
-```{r nytimes_image}
-knitr::include_graphics("../../resources/figure/nytimes_syria.png")
-```
+![](../../resources/figure/nytimes_syria.png)
 
 - "Historically, these numbers matter... because they can have a direct impact on policy, accountability and a global sense of urgency."[@nytimes]
 - Duplicated information regarding information about who has died from multiple sources (NGOs)
@@ -74,7 +72,10 @@ Latent clustering approach [@steorts2015entity] with a package on CRAN (`blink`)
 
 *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
 
-![](../../resources/figure/crc.png)
+
+<p style="text-align:center;">
+![](../../resources/figure/crc.png){style="width:75%;"} 
+</p>
 
 ### Bayesian Model Averaging (BMA)
 
@@ -107,7 +108,7 @@ data("graphs5")
 ## Simulated Data Example
 
 ```{r load}
-load("../../../data/geco_sim/geco_5dup_5dist.Rdata")
+load("../../../data/geco_sim/geco_5dup_5dist_2num.Rdata")
 ```
 
 - Generated data in `r length(noisy_dup_db)` lists according to the following stratified capture probabilities
@@ -290,6 +291,7 @@ pop_N_density %>%
 
 ```
 
+
 ```{r performance}
 # load number incorrect
 load("../../../results/geco_sim/crc_diag_5dup_5dist.Rdata")
@@ -364,6 +366,7 @@ diff_df <- truth_diff %>%
   bind_rows(mpmms_diff) %>%
   bind_rows(bayes_diff)
 
+
 diff_df %>% ungroup() %>%
   mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
   mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
@@ -382,9 +385,9 @@ diff_df %>% ungroup() %>%
 
 ### Takeaways
 
-- Full posterior estimation via MCMC is **computationally expensive**, but using point estimate from RL for CRC poor performance
+- Full posterior estimation via MCMC is **computationally expensive**, point estimate from RL for CRC, less valid intervals
 - NPLCM CRC method is for independent lists; works best for many lists ( $\ge 4$ ) 
-- BMA CRC method does not scale beyond $5$ lists easily because need to precompute all valid dependencies between lists 
+- BMA CRC method does not scale beyond $5$ lists easily because need to precompute valid dependencies
 - Both CRC methods sensitive to errors from RL and become biased
 
 ### To do
