@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Population Sized Record Linkage</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Andee Kaplan  Duke University" />
+    <link href="jsm2018_files/remark-css/default.css" rel="stylesheet" />
+    <link href="jsm2018_files/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="jsm2018_files/kePrint/kePrint.js"></script>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Population Sized Record Linkage
+## <a href="http://bit.ly/jsm-2018" class="uri">http://bit.ly/jsm-2018</a>
+### Andee Kaplan<br/><br/><small>Duke University</small>
+### <small>Joint work with Rebecca C. Steorts</small>
+
+---
+
+
+
+
+# Motivating example
+
+.pull-left[
+![](../resources/figure/nytimes_syria.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+- Duplicated information regarding information about who has died from multiple sources (NGOs)
+- Messy overlapping datasets with errors
+- String data (names) as identifiers
+]
+
+ &gt;  Historically, these numbers matter... because they can have a direct impact on policy, accountability and a global sense of urgency.
+ 
+ **Goal:** We want to count the (population) of casualties and *quantify the uncertainty* in this estimate.
+
+.footnote[[1] https://www.nytimes.com/2018/04/13/world/middleeast/syria-death-toll.html]
+
+---
+# General terminology
+
+![](../resources/figure/overall_process.png)
+
+* *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
+* A *downstream task* is inference, prediction, or post-linkage analysis on the linked data. 
+  - Examples: regression, clustering, small area estimation, sample size estimation, population size estimation, etc.
+
+* *Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
+
+
+---
+# Proposed work
+
+* Much work has focused on sample size estimation as the downstream task &lt;a name=cite-steorts2016bayesian&gt;&lt;/a&gt;&lt;a name=cite-chen2017unique&gt;&lt;/a&gt;&lt;a name=cite-price2014updated&gt;&lt;/a&gt;&lt;a name=cite-sadinle2013generalized&gt;&lt;/a&gt;([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian); [Chen, Shrivastava, and Steorts, 2017](#bib-chen2017unique); [Price, Gohdes, and Ball, 2014](#bib-price2014updated); [Sadinle and Fienberg, 2013](#bib-sadinle2013generalized))
+  - Some work on population size estimation post-linkage with uncertainty quantification &lt;a name=cite-tancredi2011hierarchical&gt;&lt;/a&gt;&lt;a name=cite-liseo2011bayesian&gt;&lt;/a&gt;([Tancredi and Liseo, 2011](#bib-tancredi2011hierarchical); [Liseo and Tancredi, 2011](#bib-liseo2011bayesian))
+
+* We look at a general fully Bayesian approach, in the context of the downstream task
+
+* Provide framework for record linkage and CRC, where we crucially account for the record linkage and model uncertainty 
+
+---
+# Probabilistic record linkage
+
+*Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+
+&lt;img src="../resources/figure/rl_links.png" height="400px" /&gt;
+
+---
+# Latent clustering approach
+
+&lt;img src="../resources/figure/rl_latent.png" height="500px" /&gt;
+
+---
+# Bayesian hierarchical model
+
+Proposed by &lt;a name=cite-steorts2015entity&gt;&lt;/a&gt;[Steorts (2015)](#bib-steorts2015entity) with a package on CRAN (`blink`) &lt;a name=cite-blink&gt;&lt;/a&gt;([Steorts, 2017](https://CRAN.R-project.org/package=blink))
+
+![](../resources/figure/recordLinkage_graphicalModel.svg)
+
+---
+# Capture-recapture
+
+*Capture-recapture (CRC)* is a method used to estimate a closed population's size through the use of mark-release-recapture.
+
+![](../resources/figure/crc.png)
+
+---
+# Bayesian model averaging (BMA)
+
+
+
+- Method proposed by &lt;a name=cite-madigan1997bayesian&gt;&lt;/a&gt;[Madigan and York (1997)](#bib-madigan1997bayesian) with a package on CRAN (`dga`) &lt;a name=cite-dga&gt;&lt;/a&gt;([Johndrow, Lum, and Ball, 2015](https://CRAN.R-project.org/package=dga))
+
+- Allows for various types of dependency between lists through the use of decomposable Bayesian graphical models
+
+- **Likelihood** Bayesian hierarchical log-linear models given model with certain dependency between lists
+
+- **Priors** `\(t\)`-distribution for log-linear parameters, Jeffreys prior for `\(N\)`, `\(p(N) \propto N^{-1}\)`
+
+- Models averaged over all decomposable Bayesian graphical models to obtain final posterior distribution
+
+ - For `\(3\)` lists, this corresponds to 8 models, `\(4\)` lists - 61 models, `\(5\)` lists - 822 models
+
+---
+# Bayesian NP latent class model (NPLCM)
+
+- Proposed by &lt;a name=cite-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier (2016)](#bib-manrique2016bayesian) with a package on CRAN (`LCMCR`) &lt;a name=cite-LCMCR&gt;&lt;/a&gt;([Manrique-Vallier, 2017](https://CRAN.R-project.org/package=LCMCR))
+
+- Assumes independence between lists, used to model heterogeneity in the capture probabilities
+
+  - i.e. Homogenous strata in the population with different likelihood of being captured, but the same probability within
+  
+
+- **Likelihood** Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters 
+
+- **Priors** Dirichlet process model for strata mixture weights, `\(\text{Beta}(1,1)\)` for stratum-specific capture probabilities
+
+- No need to specify the number of strata
+
+- Can handle large numbers of recapture with moderate sample size
+
+
+
+---
+# Record linkage + CRC
+ 
+
+ 
+
+
+
+&lt;img src="../resources/figure/rl_crc.png" height="450px" /&gt;
+
+
+---
+# Propagating record linkage uncertainty
+
+**Recall Goal: ** We want to count the (population) of casualties and *quantify the uncertainty* in this estimate.
+
+**Challenge: ** How to quantify record linkage uncertainty after the record linkage task in finished and propagate this error into these subsequent analyses?
+
+**One way: **
+
+`$$U(\eta) =: E_{\boldsymbol \lambda \mid \boldsymbol X} [p_C(\eta \mid f(\boldsymbol \lambda))] = \sum_{\boldsymbol \lambda} p_C(\eta \mid f(\boldsymbol \lambda)) p(\boldsymbol \lambda \mid \boldsymbol X) = p(\eta \mid \boldsymbol X)$$`
+`$$\text{Var} (\eta \mid \boldsymbol X) = \text{Var}_{\boldsymbol \lambda \mid \boldsymbol X} [E[\eta \mid \boldsymbol \lambda ]] + E_{\boldsymbol \lambda \mid \boldsymbol X} [\text{Var}[\eta \mid \boldsymbol \lambda ]]$$`
+
+In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must be estimated by Markov chain Monte carlo (MCMC).
+
+
+---
+# Another way
+
+- Estimating `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` through MCMC can be computationally burdensome.
+
+- Could also consider `\(p_C(\eta \mid f(\hat{\boldsymbol \lambda}))\)`, where `\(\hat{\boldsymbol \lambda}\)` is a point estimate for `\(\boldsymbol \lambda | \boldsymbol X\)` given by the shared most probable matching sets ([Steorts, Hall, and Fienberg, 2016](#bib-steorts2016bayesian))
+
+- Upside: Much faster, only need to do MCMC estimation of the CRC for a single linkage value
+
+- Downside: error doesn't propogate through CRC task in an obvious way
+
+---
+# Simulated examples
+
+- Generated data in 5 lists according to the following stratified capture probabilities
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Strata &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Proportion &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; List 5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.94 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.91 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- Strata correspond to (1) a large &amp; hard to capture population and (2) a small &amp; easy to capture population.
+
+- Add additional duplicates within each database at a 5% level
+
+- Distort the duplicates (both between and within). String fields are distorted at three different levels: `\(5\%, 10\%, 15\%\)` of characters
+
+---
+# Simulated data
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; fname &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; lname &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; by &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; bm &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; bd &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; jacobie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; an%s &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; jacobie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; an,s &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; amaya &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; mcmellon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; daniel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; jetter &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 31 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; lachlan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ringland &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1992 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; nicholas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cadman &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; alessandria &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; wheatley &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1995 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tommy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; eglinton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1991 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 09 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ryan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1996 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; blake &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Results
+
+
+
+&lt;img src="jsm2018_files/figure-html/plot-results-1.png" width="672" /&gt;
+
+---
+# Results (Distortion Level = 5)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 963.2185 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2545.980 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (902, 1037) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.9761 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1185.910 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (937, 1072) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 967.7059 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2286.996 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (906, 1044) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1001.5723 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1212.923 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (939, 1076) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.2782 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1170.920 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (935, 1069) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1006.9128 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1075.978 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (949, 1076) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 993.9507 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1445.323 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (925, 1073) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1009.7588 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1218.360 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (949, 1081) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1177.7377 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34601.154 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1082, 1294.02) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1169.9250 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30818.843 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1093, 1264.02) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1056.1154 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 5525.707 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (973, 1164) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1060.3378 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 5352.468 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (987, 1149) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Results (Distortion Level = 10)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.6753 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2742.982 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (897, 1050) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 962.4953 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2858.416 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (897, 1047) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 988.8035 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1275.449 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (929, 1061) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5866 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1501.657 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (925, 1072) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1012.6038 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1194.606 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (955, 1083) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 994.8124 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1419.859 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (928, 1074) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1019.2827 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1559.592 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (957, 1092) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1187.4928 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37286.775 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1107, 1287) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1221.7550 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51279.743 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1141, 1323) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1067.1890 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 6056.244 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (998, 1152) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1081.1352 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8154.196 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1011, 1166) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Results (Distortion Level = 15)
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 966.9919 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2502.729 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (901, 1048.02) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 995.1000 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1210.573 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (934, 1069) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 970.0741 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2401.451 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (903, 1055) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.5334 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1206.024 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (936, 1071) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1021.2431 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2330.846 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (946, 1115) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1013.0058 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1228.768 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (954, 1083) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1020.8356 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2473.230 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (942, 1119) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1023.8069 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1795.556 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (961, 1098) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1240.1097 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60528.635 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1145, 1354) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1261.1180 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70614.090 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; (1173, 1367) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1106.4703 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 13594.030 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (1022, 1209) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 1119.1099 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 16220.239 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (1038, 1215) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Intuition on performance
+
+&lt;img src="jsm2018_files/figure-html/performance-1.png" width="672" /&gt;
+
+---
+# Takeaways
+
+
+- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. 
+
+- NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). 
+
+- BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. 
+
+- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS.
+
+## To do
+
+- Much more extensive simulation with different levels of duplication and list inclusion probabilities.
+
+- Do this on **real data**!
+
+
+
+---
+# Thank you
+
+## Questions?
+
+### Slides - &lt;http://bit.ly/jsm-2018&gt;
+
+### Contact
+
+* Email - &lt;andrea.kaplan@duke.edu&gt;
+* Twitter - &lt;http://twitter.com/andeekaplan&gt;
+* GitHub - &lt;http://github.com/andeek&gt;
+
+---
+# Notation
+
+`\(\boldsymbol X=(X_1,\ldots,X_n)\)`, records comprised of `\(D\)` databases, indexed by `\(i\)`   
+
+`\(i\)`th database has `\(n_i\)` observed records, indexed by `\(j\)`  
+
+Each record corresponds to one of `\(M\)` latent entities, indexed by `\(j'\)`  
+
+Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`, assumed to be categorical or string  
+
+`\(M_\ell\)`, the number of possible categorical values for the `\(\ell\)`th field  
+
+`\(X_{ij\ell}\)`, observed value of the `\(\ell\)`th field for the `\(j\)`th record in the `\(i\)`th database  
+
+`\(Y_{j'\ell}\)`, true value of the `\(\ell\)`th field for the `\(j'\)`th latent entity  
+
+`\(\Lambda_{ij}\)`, latent entity to which the `\(j\)`th record in the `\(i\)`th database corresponds  
+
+`\(\boldsymbol \Lambda = \{\Lambda_{ij}: i = 1, \dots, D, j = 1, \dots, n_i\}\)`   
+
+`\(z_{ij\ell}=I(X_{ij\ell}\ne Y_{\Lambda_{ij}\ell})\)`, distortion indicator  
+
+---
+# Bayesian hierarchical model for RL
+
+`\(X_{ij\ell} \mid \Lambda_{ij},\,Y_{\Lambda_{ij}\ell},\,z_{ij\ell} \stackrel{\text{ind}}{\sim}\begin{cases}\delta(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=0\\F_\ell(Y_{\Lambda_{ij}\ell})&amp;\text{ if }z_{ij\ell}=1, \ell\le p_s\\G_\ell&amp;\text{ if }z_{ij\ell}=1, \ell&gt;p_s\end{cases}\)`
+
+`\(Y_{j'\ell}\stackrel{\text{ind}}{\sim}G_\ell\)`
+
+`\(z_{ij\ell}\mid\beta_{i\ell}\stackrel{\text{ind}}{\sim}\text{Bernoulli}(\beta_{i\ell})\)`
+
+`\(\beta_{i\ell} \mid a,b \stackrel{\text{ind}}{\sim}\text{Beta}(a,b)\)`
+
+`\(\Lambda_{ij} \mid M\stackrel{\text{ind}}{\sim}\text{Uniform}\left(1,\ldots, M\right)\)`
+
+---
+# Bayesian model averaging
+`\(\mathcal{M} = \{1, 2, \dots, k\}\)`, enumerated possible models for cell probabilities for which the conditional independence relationships can be represented by an undirected, chordal graph  
+
+`\(M \sim \text{Uniform}(1, \dots, k)\)` for `\(M \in \mathcal{M}\)`  
+
+`\(\boldsymbol q \sim \text{Multinomial}(n, \boldsymbol \theta)\)`, cell counts 
+
+`\(\boldsymbol \theta \sim \text{Hyper-Dirichlet}(\boldsymbol \alpha)\)` ( `\(\theta_{C} \sim \text{Dirichlet}(\boldsymbol \alpha_C)\)` for each clique in the undirected, chordal graph)  
+
+`\(\boldsymbol \alpha_C\)` found by summing out the appropriate variables from the saturated hyperparameters, which is set to a constant, `\(\delta = 0.5\)`
+
+`\(p(N) \propto N^{-1}\)`  
+
+`\(p(N|\boldsymbol q, M = m) \propto p(\boldsymbol q|N, M = m)p(N)\)`
+
+`\(p(N|\boldsymbol q) = \sum\limits_{m}  p(\boldsymbol q|N, M = m)p(N)p(m)/p(\boldsymbol q)\)`
+
+---
+# Bayesian nonparametric latent class model
+
+`\(f(\boldsymbol q | \boldsymbol \gamma, \boldsymbol \pi) = \sum\limits_{k = 1}^{K^*} \pi_k \prod\limits_{j = 1}^D \gamma_{jk}^{q_j}(1-\gamma{jk})^{1-q_j}\)`
+
+`\((\pi_1, \dots, \pi_{K^*}) \sim \text{SB}_{K^*}(\alpha)\)`
+
+`\(\gamma_{jk} \stackrel{iid}{\sim} \text{Beta}(a_\gamma, b_\gamma)\)`
+
+`\(\alpha \sim \text{Gamma}(a_\alpha, b_\alpha)\)`
+
+`\(p(N) \propto \frac{1}{N}\)`
+
+---
+# Convergence + mixing
+
+
+
+&lt;img src="jsm2018_files/figure-html/trace-acf-1.png" width="49%" /&gt;&lt;img src="jsm2018_files/figure-html/trace-acf-2.png" width="49%" /&gt;
+
+
+---
+# Precision and recall
+
+`$$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{tp + fp}$$`
+
+#### Shared MPMMS
+
+.small[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Distortion Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Recall &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Precision &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+#### U(N)
+
+.small[
+
+]
+
+---
+# References
+
+
+
+.tiny[
+&lt;a name=bib-eber&gt;&lt;/a&gt;[Australian Bureau of Statistics](#cite-eber)
+_eber: Empirical Bayes Entity Resolution_. R package version 0.1.
+
+&lt;a name=bib-chen2017unique&gt;&lt;/a&gt;[Chen, B, A. Shrivastava and R. C.
+Steorts](#cite-chen2017unique) (2017). "Unique Entity Estimation
+with Application to the Syrian Conflict". In: _arXiv preprint
+arXiv:1710.02690_.
+
+&lt;a name=bib-dga&gt;&lt;/a&gt;[Johndrow, J, K. Lum and P. Ball](#cite-dga)
+(2015). _dga: Capture-Recapture Estimation using Bayesian Model
+Averaging_. R package version 1.2. URL:
+[https://CRAN.R-project.org/package=dga](https://CRAN.R-project.org/package=dga).
+
+&lt;a name=bib-liseo2011bayesian&gt;&lt;/a&gt;[Liseo, B. and A.
+Tancredi](#cite-liseo2011bayesian) (2011). "Bayesian estimation of
+population size via linkage of multivariate normal data sets". In:
+_Journal of Official Statistics_ 27.3, p. 491.
+
+&lt;a name=bib-madigan1997bayesian&gt;&lt;/a&gt;[Madigan, D. and J. C.
+York](#cite-madigan1997bayesian) (1997). "Bayesian methods for
+estimation of the size of a closed population". In: _Biometrika_
+84.1, pp. 19-31.
+
+&lt;a name=bib-manrique2016bayesian&gt;&lt;/a&gt;[Manrique-Vallier,
+D.](#cite-manrique2016bayesian) (2016). "Bayesian population size
+estimation using Dirichlet process mixtures". In: _Biometrics_
+72.4, pp. 1246-1254.
+
+&lt;a name=bib-LCMCR&gt;&lt;/a&gt;[Manrique-Vallier, D.](#cite-LCMCR) (2017).
+_LCMCR: Bayesian Non-Parametric Latent-Class Capture-Recapture_. R
+package version 0.4.3. URL:
+[https://CRAN.R-project.org/package=LCMCR](https://CRAN.R-project.org/package=LCMCR).
+
+&lt;a name=bib-price2014updated&gt;&lt;/a&gt;[Price, M, A. Gohdes and P.
+Ball](#cite-price2014updated) (2014). "Updated statistical
+analysis of documentation of killings in the Syrian Arab
+Republic". In: _Human Rights Data Analysis Group, Geneva_.
+
+&lt;a name=bib-sadinle2013generalized&gt;&lt;/a&gt;[Sadinle, M. and S. E.
+Fienberg](#cite-sadinle2013generalized) (2013). "A generalized
+Fellegi-Sunter framework for multiple record linkage with
+application to homicide record systems". In: _Journal of the
+American Statistical Association_ 108.502, pp. 385-397.
+
+&lt;a name=bib-blink&gt;&lt;/a&gt;[Steorts, R.](#cite-blink) (2017). _blink:
+Record Linkage for Empirically Motivated Priors_. R package
+version 0.1.0. URL:
+[https://CRAN.R-project.org/package=blink](https://CRAN.R-project.org/package=blink).
+
+&lt;a name=bib-steorts2015entity&gt;&lt;/a&gt;[Steorts, R.
+C.](#cite-steorts2015entity) (2015). "Entity resolution with
+empirically motivated priors". In: _Bayesian Analysis_ 10.4, pp.
+849-875.
+
+&lt;a name=bib-steorts2016bayesian&gt;&lt;/a&gt;[Steorts, R. C, R. Hall and S.
+E. Fienberg](#cite-steorts2016bayesian) (2016). "A bayesian
+approach to graphical record linkage and deduplication". In:
+_Journal of the American Statistical Association_ 111.516, pp.
+1660-1672.
+
+&lt;a name=bib-tancredi2011hierarchical&gt;&lt;/a&gt;[Tancredi, A. and B.
+Liseo](#cite-tancredi2011hierarchical) (2011). "A hierarchical
+Bayesian approach to record linkage and population size problems".
+In: _The Annals of Applied Statistics_ 5.2B, pp. 1553-1585.
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
