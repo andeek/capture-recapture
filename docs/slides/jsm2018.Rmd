@@ -694,9 +694,9 @@ diff_df %>% ungroup() %>%
   mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
   mutate(num = factor(num, labels = paste0("Num. distorted = ", unique(num)), levels = sort(as.numeric(unique(num))))) %>% 
   ggplot() +
-  geom_point(aes(truth_clust_diff/truth*100, mean_diff, colour = crc_method, shape = method), alpha = .4) +
-  geom_density_2d(aes(truth_clust_diff/truth*100, mean_diff), colour = "black", data = diff_df %>% ungroup() %>% filter(num_include == 1 & crc_method == "BMA") %>% mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>% mutate(num = factor(num, labels = paste0("Num. distorted = ", unique(num)), levels = sort(as.numeric(unique(num)))))) +
-  geom_density_2d(aes(truth_clust_diff/truth*100, mean_diff), colour = "grey30", data = diff_df %>% ungroup() %>% filter(num_include == 1 & crc_method == "NPLCM") %>% mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
+  geom_point(aes(truth_clust_diff/truth*100, mean_diff, colour = crc_method, shape = method), alpha = .2) +
+  geom_density_2d(aes(truth_clust_diff/truth*100, mean_diff), colour = "#F8766D", data = diff_df %>% ungroup() %>% filter(num_include == 1 & crc_method == "BMA") %>% mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>% mutate(num = factor(num, labels = paste0("Num. distorted = ", unique(num)), levels = sort(as.numeric(unique(num)))))) +
+  geom_density_2d(aes(truth_clust_diff/truth*100, mean_diff), colour = "#00BFC4", data = diff_df %>% ungroup() %>% filter(num_include == 1 & crc_method == "NPLCM") %>% mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
   mutate(num = factor(num, labels = paste0("Num. distorted = ", unique(num)), levels = sort(as.numeric(unique(num)))))) +
   facet_grid(num~dist, scales = "free_x") +
   scale_colour_discrete("Record linkage") +
