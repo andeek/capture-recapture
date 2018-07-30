@@ -6,7 +6,6 @@
     <meta name="author" content="Andee Kaplan  Duke University" />
     <link href="jsm2018_files/remark-css/default.css" rel="stylesheet" />
     <link href="jsm2018_files/remark-css/default-fonts.css" rel="stylesheet" />
-    <script src="jsm2018_files/kePrint/kePrint.js"></script>
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
   <body>
@@ -32,7 +31,7 @@ class: center, middle, inverse, title-slide
 .pull-right[
 
 - Duplicated information regarding information about who has died from multiple sources (NGOs)
-- Messy overlapping datasets with errors
+- Messy overlapping data sets with errors
 - String data (names) as identifiers
 ]
 
@@ -47,7 +46,7 @@ class: center, middle, inverse, title-slide
 
 ![](../resources/figure/overall_process.png)
 
-* *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+* *Record linkage* is merging together multiple data sets that have duplicate entries (often in the absence of a unique identifier). 
 
 * A *downstream task* is inference, prediction, or post-linkage analysis on the linked data. 
   - Examples: regression, clustering, small area estimation, sample size estimation, population size estimation, etc.
@@ -68,7 +67,7 @@ class: center, middle, inverse, title-slide
 ---
 # Probabilistic record linkage
 
-*Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+*Record linkage* is merging together multiple data sets that have duplicate entries (often in the absence of a unique identifier). 
 
 &lt;img src="../resources/figure/rl_links.png" height="400px" /&gt;
 
@@ -115,7 +114,7 @@ Proposed by &lt;a name=cite-steorts2015entity&gt;&lt;/a&gt;[Steorts (2015)](#bib
 
 - Assumes independence between lists, used to model heterogeneity in the capture probabilities
 
-  - i.e. Homogenous strata in the population with different likelihood of being captured, but the same probability within
+  - i.e. Homogeneous strata in the population with different likelihood of being captured, but the same probability within
   
 
 - **Likelihood** Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters 
@@ -163,7 +162,7 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - Upside: Much faster, only need to do MCMC estimation of the CRC for a single linkage value
 
-- Downside: error doesn't propogate through CRC task in an obvious way
+- Downside: error doesn't propagate through CRC task in an obvious way
 
 ---
 # Simulated examples
@@ -208,7 +207,9 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 - Add additional duplicates within each database at a 5% level
 
-- Distort the duplicates (both between and within). String fields are distorted at three different levels: `\(5\%, 10\%, 15\%\)` of characters
+- Distort the duplicates (both between and within) at 1, 2, or 3 fields 
+
+- String fields are distorted at three different levels: `\(5\%, 10\%, 15\%\)` of characters
 
 ---
 # Simulated data
@@ -218,81 +219,59 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
   &lt;tr&gt;
    &lt;th style="text-align:left;"&gt; fname &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; lname &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; by &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; bm &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; bd &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; bdate &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; jacobie &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; an%s &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12-14-1981 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; jacobie &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; an,s &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1981 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 12-14-1981 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; amaya &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; mcmellon &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08-17-1985 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; daniel &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; jetter &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05-31-1983 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; lachlan &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; ringland &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1992 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 08 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 08-05-1992 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; nicholas &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; cadman &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1985 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 03 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 03-05-1985 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; alessandria &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; wheatley &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1995 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 05-07-1995 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; tommy &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; eglinton &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1991 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 09 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 07 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 09-07-1991 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; ryan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1996 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04-19-1996 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; tristan &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; blake &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1983 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 04-21-1983 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -304,491 +283,6 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 
 &lt;img src="jsm2018_files/figure-html/plot-results-1.png" width="672" /&gt;
 
----
-# Results (Distortion Level = 5)
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 963.2185 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2545.980 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (902, 1037) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.9761 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1185.910 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (937, 1072) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 967.7059 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2286.996 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (906, 1044) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1001.5723 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1212.923 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (939, 1076) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.2782 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1170.920 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (935, 1069) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1006.9128 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1075.978 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (949, 1076) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 993.9507 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1445.323 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (925, 1073) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1009.7588 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1218.360 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (949, 1081) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1177.7377 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 34601.154 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1082, 1294.02) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1169.9250 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 30818.843 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1093, 1264.02) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1056.1154 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 5525.707 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (973, 1164) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1060.3378 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 5352.468 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (987, 1149) &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
----
-# Results (Distortion Level = 10)
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.6753 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2742.982 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (897, 1050) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 962.4953 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2858.416 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (897, 1047) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 988.8035 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1275.449 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (929, 1061) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5866 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1501.657 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (925, 1072) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1012.6038 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1194.606 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (955, 1083) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 994.8124 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1419.859 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (928, 1074) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1019.2827 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1559.592 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (957, 1092) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1187.4928 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 37286.775 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1107, 1287) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1221.7550 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 51279.743 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1141, 1323) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1067.1890 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 6056.244 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (998, 1152) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1081.1352 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8154.196 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1011, 1166) &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
----
-# Results (Distortion Level = 15)
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; num &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; CRC method &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Record Linkage &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; MSE &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; 95% CI &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 966.9919 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2502.729 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (901, 1048.02) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 995.1000 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1210.573 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (934, 1069) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 970.0741 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2401.451 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (903, 1055) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 997.5334 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1206.024 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (936, 1071) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1021.2431 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2330.846 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (946, 1115) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1013.0058 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1228.768 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (954, 1083) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1020.8356 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2473.230 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (942, 1119) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1023.8069 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1795.556 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (961, 1098) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1240.1097 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 60528.635 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1145, 1354) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Shared MPMMS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1261.1180 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 70614.090 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; (1173, 1367) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 964.8424 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 2752.509 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (898, 1052) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; Truth &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 990.5118 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1253.015 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (930, 1063) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; BMA &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1106.4703 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 13594.030 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (1022, 1209) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; NPLCM &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; U(N) &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 1119.1099 &lt;/td&gt;
-   &lt;td style="text-align:right;font-weight: bold;"&gt; 16220.239 &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;"&gt; (1038, 1215) &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 
 ---
 # Intuition on performance
@@ -799,17 +293,19 @@ In practice, `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` must b
 # Takeaways
 
 
-- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS does not work very well. 
+- MCMC for estimation of `\(U(\eta)\)` and `\(\text{Var} (\eta \mid \boldsymbol X)\)` is **computationally expensive**, but using the shared MPMMS no error propagation. 
 
 - NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( `\(\ge 4\)` ). 
 
 - BMA CRC method does not scale beyond `\(5\)` lists easily because of the need to precompute all valid dependency structures between lists. 
 
-- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS.
+- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS (and errors from singletons).
 
 ## To do
 
-- Much more extensive simulation with different levels of duplication and list inclusion probabilities.
+- More simulation with levels of duplication and list inclusion probabilities.
+
+- More robust CRC methods.
 
 - Do this on **real data**!
 
@@ -922,6 +418,60 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Distortion Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Recall &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Precision &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.93 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.93 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.93 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Distortion Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Recall &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Precision &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.99 &lt;/td&gt;
   &lt;/tr&gt;
@@ -938,8 +488,6 @@ Each record or latent entity has values on `\(p\)` fields, indexed by `\(\ell\)`
 &lt;/tbody&gt;
 &lt;/table&gt;
 ]
-
-#### U(N)
 
 .small[
 

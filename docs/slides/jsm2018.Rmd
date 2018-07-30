@@ -40,7 +40,7 @@ knitr::include_graphics("../resources/figure/nytimes_syria.png")
 .pull-right[
 
 - Duplicated information regarding information about who has died from multiple sources (NGOs)
-- Messy overlapping datasets with errors
+- Messy overlapping data sets with errors
 - String data (names) as identifiers
 ]
 
@@ -55,7 +55,7 @@ knitr::include_graphics("../resources/figure/nytimes_syria.png")
 
 ![](../resources/figure/overall_process.png)
 
-* *Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+* *Record linkage* is merging together multiple data sets that have duplicate entries (often in the absence of a unique identifier). 
 
 * A *downstream task* is inference, prediction, or post-linkage analysis on the linked data. 
   - Examples: regression, clustering, small area estimation, sample size estimation, population size estimation, etc.
@@ -76,7 +76,7 @@ knitr::include_graphics("../resources/figure/nytimes_syria.png")
 ---
 # Probabilistic record linkage
 
-*Record linkage* is merging together multiple datasets that have duplicate entries (often in the absence of a unique identifier). 
+*Record linkage* is merging together multiple data sets that have duplicate entries (often in the absence of a unique identifier). 
 
 ```{r, out.height = "400px"}
 knitr::include_graphics("../resources/figure/rl_links.png")
@@ -131,7 +131,7 @@ data("graphs5")
 
 - Assumes independence between lists, used to model heterogeneity in the capture probabilities
 
-  - i.e. Homogenous strata in the population with different likelihood of being captured, but the same probability within
+  - i.e. Homogeneous strata in the population with different likelihood of being captured, but the same probability within
   
 
 - **Likelihood** Multinomial multiple-capture estimation with finite mixture models for probability of capture where each component in the mixture has stratum-specific parameters 
@@ -188,7 +188,7 @@ In practice, $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ must be estima
 
 - Upside: Much faster, only need to do MCMC estimation of the CRC for a single linkage value
 
-- Downside: error doesn't propogate through CRC task in an obvious way
+- Downside: error doesn't propagate through CRC task in an obvious way
 
 ---
 # Simulated examples
@@ -207,7 +207,9 @@ inclusion %>%
 
 - Add additional duplicates within each database at a 5% level
 
-- Distort the duplicates (both between and within). String fields are distorted at three different levels: $5\%, 10\%, 15\%$ of characters
+- Distort the duplicates (both between and within) at 1, 2, or 3 fields 
+
+- String fields are distorted at three different levels: $5\%, 10\%, 15\%$ of characters
 
 ---
 # Simulated data
@@ -215,6 +217,7 @@ inclusion %>%
 ```{r, results = 'asis'}
 noisy_dup_db[[1]] %>%
   tail(10) %>%
+  unite(bdate, bm, bd, by, sep="-") %>%
   kable(format = "html", row.names = FALSE)
 ```
 
@@ -229,6 +232,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 1, crc_method = "NPLCM"
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 1, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+crc_bayes_5_1 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_5dist_2num.Rdata")
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -236,6 +240,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "NPLCM"
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
+crc_bayes_5_2 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_5dist_3num.Rdata")
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -243,7 +248,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "NPLCM"
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
-crc_bayes_5 <- pop_N_bayes
+crc_bayes_5_3 <- pop_N_bayes
 
 # ----
 
@@ -253,6 +258,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 1, crc_method = "NPL
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 1, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+crc_bayes_10_1 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_10dist_2num.Rdata")
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -260,6 +266,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "NPL
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
+crc_bayes_10_2 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_10dist_3num.Rdata")
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -267,7 +274,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "NPL
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
-crc_bayes_10 <- pop_N_bayes
+crc_bayes_10_3 <- pop_N_bayes
 
 # ----
 
@@ -277,6 +284,7 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 1, crc_method = "NPL
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 1, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+crc_bayes_15_1 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_15dist_2num.Rdata")
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -284,6 +292,7 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "NPL
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
+crc_bayes_15_2 <- pop_N_bayes
 
 load("../../results/geco_sim/crc_5dup_15dist_3num.Rdata")
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "NPLCM", method = "Truth", N = pop_N_truth))
@@ -291,7 +300,7 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "NPL
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "NPLCM", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(min_tot, min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
 max_tot <- max(max_tot, max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes)))
-crc_bayes_15 <- pop_N_bayes
+crc_bayes_15_3 <- pop_N_bayes
 
 ## bma ----
 
@@ -301,6 +310,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 1, crc_method = "BMA", 
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 1, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_5_1 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_5dist_2num.Rdata")
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -308,6 +318,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "BMA", 
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 2, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_5_2 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_5dist_3num.Rdata")
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -315,7 +326,7 @@ pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "BMA", 
 pop_N_5 <- bind_rows(pop_N_5, data.frame(dist = 5, num = 3, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
-bma_bayes_5 <- pop_N_bayes
+bma_bayes_5_3 <- pop_N_bayes
 
 # ----
 
@@ -325,6 +336,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 1, crc_method = "BMA
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 1, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_10_1 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_10dist_2num.Rdata")
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -332,6 +344,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "BMA
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 2, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_10_2 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_10dist_3num.Rdata")
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -339,7 +352,7 @@ pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "BMA
 pop_N_10 <- bind_rows(pop_N_10, data.frame(dist = 10, num = 3, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
-bma_bayes_10 <- pop_N_bayes
+bma_bayes_10_3 <- pop_N_bayes
 
 # ----
 
@@ -349,6 +362,7 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 1, crc_method = "BMA
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 1, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_15_1 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_15dist_2num.Rdata")
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -356,6 +370,7 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "BMA
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 2, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
+bma_bayes_15_2 <- pop_N_bayes
 
 load("../../results/geco_sim/bma_5dup_15dist_3num.Rdata")
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "BMA", method = "Truth", N = pop_N_truth))
@@ -363,96 +378,97 @@ pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "BMA
 pop_N_15 <- bind_rows(pop_N_15, data.frame(dist = 15, num = 3, crc_method = "BMA", method = "U(N)", N = as.numeric(pop_N_bayes)))
 min_tot <- min(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
 max_tot <- max(c(pop_N_truth, pop_N_mpmms, pop_N_bayes))
-bma_bayes_15 <- pop_N_bayes
+bma_bayes_15_3 <- pop_N_bayes
 
 
 ## make densities ----
 n_bin <- 5000
 
 ## truth
-make_density_df <- function(dist, num, crc, method, pop_N, min, max, n_bin) {
-  N <- pop_N %>% filter(crc_method == crc & num == num & method == method) %>% .$N
-  df <- data.frame(dist = dist, num = num, crc_method = crc, data.frame(density(N, from = min, to = max, n = n_bin)[c("x", "y")]))
+make_density_df <- function(dist, n, crc, method, N_df, x_min, x_max, n_bin) {
+  N <- N_df[N_df$crc_method == crc & N_df$num == n & N_df$method == method, "N"]
+  dens <- data.frame(density(N, from = x_min, to = x_max, n = n_bin)[c("x", "y")])
+  df <- data.frame(dist = dist, num = n, crc_method = crc, dens)
   return(df)
 }
-rbind(make_density_df(5, 1, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin)) -> pop_N_density
+bind_rows(make_density_df(5, 1, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "NPLCM", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "NPLCM", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "NPLCM", "Truth", pop_N_15, min_tot, max_tot, n_bin)) -> pop_N_density
 names(pop_N_density) <- c("dist", "num", "crc_method", "x", "truth")
 pop_N_density$x <- round(pop_N_density$x, 5)
 
 ## add mmpms
-rbind(make_density_df(5, 1, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin)) %>%
+bind_rows(make_density_df(5, 1, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "NPLCM", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "NPLCM", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "NPLCM", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin)) %>%
   rename(mpmms = y) %>% 
   mutate(x = round(x, 5)) %>%
   left_join(pop_N_density, by = c("dist", "num", "crc_method", "x")) -> pop_N_density
 
 ## add joint posterior
-rbind(make_density_df(5, 1, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin)) %>%
+bind_rows(make_density_df(5, 1, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "NPLCM", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "NPLCM", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "NPLCM", "U(N)", pop_N_15, min_tot, max_tot, n_bin)) %>%
   rename(joint_post = y) %>% 
   mutate(x = round(x, 5)) %>%
   left_join(pop_N_density, by = c("dist", "num", "crc_method", "x")) -> pop_N_density
 
 ##bma
 ## truth
-rbind(make_density_df(5, 1, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin)) -> pop_N_density2
+bind_rows(make_density_df(5, 1, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "BMA", "Truth", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "BMA", "Truth", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "BMA", "Truth", pop_N_15, min_tot, max_tot, n_bin)) -> pop_N_density2
 names(pop_N_density2) <- c("dist", "num", "crc_method", "x", "truth")
 pop_N_density2$x <- round(pop_N_density2$x, 5)
 
 ## add mmpms
-rbind(make_density_df(5, 1, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin)) %>%
+bind_rows(make_density_df(5, 1, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "BMA", "Shared MPMMS", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "BMA", "Shared MPMMS", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "BMA", "Shared MPMMS", pop_N_15, min_tot, max_tot, n_bin)) %>%
   rename(mpmms = y) %>% 
   mutate(x = round(x, 5)) %>%
   left_join(pop_N_density2, by = c("dist", "num", "crc_method", "x")) -> pop_N_density2
 
 ## add joint posterior
-rbind(make_density_df(5, 1, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 2, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(5, 3, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
-      make_density_df(10, 1, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 2, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(10, 3, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
-      make_density_df(15, 1, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 2, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
-      make_density_df(15, 3, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin)) %>%
+bind_rows(make_density_df(5, 1, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 2, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(5, 3, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
+          make_density_df(10, 1, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 2, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(10, 3, "BMA", "U(N)", pop_N_10, min_tot, max_tot, n_bin),
+          make_density_df(15, 1, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 2, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin),
+          make_density_df(15, 3, "BMA", "U(N)", pop_N_15, min_tot, max_tot, n_bin)) %>%
   rename(joint_post = y) %>% 
   mutate(x = round(x, 5)) %>%
   left_join(pop_N_density2, by = c("dist", "num", "crc_method", "x")) -> pop_N_density2
@@ -460,132 +476,134 @@ rbind(make_density_df(5, 1, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin),
 pop_N_density <- rbind(pop_N_density, pop_N_density2)
 ```
 
-```{r plot-results}
+```{r plot-results, fig.height=5.5}
 pop_N_density %>%
-  gather(method, y, -dist, -num, -x, -crc_method) %>% 
-  mutate(dist = paste0("Dist. level = ", dist),
+  gather(method, y, -dist, -num, -x, -crc_method) -> gathered_density
+
+gathered_density %>%
+  filter(num == 1) %>%
+  mutate(dist = factor(dist, labels = paste0("Dist. level = ", unique(dist)), levels = sort(unique(dist))),
          num = paste0("Num. fields = ", num)) %>%
   ggplot() +
   geom_line(aes(x, y, colour = method, linetype = crc_method)) +
-  geom_polygon(aes(x, y, fill = method), alpha = .2) +
+  #geom_polygon(aes(x, y, fill = method), alpha = .2) +
   geom_vline(aes(xintercept = 1000), lty = 1) +
   facet_grid(num~dist, scales = "free") +
-  #xlim(c(750, 1500)) +
+  xlim(c(850, 1150)) +
+  xlab("") + ylab("") +
+  theme(legend.position = "none") -> p1
+
+gathered_density %>% 
+  filter(num == 2) %>%
+  mutate(dist = factor(dist, labels = paste0("Dist. level = ", unique(dist)), levels = sort(unique(dist))),
+         num = paste0("Num. fields = ", num)) %>%
+  ggplot() +
+  geom_line(aes(x, y, colour = method, linetype = crc_method)) +
+  #geom_polygon(aes(x, y, fill = method), alpha = .2) +
+  geom_vline(aes(xintercept = 1000), lty = 1) +
+  facet_grid(num~dist, scales = "free") +
+  xlim(c(850, 1150)) +
+  xlab("") + ylab("") +
+  theme(legend.position = "none") -> p2
+
+gathered_density %>% 
+  filter(num == 3) %>%
+  mutate(dist = factor(dist, labels = paste0("Dist. level = ", unique(dist)), levels = sort(unique(dist))),
+         num = paste0("Num. fields = ", num)) %>%
+  ggplot() +
+  geom_line(aes(x, y, colour = method, linetype = crc_method)) +
+  #geom_polygon(aes(x, y, fill = method), alpha = .2) +
+  geom_vline(aes(xintercept = 1000), lty = 1) +
+  facet_grid(num~dist, scales = "free") +
+  xlim(c(850, 1350)) +
+  xlab("N") + ylab("") +
   scale_fill_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
   scale_colour_discrete("Record Linkage", labels = c("U(N)", "Shared MPMMS", "Truth")) +
   scale_linetype_discrete("CRC Method") +
-  xlab("N") + ylab("")
+  theme(legend.position = "bottom") -> p3
+
+cowplot::plot_grid(p1, p2, p3, align = "v", nrow = 3, rel_heights = c(1/2, 1/2, 2/3))
 
 ```
 
----
-# Results (Distortion Level = 5)
-
-```{r results-table-5, results='asis'}
-pop_N_5 %>%
-  group_by(dist, num, crc_method, method) %>%
-  summarise(mean_N = mean(N), q05_N = quantile(N, probs = 0.025), q95_N = quantile(N, probs = 0.975), MSE = mean((N - 1000)^2)) -> pop_N_5_summary_stats
-
-pop_N_5_summary_stats %>% 
-  group_by(method, add = TRUE) %>% 
-  transmute(bold = 1000 >= q05_N & 1000 <= q95_N) %>%
-  arrange(dist, num, method, crc_method) -> which_bold
-
-pop_N_5_summary_stats %>% 
-  arrange(dist, num, method, crc_method) %>% 
-  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
-  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
-          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
-  ungroup() %>%
-  select(-q05_N, -q95_N, -dist) %>%
-  kable(format = "html", row.names = FALSE) %>%
-  row_spec(which(which_bold %>% .$bold), bold = TRUE)
-```
-
----
-# Results (Distortion Level = 10)
-
-```{r results-table-10, results='asis'}
-pop_N_10 %>%
-  group_by(dist, num, crc_method, method) %>%
-  summarise(mean_N = mean(N), q05_N = quantile(N, probs = 0.025), q95_N = quantile(N, probs = 0.975), MSE = mean((N - 1000)^2)) -> pop_N_10_summary_stats
-
-pop_N_10_summary_stats %>% 
-  group_by(method, add = TRUE) %>% 
-  transmute(bold = 1000 >= q05_N & 1000 <= q95_N) %>%
-  arrange(dist, num, method, crc_method) -> which_bold
-
-pop_N_10_summary_stats %>% 
-  arrange(dist, num, method, crc_method) %>% 
-  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
-  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
-          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
-  ungroup() %>%
-  select(-q05_N, -q95_N, -dist) %>%
-  kable(format = "html", row.names = FALSE) %>%
-  row_spec(which(which_bold %>% .$bold), bold = TRUE)
-```
-
----
-# Results (Distortion Level = 15)
-
-```{r results-table-15, results='asis'}
-pop_N_15 %>%
-  group_by(dist, num, crc_method, method) %>%
-  summarise(mean_N = mean(N), q05_N = quantile(N, probs = 0.025), q95_N = quantile(N, probs = 0.975), MSE = mean((N - 1000)^2)) -> pop_N_15_summary_stats
-
-pop_N_5_summary_stats %>% 
-  group_by(method, add = TRUE) %>% 
-  transmute(bold = 1000 >= q05_N & 1000 <= q95_N) %>%
-  arrange(dist, num, method, crc_method) -> which_bold
-
-pop_N_15_summary_stats %>% 
-  arrange(dist, num, method, crc_method) %>% 
-  mutate(ci_90 = paste0("(", round(q05_N, 2), ", ", round(q95_N, 2), ")")) %>%
-  rename_("CRC method" = "crc_method", "Record Linkage" = "method",
-          "Mean" = "mean_N", "95% CI" = "ci_90") %>%
-  ungroup() %>%
-  select(-q05_N, -q95_N, -dist) %>%
-  kable(format = "html", row.names = FALSE) %>%
-  row_spec(which(which_bold %>% .$bold), bold = TRUE)
-```
 
 ---
 # Intuition on performance
 
 ```{r performance}
 # load incorrect numbers
+load("../../results/geco_sim/crc_diag_5dup_5dist_1num.Rdata")
+mpmms_dsn_5_1 <- mpmms_dsn
+lambda_dsn_5_1 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_5dist_2num.Rdata")
+mpmms_dsn_5_2 <- mpmms_dsn
+lambda_dsn_5_2 <- lambda_dsn
+
 load("../../results/geco_sim/crc_diag_5dup_5dist_3num.Rdata")
-mpmms_dsn_5 <- mpmms_dsn
-lambda_dsn_5 <- lambda_dsn
+mpmms_dsn_5_3 <- mpmms_dsn
+lambda_dsn_5_3 <- lambda_dsn
+
+# ----
+
+load("../../results/geco_sim/crc_diag_5dup_10dist_1num.Rdata")
+mpmms_dsn_10_1 <- mpmms_dsn
+lambda_dsn_10_1 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_10dist_2num.Rdata")
+mpmms_dsn_10_2 <- mpmms_dsn
+lambda_dsn_10_2 <- lambda_dsn
 
 load("../../results/geco_sim/crc_diag_5dup_10dist_3num.Rdata")
-mpmms_dsn_10 <- mpmms_dsn
-lambda_dsn_10 <- lambda_dsn
+mpmms_dsn_10_3 <- mpmms_dsn
+lambda_dsn_10_3 <- lambda_dsn
+
+# ----
+
+load("../../results/geco_sim/crc_diag_5dup_15dist_1num.Rdata")
+mpmms_dsn_15_1 <- mpmms_dsn
+lambda_dsn_15_1 <- lambda_dsn
+
+load("../../results/geco_sim/crc_diag_5dup_15dist_2num.Rdata")
+mpmms_dsn_15_2 <- mpmms_dsn
+lambda_dsn_15_2 <- lambda_dsn
+
 
 load("../../results/geco_sim/crc_diag_5dup_15dist_3num.Rdata")
-mpmms_dsn_15 <- mpmms_dsn
-lambda_dsn_15 <- lambda_dsn
+mpmms_dsn_15_3 <- mpmms_dsn
+lambda_dsn_15_3 <- lambda_dsn
+
 
 ## make dsn dfs
-mpmms_dsn <- rbind(data.frame(dist = 5, mpmms_dsn_5), 
-                   data.frame(dist = 10, mpmms_dsn_10), 
-                   data.frame(dist = 15, mpmms_dsn_10))
+mpmms_dsn <- rbind(data.frame(dist = 5, num = 1, mpmms_dsn_5_1), 
+                   data.frame(dist = 5, num = 2, mpmms_dsn_5_2), 
+                   data.frame(dist = 5, num = 3, mpmms_dsn_5_3), 
+                   data.frame(dist = 10, num = 1, mpmms_dsn_10_1), 
+                   data.frame(dist = 10, num = 2, mpmms_dsn_10_2),
+                   data.frame(dist = 10, num = 3, mpmms_dsn_10_3),
+                   data.frame(dist = 15, num = 1, mpmms_dsn_15_1),
+                   data.frame(dist = 15, num = 2, mpmms_dsn_15_2),
+                   data.frame(dist = 15, num = 3, mpmms_dsn_15_3))
 
-bayes_dsn <- rbind(data.frame(dist = 5, lambda_dsn_5), 
-                    data.frame(dist = 10, lambda_dsn_10), 
-                    data.frame(dist = 15, lambda_dsn_10))
+bayes_dsn <- rbind(data.frame(dist = 5, num = 1, lambda_dsn_5_1), 
+                   data.frame(dist = 5, num = 2, lambda_dsn_5_2), 
+                   data.frame(dist = 5, num = 3, lambda_dsn_5_3), 
+                   data.frame(dist = 10, num = 1, lambda_dsn_10_1), 
+                   data.frame(dist = 10, num = 2, lambda_dsn_10_2), 
+                   data.frame(dist = 10, num = 3, lambda_dsn_10_3), 
+                   data.frame(dist = 15, num = 1, lambda_dsn_15_1),
+                   data.frame(dist = 15, num = 2, lambda_dsn_15_2),
+                   data.frame(dist = 15, num = 3, lambda_dsn_15_3))
 
 truth_dsn <- mpmms_dsn
 truth_dsn$truth_clust_diff <- 0
 
 ## get MSE for N
 ## truth
-pop_N_5 %>% filter(num == 3) %>%
-  bind_rows(pop_N_10 %>% filter(num == 3)) %>%
-  bind_rows(pop_N_15 %>% filter(num == 3)) %>%
-  filter(method == "Truth" & num == 3) %>%
-  group_by(dist, method, crc_method) %>%
+pop_N_5 %>% filter(method == "Truth") %>%
+  bind_rows(pop_N_10 %>% filter(method == "Truth")) %>%
+  bind_rows(pop_N_15 %>% filter(method == "Truth")) %>%
+  group_by(dist, method, num, crc_method) %>%
   summarise(mean_diff = mean(N - 1000)) %>%
   mutate(iter = 1) -> truth_diff
 
@@ -593,10 +611,9 @@ pop_N_5 %>% filter(num == 3) %>%
 truth_diff <- truth_diff %>% left_join(truth_dsn)
 
 ## mpmms
-pop_N_5 %>% filter(num == 3) %>%
-  bind_rows(pop_N_10 %>% filter(num == 3)) %>%
-  bind_rows(pop_N_15 %>% filter(num == 3)) %>%
-  filter(method == "Shared MPMMS") %>%
+pop_N_5 %>% filter(method == "Shared MPMMS") %>%
+  bind_rows(pop_N_10 %>% filter(method == "Shared MPMMS")) %>%
+  bind_rows(pop_N_15 %>% filter(method == "Shared MPMMS")) %>%
   group_by(dist, method, crc_method) %>%
   summarise(mean_diff = mean(N - 1000)) %>%
   mutate(iter = 1) -> mpmms_diff
@@ -605,25 +622,62 @@ pop_N_5 %>% filter(num == 3) %>%
 mpmms_diff <- mpmms_diff %>% left_join(mpmms_dsn)
 
 ## bayes
-data.frame(dist = 5, method = "U(N)", crc_method = "NPLCM", 
-           mean_diff = apply(crc_bayes_5, 2, function(N) mean(N - 1000))) %>%
+data.frame(dist = 5, num = 1, method = "U(N)", crc_method = "NPLCM", 
+           mean_diff = apply(crc_bayes_5_1, 2, function(N) mean(N - 1000))) %>%
   mutate(iter = 1:n()) %>%
-  bind_rows(data.frame(dist = 5, method = "U(N)", crc_method = "BMA", 
-           mean_diff = apply(bma_bayes_5, 2, function(N) mean(N - 1000))) %>%
-             mutate(iter = 1:n())) %>%
-  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "NPLCM", 
-           mean_diff = apply(crc_bayes_10, 2, function(N) mean(N - 1000))) %>%
-             mutate(iter = 1:n())) %>%
-  bind_rows(data.frame(dist = 10, method = "U(N)", crc_method = "BMA", 
-           mean_diff = apply(bma_bayes_10, 2, function(N) mean(N - 1000))) %>%
-             mutate(iter = 1:n())) %>%
-    bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "NPLCM", 
-           mean_diff = apply(crc_bayes_15, 2, function(N) mean(N - 1000))) %>%
-             mutate(iter = 1:n())) %>%
-  bind_rows(data.frame(dist = 15, method = "U(N)", crc_method = "BMA", 
-           mean_diff = apply(bma_bayes_15, 2, function(N) mean(N - 1000))) %>%
-             mutate(iter = 1:n())) -> bayes_diff
-
+  bind_rows(data.frame(dist = 5, num = 2, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_5_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 5, num = 3, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_5_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 5, num = 1, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_5_1, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 5, num = 2, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_5_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 5, num = 3, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_5_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 1, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_10_1, 2, function(N) mean(N - 1000))) %>%
+              mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 2, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_10_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 3, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_10_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 1, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_10_1, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 2, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_10_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 10, num = 3, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_10_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 1, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_15_1, 2, function(N) mean(N - 1000))) %>%
+              mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 2, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_15_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 3, method = "U(N)", crc_method = "NPLCM", 
+                       mean_diff = apply(crc_bayes_15_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 1, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_15_1, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 2, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_15_2, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) %>%
+  bind_rows(data.frame(dist = 15, num = 3, method = "U(N)", crc_method = "BMA", 
+                       mean_diff = apply(bma_bayes_15_3, 2, function(N) mean(N - 1000))) %>%
+            mutate(iter = 1:n())) -> bayes_diff
+  
+  
 ## add dsn of rl errors
 bayes_diff <- bayes_diff %>% left_join(bayes_dsn)
 
@@ -631,15 +685,20 @@ diff_df <- truth_diff %>%
   bind_rows(mpmms_diff) %>%
   bind_rows(bayes_diff)
 
+
+diff_df$dist <- as.factor(paste0("Distortion level = ", diff_df$dist))
+levels(diff_df$dist) <- paste0("Distortion level = ", c(5, 10, 15))
+
 diff_df %>% ungroup() %>%
+  filter(num_include == 1) %>%
   mutate(num_include = factor(num_include, labels = paste0("Number db = ", unique(num_include)))) %>%
-  mutate(dist = factor(dist, labels = paste0("Distortion level = ", unique(dist)))) %>%
+  mutate(num = factor(num, labels = paste0("Num. distorted = ", unique(num)), levels = sort(as.numeric(unique(num))))) %>% 
   ggplot() +
-  geom_point(aes(truth_clust_diff, mean_diff, colour = method)) +
-  geom_density_2d(aes(truth_clust_diff, mean_diff), colour = "black") +
-  facet_grid(dist~num_include, scales = "free") +
+  geom_jitter(aes(truth_clust_diff/truth*100, mean_diff, colour = method)) +
+  geom_density_2d(aes(truth_clust_diff/truth*100, mean_diff), colour = "black") +
+  facet_grid(num~dist, scales = "free_x") +
   scale_colour_discrete("Record linkage") +
-  xlab("Truth - RL Freq") +
+  xlab("% RL Error in Singletons") +
   ylab(expression(E~group("(", N~ "|" ~X, ")") - 1000))
 
 
@@ -649,17 +708,19 @@ diff_df %>% ungroup() %>%
 # Takeaways
 
 
-- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**, but using the shared MPMMS does not work very well. 
+- MCMC for estimation of $U(\eta)$ and $\text{Var} (\eta \mid \boldsymbol X)$ is **computationally expensive**, but using the shared MPMMS no error propagation. 
 
 - NPLCM CRC method is for independent lists. In our (limited) experience, this CRC method works best for many lists ( $\ge 4$ ). 
 
 - BMA CRC method does not scale beyond $5$ lists easily because of the need to precompute all valid dependency structures between lists. 
 
-- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS.
+- Both CRC methods sensitive to errors from RL and become biased. Especially if only using the shared MPMMS (and errors from singletons).
 
 ## To do
 
-- Much more extensive simulation with different levels of duplication and list inclusion probabilities.
+- More simulation with levels of duplication and list inclusion probabilities.
+
+- More robust CRC methods.
 
 - Do this on **real data**!
 
@@ -791,50 +852,62 @@ $$\text{Recall} = \frac{tp}{tp + fn} \qquad \qquad \text{Precision} = \frac{tp}{
 #### Shared MPMMS
 
 .small[
-```{r mpmms-precision-recall, results='asis'}
-## get the mpmms
-load("../../results/geco_sim/eber_5dup_5dist_3num.Rdata")
-load("../../results/geco_sim/eber_5dup_5dist_3num.Rdata")
-identity_vec <- do.call(c, identity)
-identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
-lambda <- lambda[, burnin_thin]
-mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
-    
-## precision and recall
-conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
-prec_rec <- data.frame(dist = 5, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP))
+```{r mpmms-precision-recall, results='asis', cache = TRUE}
 
-## get the mpmms
-load("../../results/geco_sim/eber_5dup_10dist_3num.Rdata")
-load("../../results/geco_sim/eber_5dup_10dist_3num.Rdata")
-identity_vec <- do.call(c, identity)
-identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
-lambda <- lambda[, burnin_thin]
-mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
-    
-## precision and recall
-conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
-prec_rec <- rbind(prec_rec, data.frame(dist = 10, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+prec_rec_num <- function(num) {
+  ## get the mpmms
+  load(paste0("../../results/geco_sim/eber_5dup_5dist_", num, "num.Rdata"))
+  load(paste0("../../results/geco_sim/eber_5dup_5dist_", num, "num.Rdata"))
+  identity_vec <- do.call(c, identity)
+  identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+  lambda <- lambda[, burnin_thin]
+  mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+      
+  ## precision and recall
+  conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+  prec_rec <- data.frame(dist = 5, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP))
+  
+  ## get the mpmms
+  load(paste0("../../results/geco_sim/eber_5dup_10dist_", num, "num.Rdata"))
+  load(paste0("../../results/geco_sim/eber_5dup_10dist_", num, "num.Rdata"))
+  identity_vec <- do.call(c, identity)
+  identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+  lambda <- lambda[, burnin_thin]
+  mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+      
+  ## precision and recall
+  conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+  prec_rec <- rbind(prec_rec, data.frame(dist = 10, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+  
+  ## get the mpmms
+  load(paste0("../../results/geco_sim/eber_5dup_15dist_", num, "num.Rdata"))
+  load(paste0("../../results/geco_sim/eber_5dup_15dist_", num, "num.Rdata"))
+  identity_vec <- do.call(c, identity)
+  identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
+  lambda <- lambda[, burnin_thin]
+  mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
+      
+  ## precision and recall
+  conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
+  prec_rec <- rbind(prec_rec, data.frame(dist = 15, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
+  
+  return(prec_rec)
+}
 
-## get the mpmms
-load("../../results/geco_sim/eber_5dup_15dist_3num.Rdata")
-load("../../results/geco_sim/eber_5dup_15dist_3num.Rdata")
-identity_vec <- do.call(c, identity)
-identity_pair <- eber::clust2pairs(eber::memb2clust(identity_vec))
-lambda <- lambda[, burnin_thin]
-mpmms_linkage <- eber::clust2pairs(eber::smpmms.linkage(list(lambda.chain = lambda)))
-    
-## precision and recall
-conf <- eber::confusion.matrix(mpmms_linkage, identity_pair)
-prec_rec <- rbind(prec_rec, data.frame(dist = 15, recall = conf$TP/(conf$TP + conf$FN), precision = conf$TP/(conf$TP + conf$FP)))
 
-prec_rec %>%
+prec_rec_num(1) %>%
+  rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
+  kable(format = 'html', digits = 2)
+
+prec_rec_num(2) %>%
+  rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
+  kable(format = 'html', digits = 2)
+
+prec_rec_num(3) %>%
   rename_("Distortion Level" = "dist", "Precision" = "precision", "Recall" = "recall") %>%
   kable(format = 'html', digits = 2)
 ```
 ]
-
-#### U(N)
 
 .small[
 ```{r bayes-precision-recall, eval = FALSE}
