@@ -40,6 +40,7 @@ stopImplicitCluster()
 K <- sum(true_conting$Freq > 0)
 crc_sampler <- LCMCR::lcmCR(true_conting[-1,], tabular = TRUE, in_list_label = "TRUE", not_in_list_label = "FALSE", K = K, seed = 1234)
 true_pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
+pop_N <- rbind(data.frame(error_add_pop_N, type = "add"), data.frame(error_remove_pop_N, type = "remove"))
 
 # save ----
-save(error_add_pop_N, error_remove_pop_N, true_pop_N, file = "results/error_simulation/crc_zoom.Rdata")
+save(pop_N, true_pop_N, file = "results/error_simulation/crc_zoom.Rdata")
