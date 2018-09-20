@@ -36,5 +36,10 @@ error_remove_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verb
 stopCluster(cl)
 stopImplicitCluster()
 
+# truth
+K <- sum(true_conting$Freq > 0)
+crc_sampler <- LCMCR::lcmCR(true_conting[-1,], tabular = TRUE, in_list_label = "TRUE", not_in_list_label = "FALSE", K = K, seed = 1234)
+true_pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
+
 # save ----
-save(error_add_pop_N, error_remove_pop_N, file = "results/error_simulation/crc.Rdata")
+save(error_add_pop_N, error_remove_pop_N, true_pop_N, file = "results/error_simulation/crc.Rdata")

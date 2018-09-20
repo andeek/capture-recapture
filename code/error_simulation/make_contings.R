@@ -4,14 +4,17 @@ set.seed(1234)
 # global params ----
 M <- 1000 # true pop size
 D <- 5 # number of databases
-strata_prop <- .75 # proportion of records in each strata
+#strata_prop <- .75 # proportion of records in each strata
+strata_prop <- 1 # try without strata
 error_levels <- seq(.05, .5, by = .05)
 rep <- 100
 
 # inclusion table ----
 # sample D "databases" from "population" with specified levels of overlap/inclusion
 # 2 strata - 1: large and hard to find, 2: small and easy to find
-inclusion <- data.frame(strata = rep(c(1, 2), each = D), prop = rep(c(strata_prop, 1 - strata_prop), each = D), db = seq_len(D), inclusion = c(rbeta(D, 3, 15), rbeta(D, 15, 3)))
+# inclusion <- data.frame(strata = rep(c(1, 2), each = D), prop = rep(c(strata_prop, 1 - strata_prop), each = D), db = seq_len(D), inclusion = c(rbeta(D, 3, 15), rbeta(D, 15, 3)))
+# try just 1 strata
+inclusion <- data.frame(strata = rep(1, D), prop = rep(1, D), db = seq_len(D), inclusion = c(rbeta(D, 3, 10)))
 
 # population ----
 # ids + split pop into strata
