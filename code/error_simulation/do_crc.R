@@ -14,27 +14,32 @@ load("results/error_simulation/contings.Rdata")
 # capture-recapture ----
 K <- 2^D - 1 ## from paper, number of unique capture histories
 
-error_add_pop_N <- foreach(r = error_levels, .combine = rbind) %dopar% {
+error_add_pop_N <- foreach(r = seq_along(error_add_conting), .combine = rbind) %dopar% {
   error_conting <- error_add_conting[[r]]
-  foreach::foreach(i = seq_along(error_conting), .combine = rbind) foreach::`%dopar%` {
+  `%dopar%` <- foreach::`%dopar%`
+  foreach::foreach(i = seq_along(error_conting), .combine = rbind) %dopar% {
+    cat(paste("error: ", error_levels[r], ", iter:", i, "\r"))
+    
     conting <- error_conting[[i]][-1,]
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = r)
+    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
   }
 }
-error_remove_pop_N <- foreach(r = error_levels, .combine = rbind) %dopar% {
+error_remove_pop_N <- foreach(r = seq_along(error_remove_conting), .combine = rbind) %dopar% {
   error_conting <- error_remove_conting[[r]]
-  foreach(i = seq_along(error_conting), .combine = rbind) %dopar% {
+  `%dopar%` <- foreach::`%dopar%`
+  foreach::foreach(i = seq_along(error_conting), .combine = rbind) %dopar% {
+    cat(paste("error: ", error_levels[r], ", iter:", i, "\r"))
+    
     conting <- error_conting[[i]][-1,]
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
-    crc_sampler <- lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
-    pop_N <- lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = r)
+    crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
+    pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
+    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
   }
 }
-
 # stop parallel ----
 stopCluster(cl)
 stopImplicitCluster()
