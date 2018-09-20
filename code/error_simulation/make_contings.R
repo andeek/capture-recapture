@@ -57,10 +57,30 @@ distort_conting <- function(conting, r, error_type = "remove") {
   if(error_type == "remove") {
     tab[names(where_single), "Freq"] <- tab[names(where_single), "Freq"] - where_single
     tab[names(where_multi), "Freq"] <- tab[names(where_multi), "Freq"] + where_multi
+    
+    # fix less than 0
+    # redistribute
+    while(sum(tab$Freq < 0) > 0) {
+      where_single <- table(sample(which(tab$type == "single" & tab$Freq > 0), sum(-tab[tab$Freq < 0, "Freq"]), replace = TRUE))
+      tab[tab$Freq < 0, "Freq"] <- 0
+      tab[names(where_single), "Freq"] <- tab[names(where_single), "Freq"] - where_single
+    }
+    
   } else if(error_type == "add") {
     tab[names(where_single), "Freq"] <- tab[names(where_single), "Freq"] + where_single
     tab[names(where_multi), "Freq"] <- tab[names(where_multi), "Freq"] - where_multi
+    
+    # fix less than 0
+    # redistribute
+    while(sum(tab$Freq < 0) > 0) {
+      where_multi <- table(sample(which(tab$type == "multi" & tab$Freq > 0), sum(-tab[tab$Freq < 0, "Freq"]), replace = TRUE))
+      tab[tab$Freq < 0, "Freq"] <- 0
+      tab[names(where_multi), "Freq"] <- tab[names(where_multi), "Freq"] - where_multi
+    }
   }
+  
+  
+  
   return(tab[, -ncol(tab)])  
 }
 

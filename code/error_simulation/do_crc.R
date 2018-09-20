@@ -12,11 +12,10 @@ registerDoParallel(cl)
 load("results/error_simulation/contings.Rdata")
 
 # capture-recapture ----
-K <- 2^D - 1 ## from paper, number of unique capture histories
-
 error_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
     conting <- error_add_conting[[r]][[i]][-1,]
+    K <- sum(conting$Freq > 0) ## from paper, number of unique capture histories
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
@@ -26,6 +25,7 @@ error_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose
 error_remove_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
     conting <- error_remove_conting[[r]][[i]][-1,]
+    K <- sum(conting$Freq > 0) ## from paper, number of unique capture histories
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
