@@ -16,11 +16,11 @@ K <- 2^D - 1 ## from paper, number of unique capture histories
 
 error_add_pop_N <- foreach(r = error_levels, .combine = rbind) %dopar% {
   error_conting <- error_add_conting[[r]]
-  foreach(i = seq_along(error_conting), .combine = rbind) %dopar% {
+  foreach::foreach(i = seq_along(error_conting), .combine = rbind) foreach::`%dopar%` {
     conting <- error_conting[[i]][-1,]
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
-    crc_sampler <- lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
-    pop_N <- lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
+    crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
+    pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
     data.frame(pop_N = pop_N, i = i, r = r)
   }
 }
