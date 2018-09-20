@@ -6,7 +6,7 @@ M <- 1000 # true pop size
 D <- 5 # number of databases
 #strata_prop <- .75 # proportion of records in each strata
 strata_prop <- 1 # try without strata
-error_levels <- seq(.05, .5, by = .05)
+error_levels <- seq(.05, .1, by = .005)
 rep <- 100
 
 # inclusion table ----
@@ -93,7 +93,7 @@ names(error_remove_conting) <- names(error_add_conting) <- error_levels
 
 # save ----
 save(true_assignment, true_conting, error_add_conting, error_remove_conting, M, D, strata_prop, error_levels, rep, inclusion,
-     file = "results/error_simulation/contings.Rdata")
+     file = "results/error_simulation/contings_zoom.Rdata")
 
 
 
