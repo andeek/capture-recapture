@@ -9,7 +9,7 @@ cl <- makeCluster(16)
 registerDoParallel(cl)
 
 # load contings ----
-load("results/error_simulation/contings.Rdata")
+load("results/error_simulation/contings_zoom.Rdata")
 
 # capture-recapture ----
 error_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
@@ -42,4 +42,4 @@ crc_sampler <- LCMCR::lcmCR(true_conting[-1,], tabular = TRUE, in_list_label = "
 true_pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
 
 # save ----
-save(error_add_pop_N, error_remove_pop_N, true_pop_N, file = "results/error_simulation/crc.Rdata")
+save(error_add_pop_N, error_remove_pop_N, true_pop_N, file = "results/error_simulation/crc_zoom.Rdata")
