@@ -5,7 +5,7 @@ library(LCMCR) # crc
 set.seed(1234) # reproducible
 
 # prep for parallel ----
-cl <- makeCluster(10)
+cl <- makeCluster(16)
 registerDoParallel(cl)
 
 # load contings ----
