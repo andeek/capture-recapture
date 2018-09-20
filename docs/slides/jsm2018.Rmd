@@ -476,7 +476,7 @@ bind_rows(make_density_df(5, 1, "BMA", "U(N)", pop_N_5, min_tot, max_tot, n_bin)
 pop_N_density <- rbind(pop_N_density, pop_N_density2)
 ```
 
-```{r plot-results, fig.height=5.5}
+```{r plot-results, fig.height=5.25}
 pop_N_density %>%
   gather(method, y, -dist, -num, -x, -crc_method) -> gathered_density
 
