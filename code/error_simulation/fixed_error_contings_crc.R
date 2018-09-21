@@ -60,7 +60,7 @@ single_remove_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .ver
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
+    data.frame(pop_N = pop_N, true_N = sum(single_remove_conting[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
   }
 single_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
@@ -69,7 +69,7 @@ single_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbos
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
+    data.frame(pop_N = pop_N, true_N = sum(single_add_conting[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
   }
 multi_remove_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
@@ -78,7 +78,7 @@ multi_remove_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verb
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
+    data.frame(pop_N = pop_N, true_N = sum(multi_remove_conting[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
   }
 multi_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE) %:% 
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
@@ -87,7 +87,7 @@ multi_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose
     conting[, -ncol(conting)] <- as.data.frame(lapply(conting[, -ncol(conting)], function(x) as.factor(as.character(as.numeric(x)))), stringsAsFactors = TRUE)
     crc_sampler <- LCMCR::lcmCR(conting, tabular = TRUE, K = K, seed = 1234)
     pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
-    data.frame(pop_N = pop_N, i = i, r = error_levels[r])
+    data.frame(pop_N = pop_N, true_N = sum(multi_add_conting[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
   }
 pop_N <- rbind(data.frame(single_add_pop_N, type = "add", bucket_type = "single"), 
                data.frame(single_remove_pop_N, type = "remove", bucket_type = "single"),
