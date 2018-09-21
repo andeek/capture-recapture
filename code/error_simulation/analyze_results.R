@@ -6,12 +6,8 @@ library(tidyr)
 # load results ----
 load("results/error_simulation/crc_zoom.Rdata")
 
-# data munge ----
-error_add_pop_N %>% mutate(type = "add") %>%
-  bind_rows(error_remove_pop_N %>% mutate(type = "remove")) -> error_pop_N
-
 # summaries ----
-error_pop_N %>%
+pop_N %>%
   group_by(type, r, i) %>%
   summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
   mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>%
@@ -27,7 +23,7 @@ ggplot() +
   geom_density(aes(true_pop_N)) +
   geom_vline(aes(xintercept = 1000))
 
-error_pop_N %>%
+pop_N %>%
   group_by(type, r, i) %>%
   summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
   mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 

@@ -58,6 +58,6 @@ all_pop_N <- foreach(i = seq_along(all_conting), .combine=rbind, .verbose = TRUE
 pop_N <- rbind(data.frame(multi_pop_N, type = "multi"), data.frame(all_pop_N, type = "all"))
 
 # save ----
-save(pop_N, file = "results/error_simulation/crc_multi.Rdata")
+save(pop_N, file = "results/error_simulation/crc_permute.Rdata")
 
 
