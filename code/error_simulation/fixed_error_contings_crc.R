@@ -91,8 +91,8 @@ multi_add_pop_N <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose
   }
 pop_N <- rbind(data.frame(single_add_pop_N, type = "add", bucket_type = "single"), 
                data.frame(single_remove_pop_N, type = "remove", bucket_type = "single"),
-               data.frame(multi_add_pop_N, type = "add", bucket_type = "single"), 
-               data.frame(multi_remove_pop_N, type = "remove", bucket_type = "single"))
+               data.frame(multi_add_pop_N, type = "add", bucket_type = "multi"), 
+               data.frame(multi_remove_pop_N, type = "remove", bucket_type = "multi"))
 
 # stop parallel ----
 stopCluster(cl)
@@ -104,6 +104,6 @@ crc_sampler <- LCMCR::lcmCR(true_conting[-1,], tabular = TRUE, in_list_label = "
 true_pop_N <- LCMCR::lcmCR_PostSampl(crc_sampler, burnin = 100000, samples = 500, thinning = 20)
 
 # save ----
-save(pop_N, true_pop_N, file = "results/error_simulation/fixed_crc.Rdata")
+save(pop_N, true_pop_N, file = "results/error_simulation/crc_fixed.Rdata")
 
 
