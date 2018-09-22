@@ -1,0 +1,169 @@
+---
+title: "Singleton Error Experiments"
+author: "Andee Kaplan"
+output: 
+  pdf_document:
+    number_sections: true
+    keep_tex: true
+bibliography: [../crc/crc.bib]
+---
+
+```{r setup, echo = FALSE}
+library(knitr)
+library(ggplot2)
+
+opts_chunk$set(echo = FALSE, message = FALSE, fig.height = 3)
+theme_set(theme_bw(base_family = "serif"))
+```
+
+This is a set of small experiments with the goal of determining how errors in the contingency table result in errors in the population size estimate. We are interested ultimately in how errors from record linkage are propagated through a capture-recapture method and result in biased results. Specifically we will explore in two questions.
+
+1. Which type of errors are worse--errors in the number of records counted in only one database or errors in the number of records counted in multiple databases?
+2. In a record linkage setting, at what point to singleton errors result in capture-recapture estimations of the population size that are no longer useful (coverage $< 95\%$)
+
+```{r create-plots}
+# libraries ----
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+
+# load results ----
+load("../../results/error_simulation/crc_fixed.Rdata")
+fixed_pop_N <- pop_N
+load("../../results/error_simulation/crc.Rdata")
+rl_pop_N <- pop_N
+load("../../results/error_simulation/crc_zoom.Rdata")
+rl_zoom_pop_N <- pop_N
+load("../../results/error_simulation/contings.Rdata")
+
+# fixed plots ----
+ggplot() +
+  geom_density(aes(true_pop_N)) +
+  geom_vline(aes(xintercept = 1000)) +
+  xlab(expression(hat(M))) -> p.true
+
+fixed_pop_N %>%
+  filter(type == "add") %>%
+  group_by(type, bucket_type, true_N, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = true_N <= ul & true_N >= ll) %>% 
+  ggplot() +
+  geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
+  geom_hline(aes(yintercept = true_N)) +
+  facet_grid(type+bucket_type~r) +
+  scale_colour_manual("Interval contains truth", values = c("red", "black")) +
+  xlab("Iteration") +
+  ylab("95% credible interval") +
+  theme(legend.position = "none") -> p.add
+
+fixed_pop_N %>%
+  filter(type == "remove") %>%
+  group_by(type, bucket_type, true_N, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = true_N <= ul & true_N >= ll) %>% 
+  ggplot() +
+  geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
+  geom_hline(aes(yintercept = true_N)) +
+  facet_grid(type+bucket_type~r) +
+  scale_colour_manual("Interval contains truth", values = c("red", "black")) +
+  xlab("Iteration") +
+  ylab("95% credible interval") +
+  theme(legend.position = "bottom") -> p.remove
+
+# rl plots ----
+rl_pop_N %>%
+  group_by(type, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 
+  ggplot() +
+  geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
+  geom_hline(aes(yintercept = 1000)) +
+  facet_grid(type~r, scales = "free_y") +
+  scale_colour_manual("Interval contains truth", values = c("red", "black")) +
+  xlab("Iteration") +
+  ylab("95% credible interval") +
+  theme(legend.position = "bottom") -> p.rl
+
+rl_zoom_pop_N %>%
+  group_by(type, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 
+  ggplot() +
+  geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
+  geom_hline(aes(yintercept = 1000)) +
+  facet_grid(type~r, scales = "free_y") +
+  scale_colour_manual("Interval contains truth", values = c("red", "black")) +
+  xlab("Iteration") +
+  ylab("95% credible interval") +
+  theme(legend.position = "bottom") -> p.rl_zoom
+```
+
+# Experiment Setup and Data
+
+To set up our experiments, we start with a population of size $M = `r M`$ and select with replacement to create $D = `r D`$ databases according to the inclusion probabilities in Table \ref{tab:inclusion}. The inclusion probabilities were randomly generated from a $Beta(a_0, b_0)$ distribution. This results in $n(0) = `r true_conting[1, "Freq"]`$ records never having been recorded in any database, which is the value that we will estimate using a capture-recapture procedure.
+
+```{r inclusion}
+inclusion %>%
+  select(db, inclusion) %>%
+  spread(db, inclusion) %>%
+  magrittr::set_rownames("inclusion") %>%
+  kable(caption="\\label{tab:inclusion}Inclusion probabilities for each of the databases.", digits = 4)
+```
+
+To perform capture-recapture, I used the nonparametric latent class model (NPLCM) of @manrique2016bayesian with default priors and hyperparameters. The posterior distribution of $M$ is shown in Figure \ref{fig:true-plot}, with the true value of $M = `r M`$ shown as a vertical line. The posterior contains the true population size nicely, indicating that in the absence of errors, the NPLCM model with default priors and hyperparameters is working adequately.
+
+```{r true-plot, fig.cap=paste0("\\label{fig:true-plot}The posterior distribution of $M$ as generated by the NPLCM, with the true value of $M = ", M, "$ shown as a vertical line. The posterior contains the true population size nicely, indicating that in the absense of errors, the NPLCM model with default priors and hyperparameters is working adequately."), fig.height=2}
+p.true
+```
+
+# Error Types
+
+The first experiment we look at aims to answer the question, "Which type of errors are worse--errors in the number of records counted in only one database or errors in the number of records counted in multiple databases?" 
+
+In order to answer this, we will add or remove a fixed number, $\rho$, of records from random buckets in the $2^D$ contingency table of the captures. We will add or remove these records from the two types of buckets, singleton or multiple inclusions, and compare the results of running the NPLCM for capture-recapture to estimate $M$. We look at multiple values of $\rho$ as different percentages of singletons from $5\%$ to $50\%$. The result of this process is shown in Figure \ref{fig:fixed-error-plots}. Because the process of introducing error is random, we repeat it `r rep` times and look at the resulting 95% credible intervals for $M$.
+
+```{r fixed-error-plots, fig.height = 6, fig.cap=paste0("\\label{fig:fixed-error-plots}The results of running the NPLCM for capture-recapture to estimate $M$ after adding and removing equal numbers of singletons or multiple inclusions from the contingency table. Because the process of introducing error is random, we repeat it", rep, "times and look at the resulting 95% credible intervals for $M$. Errors that are introduced to the singleton buckets in the contingency table have a much greater effect on the estimate of $M$ than do errors introduced to the multiple inclusion buckets. This is shown by how many intervals contain the true population size (black) versus those that do not (red). For both adding and removing singletons, the estimates of $M$ are drastically different from reality between $10\\%$ and $15\\%$ error, whereas for the multiples, an effect is not seen until much later.")}
+grid.arrange(p.add, p.remove)
+```
+
+Errors that are introduced to the singleton buckets in the contingency table have a much greater effect on the estimate of $M$ than do errors introduced to the multiple inclusion buckets. This is shown by how many intervals contain the true population size (black) versus those that do not (red). For both adding and removing singletons, the estimates of $M$ are drastically different from reality between $10\%$ and $15\%$ error, whereas for the multiples, an effect is not seen until much later. This result indicates that errors in the singleton buckets have a much higher impact on the capture-recapture method than errors in the multiple inclusions. This could help us tailor a record linkage method to work well for capture-recapture. 
+
+# Record Linkage Setting
+
+The experiments in Section \ref{error-types}, while informative, are not realistic in terms of how errors occur in record linkage. In a record linkage procedure, record will either be classified as singletons (no linkage) or multiple inclusions (linked). The result is that errors in singleton classification will necessarily also result in errors in multiple inclusions. However, it is possible for a record linkage procedure to correctly classify all the singletons, and still have a high rate of overall error due to getting the actual linkage wrong. 
+
+In this second set of experiments, we are interested in exploring how much singleton error from the record linkage procedure can the NPLCM handle and still produce meaningful results. To test this, we once again add or remove singletons according to $\rho$, various proportions of singletons from $5\%$ to $50\%$, but now we also add or remove those records from randomly selected multiple inclusions buckets (in accordance with a realistic record linkage scenario). The resulting 95% credible intervals are shown in Figures \ref{fig:rl-plot} and \ref{fig:rl-zoom-plot} with intervals that contain the truth $M = `r M`$ in black and those that do not in red.
+
+```{r rl-plot, fig.cap=paste0("\\label{fig:rl-plot}95% credible intervals resulting from the NPLCM capture-recapture model after removing or adding various proportions of singletons from $5\\%$ to $50\\%$ and in a record linkage setting. Intervals that contain the truth $M = ", M, "$ are shown in black and those that do not in red. Somewhere between $5\\%$ and $10\\%$ of singleton error leads to an unacceptable amount of error in the estimation of $M$ (coverage < 95%).")}
+p.rl
+```
+
+Somewhere between $5\%$ and $10\%$ of singleton error leads to an unacceptable amount of error in the estimation of $M$ (coverage < 95%). We zoom in on these values in Figure \ref{fig:rl-zoom-plot} to pinpoint how the errors are affecting coverage in the posterior estimate of $M$. This zoomed in view shows that depending on if singletons are added (over linked) or removed (under linked), the amount of acceptable error in singletons from the record linkage procedure is around 5.5% or 7.5%, respectively. Tables \ref{tab:rl-results} and \ref{tab:rl-zoom-results} display these results numerically.
+
+```{r rl-zoom-plot, fig.cap=paste0("\\label{fig:rl-zoom-plot}95% credible intervals resulting from the NPLCM capture-recapture model after removing or adding various proportions of singletons from $5\\%$ to $10\\%$ and in a record linkage setting. Intervals that contain the truth $M = ", M, "$ are shown in black and those that do not in red. This zoomed in view shows that depending on if singletons are added (over linked) or removed (under linked), the amount of acceptable error in singletons from the record linkage procedure is around 5.5% or 7.5%, respectively.")}
+p.rl_zoom
+```
+
+```{r}
+rl_pop_N %>%
+  group_by(type, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>%
+  group_by(type, r) %>%
+  summarise(coverage = sum(contains_truth)/n()) %>%
+  spread(r, coverage) %>%
+  kable(caption="\\label{tab:rl-results}Coverage of 95% credible intervals for $M$ from using NPLCM capture-recapture after different error levels are passed from the record linkage procedure. The amount of acceptable error in singletons from the record linkage procedure is somewhere between 5% and 10%.")
+
+rl_zoom_pop_N %>%
+  group_by(type, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>%
+  group_by(type, r) %>%
+  summarise(coverage = sum(contains_truth)/n()) %>%
+  spread(r, coverage) %>%
+  kable(caption="\\label{tab:rl-zoom-results}Coverage of 95% credible intervals for $M$ from using NPLCM capture-recapture after different error levels are passed from the record linkage procedure. Depending on if singletons are added (over linked) or removed (under linked), the amount of acceptable error in singletons from the record linkage procedure is around 5.5% or 7.5%, respectively.")
+```
+
+
+# References {-}

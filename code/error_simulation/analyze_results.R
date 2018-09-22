@@ -20,23 +20,23 @@ ggplot() +
 
 fixed_pop_N %>%
   filter(type == "add") %>%
-  group_by(type, bucket_type, r, i) %>%
+  group_by(type, bucket_type, true_N, r, i) %>%
   summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
-  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 
+  mutate(contains_truth = true_N <= ul & true_N >= ll) %>% 
   ggplot() +
   geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
-  geom_hline(aes(yintercept = 1000)) +
+  geom_hline(aes(yintercept = true_N)) +
   facet_grid(type+bucket_type~r) +
   scale_colour_manual(values = c("red", "black")) -> p.add
 
 fixed_pop_N %>%
   filter(type == "remove") %>%
-  group_by(type, bucket_type, r, i) %>%
+  group_by(type, bucket_type, true_N, r, i) %>%
   summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
-  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 
+  mutate(contains_truth = true_N <= ul & true_N >= ll) %>% 
   ggplot() +
   geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
-  geom_hline(aes(yintercept = 1000)) +
+  geom_hline(aes(yintercept = true_N)) +
   facet_grid(type+bucket_type~r) +
   scale_colour_manual(values = c("red", "black")) -> p.remove
 
@@ -50,5 +50,15 @@ rl_pop_N %>%
   ggplot() +
   geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
   geom_hline(aes(yintercept = 1000)) +
-  facet_grid(type~r) +
+  facet_grid(type~r, scales = "free_y") +
+  scale_colour_manual(values = c("red", "black"))
+
+rl_zoom_pop_N %>%
+  group_by(type, r, i) %>%
+  summarise(ll = quantile(pop_N, .025), ul = quantile(pop_N, .975)) %>%
+  mutate(contains_truth = 1000 <= ul & 1000 >= ll) %>% 
+  ggplot() +
+  geom_segment(aes(x = i, xend = i, y = ll, yend = ul, colour = contains_truth)) +
+  geom_hline(aes(yintercept = 1000)) +
+  facet_grid(type~r, scales = "free_y") +
   scale_colour_manual(values = c("red", "black"))
