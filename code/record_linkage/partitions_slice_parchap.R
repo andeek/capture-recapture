@@ -287,7 +287,6 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
       if(eval) {
         rates <- calcErrorOne(z, true.links.pair, N)
         cat(rates, "\n", file=sprintf("%s/rates_%s_%s_%s.txt", out.dir, Prior, Data, rep), sep=" ", append=TRUE)
-        
       }
       
       K <- length(unique(z))

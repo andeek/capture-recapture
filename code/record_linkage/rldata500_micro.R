@@ -34,9 +34,9 @@ z <- z_init
 
 # params
 lam_prior <- "NBD"
-nsamples <- 10
-burn <- 10 # burn-in period
-spacing <- 10 # thin for Web_Sampler
+nsamples <- 1000
+burn <- 1000 # burn-in period
+spacing <- 1000 # thin for Web_Sampler
 thin1 <- thin <- 1
 
 # beta prior for distortions
