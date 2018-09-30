@@ -201,5 +201,5 @@ if(lam_prior == "PY") {
 # run RL ----
 chaperones("RLdata500", N, lam_prior, x1, init, x, z, id, cat_fields, string_fields, 
            proportions, str_proportions, nsamples, spacing, thin, thin1, burn, 
-           w, m, lo, up, hpriorpar, betas, lods, upds, hpriords, samind, rep, "results/micro_test")
+           w, m, lo, up, hpriorpar, betas, lods, upds, hpriords, samind, rep, "results/micro_test", eval = TRUE)
 
