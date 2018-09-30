@@ -10,6 +10,7 @@ lam_prior <- args[4]
 
 ## libraries ----
 library(MASS)
+library(gtools)
 library(partitionsSPscale) # record linkage model
 set.seed(1234)
 
@@ -20,10 +21,9 @@ load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist_", num_d
 source("code/record_linkage/partitions_slice_parchap.R")
 
 ## data format and params for use with partitionsSPscale ----
-df <- do.call(rbind, noisy_dup_db)
-x <- df
+x <- do.call(rbind, noisy_dup_db)
 id <- do.call(c, identity)
-N <- nrow(df)
+N <- nrow(x)
 cat_fields <- c(3, 4, 5)
 str_fields <- c(1, 2)
 n_fields <- length(cat_fields) + length(str_fields)
@@ -42,9 +42,9 @@ z_init <- as.numeric(factor(z_init, labels = seq_len(length(unique(z_init)))))
 z <- z_init
 
 # params
-nsamples <- 1000
-burn <- 1000 # burn-in period
-spacing <- 1000 # thin for Web_Sampler
+nsamples <- 10
+burn <- 10 # burn-in period
+spacing <- 1 # thin for Web_Sampler
 thin1 <- thin <- 1
 
 # beta prior for distortions

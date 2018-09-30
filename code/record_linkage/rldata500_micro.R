@@ -1,5 +1,6 @@
 ## libraries ----
 library(MASS)
+library(gtools)
 library(partitionsSPscale) # record linkage model
 library(RecordLinkage)
 set.seed(1234)
@@ -32,10 +33,10 @@ z_init <- as.numeric(factor(z_init, labels = seq_len(length(unique(z_init)))))
 z <- z_init
 
 # params
-lam_prior <- "PY"
-nsamples <- 1000
-burn <- 1000 # burn-in period
-spacing <- 1000 # thin for Web_Sampler
+lam_prior <- "NBD"
+nsamples <- 10
+burn <- 10 # burn-in period
+spacing <- 10 # thin for Web_Sampler
 thin1 <- thin <- 1
 
 # beta prior for distortions
