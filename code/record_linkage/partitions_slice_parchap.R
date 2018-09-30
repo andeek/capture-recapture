@@ -1,34 +1,91 @@
-# Calculates missing, true and false links for each iteration
-calcErrorOnePar <- function(z, true.links.pair, N){
-    labels <- unique(z)
-    if(length(labels)==N){
-        est.links.pair <- list()
-    }else{
-        est.links <- lapply(labels, function(x) which(z==x))
-        links0 <-  est.links[lapply(est.links,length) > 1]
-        pairs <- lapply(links0, function(x) combn(x,2))
-        upairs <- unlist(pairs)
-        if(is.null(upairs)==0){
-            pairs0 <- matrix(upairs,length(upairs)/2, 2, byrow=T)
-            est.links.pair <- as.list(data.frame(t(pairs0)))
-        }else{
-            est.links.pair <- NULL
+# This function takes a set of pairwise links and identifies correct, incorrect,
+# and missing links
+# (correct = estimated and true, incorrect = estimated but not true,
+# missing = true but not estimated)
+links.compare <- function(est.links.pair, true.links.pair, counts.only=TRUE){
+  correct.out <- list()
+  incorrect.out <- list()
+  missing.out <- list()
+  if(length(est.links.pair)>0 && length(true.links.pair)>0){
+    for(l in 1:length(est.links.pair)){
+      link.l <- est.links.pair[[l]]
+      found <- FALSE
+      for(t in 1:length(true.links.pair)){
+        if(all(link.l==true.links.pair[[t]])){
+          correct.out[[length(correct.out)+1]] <- link.l
+          found <- TRUE
         }
+      }
+      if(!found){
+        incorrect.out[[length(incorrect.out)+1]] <- link.l
+      }
     }
-    # If there are no links
-    if(length(est.links.pair)==0 && length(true.links.pair)==0){
-        missing.links <- 0
-        false.links <- 0
-        true.links <- 0
-    }else{
-        # Correct, incorrect, and missing links
-        comparison <- links.compare(est.links.pair,true.links.pair,counts.only=TRUE)
-        missing.links <- comparison$missing
-        true.links<-comparison$correct
-        false.links <- comparison$incorrect
+    for(m in 1:length(true.links.pair)){
+      link.m <- true.links.pair[[m]]
+      missing <- TRUE
+      for(e in 1:length(est.links.pair)){
+        if(all(link.m==est.links.pair[[e]])){
+          missing <- FALSE
+        }
+      }
+      if(missing){
+        missing.out[[length(missing.out)+1]] <- link.m
+      }
     }
+  }
+  if(length(est.links.pair)==0 && length(true.links.pair)>0){
+    missing.out <- true.links.pair
+  }
+  if(length(est.links.pair)>0 && length(true.links.pair)==0){
+    incorrect.out <- est.links.pair
+  }
+  if(counts.only){
+    return(list(correct=length(correct.out),incorrect=length(incorrect.out),
+                missing=length(missing.out)))
+  }else{
+    return(list(correct=correct.out,incorrect=incorrect.out,
+                missing=missing.out))
+  }
+}
 
-    return(c(missing.links, true.links, false.links))
+# Calculates FNR and FDR
+# Uses functions in analyze_gibbs.R
+# Inputs: z - Matrix with posterior samples
+#        true.links.pair - true pairwise links
+# Output: two component vector with FNR and FDR
+
+# Calculates FNR and FDR for each iteration
+calcErrorOne <- function(z, true.links.pair, N){
+  labels <- unique(z)
+  if(length(labels)==N){
+    est.links.pair <- list()
+  }else{
+    est.links <- lapply(labels, function(x) which(z==x))
+    links0 <-  est.links[lapply(est.links,length) > 1]
+    pairs <- lapply(links0, function(x) combn(x,2))
+    upairs <- unlist(pairs)
+    pairs0 <- matrix(upairs,length(upairs)/2, 2, byrow=T)
+    est.links.pair <- as.list(data.frame(t(pairs0)))
+  }
+  # If there are no links
+  if(length(est.links.pair)==0 && length(true.links.pair)==0){
+    fnr <- 0
+    fdr <- 0
+  }else{
+    # Correct, incorrect, and missing links
+    comparison <- links.compare(est.links.pair, true.links.pair, counts.only=TRUE)
+    missing.links <- comparison$missing
+    true.links<-comparison$correct
+    false.links <- comparison$incorrect
+    fnr <- missing.links/(true.links+missing.links)
+    if(true.links+false.links==0){
+      fdr <- 0
+    }else{
+      fdr <- false.links/(true.links+false.links)
+    }
+  }
+  output <- c(fnr,fdr)
+  return(output)
 }
 
 ## Wrapper function ##
@@ -132,10 +189,17 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
   nfields <- ncol(x)
   thinsam <- (nsamples + burn)/thin
   thinsam1 <- nsamples/thin1
-
+  
   cat(NameParamDS(Prior, nfields),"\n", file=sprintf("%s/PosParam_%s_%s_%s.txt", out.dir, Prior, Data, rep), sep=" ", append=TRUE)
   cat(c("K", "maxNk", "meanNk", "singles", "q90", "q95"), "\n", file=sprintf("%s/StatsSlice_%s_%s_%s.txt", out.dir, Prior, Data, rep), sep=" ", append=TRUE)
-
+  
+  # Compute true links
+  tlabels <- unique(id)
+  true.links <- lapply(tlabels, function(x) which(id == x))
+  links0 <-  true.links[lapply(true.links, length) > 1]
+  true.links.pair <- lapply(links0, function(x) as.numeric(combn(x, 2)))
+  
+  
   lx <- loglikxSP_str(betas, as.matrix(x[, cat_fields]), as.matrix(x[, str_fields]), str_fields, cat_fields, z, proportions, str_proportions)
   kk <- 1
   ll <- 1
@@ -147,7 +211,8 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
   Khat <- length(unique(z))
   tz <- table(z)
   Nk <- as.vector(tz)
-
+  
+  
   if(Prior == "NBD") {
     if(max(tz) >= M){
       M <- max(tz)
@@ -162,14 +227,17 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
 
   starttime <- proc.time()
   for (i in 1:(burn + nsamples)) {
+    cat(paste0("i: ", i, "\r"))
     # univariate slice sampler for all parameters
-    x1 <- ifelse(Prior == "NBD", 
-                 unislicemNBD(x1, lx, Lm, mu0, hpriorpar, w, m, lo, up, samind), 
-                 unislicem(x1, N, Khat, lx, Nk, hpriorpar, w, m, lo, up, Prior, samind))
-    if(samind[length(x1) + 1] == 1) {
-      betas <- unislicespb1(betas, x, z, proportions, hpriords, w, m, lods, upds, x1, N, Khat, Nk, hpriorpar, Prior)
+    if(Prior == "NBD") {
+      x1 <- unislicemNBD(x1, lx, Lm, mu0, hpriorpar, w, m, lo, up, samind) 
+    } else {
+      x1 <- unislicem(x1, N, Khat, lx, Nk, hpriorpar, w, m, lo, up, Prior, samind)
     }
-
+    
+    if(samind[length(x1) + 1] == 1) {
+      betas <- unislicespb_str(betas, as.matrix(x[, cat_fields]), as.matrix(x[, str_fields]), cat_fields, str_fields, z, proportions, str_proportions, hpriords, w, m, lods, upds, x1, N, Khat, Nk, hpriorpar, Prior)
+    }
     if(Prior == "NBD") {
       #parameters of reseating algortihm #
       alpha0 = x1[3];
@@ -189,13 +257,12 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
     B <- AB$B
     nclus <- length(unique(z))
 
-
     zno <- as.numeric(factor(z, labels = seq(1,length(unique(z)))))
     tclus <- nclus - max(zno)
     z1 <- Web_SamplerSP(as.matrix(x[, cat_fields]), as.matrix(x[, str_fields]), cat_fields, str_fields, 
                         zno, A, B, betas, proportions, str_proportions, 1, spacing)
     z <- as.numeric(factor(z1[1, ], labels = seq(1, length(unique(z1[1, ])))))
-
+    
     if(Prior == "DP") {
       Khat <- length(unique(z))
       tz <- table(z)
@@ -207,29 +274,14 @@ chaperones <- function(Data, N, Prior, x1, init, x, z, id, cat_fields, string_fi
     }
 
     lx <- loglikxSP_str(betas, as.matrix(x[, cat_fields]), as.matrix(x[, str_fields]), str_fields, cat_fields, z, proportions, str_proportions)
+    
     if(i %% thin == 0) {
       cat(c(x1, betas), "\n", file=sprintf("%s/PosParam_%s_%s_%s.txt", out.dir, Prior, Data, rep), sep=" ", append=TRUE)
-      cat(lx, file=ssprintf("%s/loglik_%s_%s_%s.txt", out.dir, Prior, Data, rep),sep="\n", append=TRUE)
-
-      missing.links <- 0
-      true.links <- 0
-      false.links <- 0
-      for(j in 1:length(txBL)){
-        if(is.null(upairs[[j]])==0){
-          pairs0 <- matrix(upairs[[j]],length(upairs[[j]])/2, 2, byrow=T)
-          true.links.pair <- as.list(data.frame(t(pairs0)))
-          links.bl <- calcErrorOnePar(zz[[j]], true.links.pair, N)
-          missing.links <- missing.links + links.bl[1]
-          true.links <- true.links + links.bl[2]
-          false.links <- false.links + links.bl[3]
-        }
-      }
+      cat(lx, file=sprintf("%s/loglik_%s_%s_%s.txt", out.dir, Prior, Data, rep),sep="\n", append=TRUE)
       
-      fnr <- missing.links/(true.links + missing.links)
-      fdr <- ifelse(true.links + false.links == 0, 0, false.links/(true.links + false.links))
-      rates <- c(fnr, fdr)
+      rates <- calcErrorOne(z, true.links.pair, N)
       cat(rates, "\n", file=sprintf("%s/rates_%s_%s_%s.txt", out.dir, Prior, Data, rep), sep=" ", append=TRUE)
-
+      
       K <- length(unique(z))
       Nks <- table(z)
       maxNk <- max(Nks) # Maximum cluster size #

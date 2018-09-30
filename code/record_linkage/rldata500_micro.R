@@ -1,13 +1,3 @@
-## command line args ---- 
-## within db duplication levels 5; string distortion levels 5, 10, 15; num_dist 1, 2, 3
-# Rscript code/data_munging/jasa_pubs_10yr.R 5 5
-args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 4) stop("Pass in the dup level and dist level, num distortions, and prior.", call.=FALSE)
-dup_level <- as.numeric(args[1])
-dist_level <- as.numeric(args[2])
-num_dist <- as.numeric(args[3])
-lam_prior <- args[4]
-
 ## libraries ----
 library(MASS)
 library(MCMCpack)
@@ -15,19 +5,19 @@ library(Rcpp)
 library(partitionsSPscale) # record linkage model
 library(doParallel)
 library(foreach)
+library(RecordLinkage)
 set.seed(1234)
 
 ## data load ----
-load(paste0("data/geco_sim/geco_", dup_level, "dup_", dist_level, "dist_", num_dist, "num.Rdata"))
+data("RLdata500")
 
 ## source functions ----
 source("code/record_linkage/partitions_slice_parchap.R")
 
 ## data format and params for use with partitionsSPscale ----
-df <- do.call(rbind, noisy_dup_db)
-x <- df
-id <- do.call(c, identity)
-N <- nrow(df)
+x <- RLdata500[, -c(2, 4)]
+id <- identity.RLdata500
+N <- nrow(x)
 cat_fields <- c(3, 4, 5)
 str_fields <- c(1, 2)
 n_fields <- length(cat_fields) + length(str_fields)
@@ -46,6 +36,7 @@ z_init <- as.numeric(factor(z_init, labels = seq_len(length(unique(z_init)))))
 z <- z_init
 
 # params
+lam_prior <- "PY"
 nsamples <- 1000
 burn <- 1000 # burn-in period
 spacing <- 1000 # thin for Web_Sampler
@@ -94,7 +85,7 @@ lods <- 0 # lower bound on support of the distribution of distortion parameters
 upds <- 5/100 # upper bound on support of the distribution of distortion parameters
 
 # labeling
-rep <- paste0(dup_level, "dup_", dist_level, "dist_", num_dist, "num")
+rep <- "RLdata500"
 
 # prepare for model
 if(lam_prior == "PY") {
@@ -116,7 +107,7 @@ if(lam_prior == "PY") {
   
   # Beta prior for distortion parameters (betas)
   hpriords <- c(cb, db)
-
+  
   w <- 1  # Size of the steps for creating interval for Slice sampler (default 1)
   m <- 10 # Limit on steps for Slice sampler(default infinite)
   lo <- c(0, 0) # Lower bound on support of the distribution of prior parameters
@@ -211,7 +202,7 @@ if(lam_prior == "PY") {
 } 
 
 # run RL ----
-chaperones("geco", N, lam_prior, x1, init, x, z, id, cat_fields, string_fields, 
+chaperones("RLdata500", N, lam_prior, x1, init, x, z, id, cat_fields, string_fields, 
            proportions, str_proportions, nsamples, spacing, thin, thin1, burn, 
-           w, m, lo, up, hpriorpar, betas, lods, upds, hpriords, samind, rep, "results/geco_sim/micro")
+           w, m, lo, up, hpriorpar, betas, lods, upds, hpriords, samind, rep, "results/micro_test")
 
