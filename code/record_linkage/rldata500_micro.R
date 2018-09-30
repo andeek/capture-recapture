@@ -1,10 +1,6 @@
 ## libraries ----
 library(MASS)
-library(MCMCpack)
-library(Rcpp)
 library(partitionsSPscale) # record linkage model
-library(doParallel)
-library(foreach)
 library(RecordLinkage)
 set.seed(1234)
 

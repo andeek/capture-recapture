@@ -10,11 +10,7 @@ lam_prior <- args[4]
 
 ## libraries ----
 library(MASS)
-library(MCMCpack)
-library(Rcpp)
 library(partitionsSPscale) # record linkage model
-library(doParallel)
-library(foreach)
 set.seed(1234)
 
 ## data load ----
