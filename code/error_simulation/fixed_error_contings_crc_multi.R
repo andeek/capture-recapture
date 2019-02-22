@@ -2,7 +2,7 @@
 ## duplication levels 5; string distortion levels 5, 10, 15;
 # Rscript jasa_eber.R 5 5
 args <- commandArgs(trailingOnly=TRUE)
-if (length(args) != 3) stop("Pass in the error_type ('remove' or 'add') and bucket_type ('single' or 'multi')", call.=FALSE)
+if (length(args) != 2) stop("Pass in the error_type ('remove' or 'add') and bucket_type ('single' or 'multi')", call.=FALSE)
 error_type <- args[1]
 bucket_type <- args[2]
 
