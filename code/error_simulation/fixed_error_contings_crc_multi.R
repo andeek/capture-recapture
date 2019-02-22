@@ -110,7 +110,7 @@ pop_N_ci <- foreach(r = seq_along(error_levels), .combine=rbind, .verbose = TRUE
   foreach(i = seq_len(rep), .combine=rbind, .verbose = TRUE) %dopar% {
     conting <- conting_tbl[[r]][[i]][-1,]
     res <- do_all_crc(conting)
-    data.frame(res, true_N = sum(single_remove_conting[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
+    data.frame(res, true_N = sum(conting_tbl[[r]][[i]][,"Freq"]), i = i, r = error_levels[r])
   }
 
 save(pop_N_ci, file = paste0("results/error_simulation/crc_fixed_multi_", error_type, "_", bucket_type, ".Rdata"))
