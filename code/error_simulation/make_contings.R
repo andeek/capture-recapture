@@ -4,7 +4,7 @@ set.seed(1234)
 # global params ----
 M <- 1000 # true pop size
 D <- 5 # number of databases
-#strata_prop <- .75 # proportion of records in each strata
+# strata_prop <- .75 # proportion of records in each strata
 strata_prop <- 1 # try without strata
 error_levels <- seq(.05, .1, by = .005)
 rep <- 100
@@ -81,9 +81,6 @@ distort_conting <- function(conting, r, error_type = "remove") {
       tab[names(where_multi), "Freq"] <- tab[names(where_multi), "Freq"] - where_multi
     }
   }
-  
-  
-  
   return(tab[, -ncol(tab)])  
 }
 
