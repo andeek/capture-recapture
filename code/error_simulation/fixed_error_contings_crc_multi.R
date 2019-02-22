@@ -1,6 +1,5 @@
 ## command line args ---- 
-## duplication levels 5; string distortion levels 5, 10, 15;
-# Rscript jasa_eber.R 5 5
+## Rscript code/error_simulation/fixed_error_contings_crc_multi.R remove single
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) stop("Pass in the error_type ('remove' or 'add') and bucket_type ('single' or 'multi')", call.=FALSE)
 error_type <- args[1]
@@ -61,6 +60,7 @@ cl <- makeCluster(16)
 registerDoParallel(cl)
 
 # function for crc
+data(graphs5) # load the graphs to make the estimates for bma
 do_all_crc <- function(conting) {
   # manipulations of conting
   num_conting <- conting # numeric version of conting instead of T/F
@@ -76,19 +76,18 @@ do_all_crc <- function(conting) {
   lc_pop_N_ci <- quantile(lc_pop_N, probs = c(.025, .975))
   
   # BMA crc
-  data(graphs5) # load the graphs to make the estimates
   fac <- 5 # select expansion factor defining the largest number of unrecorded elements. this makes Nmissing <- 0:(sum(Y)*fac)
   n <- sum(conting[, ncol(conting)])
   delta <- 1/2^(ncol(conting) - 1) # set prior
   Nmissing <- 0:(n*fac) # average over all decomposible graphical models for p lists
-  weights <- bma.cr(non_df_conting, Nmissing, delta, graphs5)
+  weights <- dga::bma.cr(non_df_conting, Nmissing, delta, graphs5)
   bma_pop_N <- sample(n + Nmissing, 10000, prob = colSums(weights), replace = TRUE)
   bma_pop_N_ci <- quantile(bma_pop_N, probs = c(.025, .975))
   
   # King BMA crc
   mcmc_iter <- 55000
-  king_crc_model <- bict(formula = Freq ~ (db1 + db2 + db3 + db4 + db5)^4, data = na_conting, n.sample = mcmc_iter)
-  N <- total_pop(king_crc_model)$TOT
+  king_crc_model <- conting::bict(formula = Freq ~ (db1 + db2 + db3 + db4 + db5)^4, data = na_conting, n.sample = mcmc_iter)
+  N <- conting::total_pop(king_crc_model)$TOT
   burnin <- 5000 # get posterior results
   thin <- 50
   idx <- seq_len(mcmc_iter) > burnin & seq_len(mcmc_iter) %% thin == 0
@@ -96,7 +95,7 @@ do_all_crc <- function(conting) {
   king_pop_N_ci <- quantile(king_pop_N, probs = c(.025, .975))
   
   # frequentist crc
-  freq_pop_N <- closedpCI.t(apply(conting, 2, function(x) as.integer(x)), dfreq = TRUE, m = "Mth")
+  freq_pop_N <- Rcapture::closedpCI.t(apply(conting, 2, function(x) as.integer(x)), dfreq = TRUE, m = "Mth")
   freq_pop_N_ci <- freq_pop_N$CI[, c("infCL", "supCL")]
   
   # results
