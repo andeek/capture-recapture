@@ -95,8 +95,8 @@ do_all_crc <- function(conting) {
   king_pop_N_ci <- quantile(king_pop_N, probs = c(.025, .975))
   
   # frequentist crc
-  freq_pop_N <- Rcapture::closedpCI.t(apply(conting, 2, function(x) as.integer(x)), dfreq = TRUE, m = "Mth")
-  freq_pop_N_ci <- freq_pop_N$CI[, c("infCL", "supCL")]
+  freq_pop_N <- tryCatch(Rcapture::closedpCI.t(apply(conting, 2, function(x) as.integer(x)), dfreq = TRUE, m = "Mth"), error = function(e) NA)
+  freq_pop_N_ci <- ifelse(is.na(freq_pop_N, c(NA, NA), freq_pop_N$CI[, c("infCL", "supCL")]))
   
   # results
   data.frame(matrix(c(lc_pop_N_ci, bma_pop_N_ci, king_pop_N_ci, freq_pop_N_ci), ncol = 2, byrow = TRUE), 
