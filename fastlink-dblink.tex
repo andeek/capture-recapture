@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "1" with "0" below.
+\newcommand{\blind}{1}
+
+\input{subfiles/preamble}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+% ridiculous table spacing
+\makeatletter
+\AtBeginEnvironment{tabular}{%
+  \def\baselinestretch{1}\@currsize}%
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if1\blind
+{
+  \title{\bf Title}
+  \author{Rebecca C. Steorts\thanks{
+    This work was supported by the National Science Foundation through NSF-1652431 and NSF-1534412.}\hspace{.2cm}\\
+    Department of Statistical Science and Computer Science, Duke University}
+  \maketitle
+} \fi
+
+\if0\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf Predicting Voter Party Registration from Linked Data with Error Propagation}
+\end{center}
+  \medskip
+} \fi
+
+\bigskip
+
+\begin{abstract}
+Give abstract 
+\end{abstract}
+
+\noindent%
+{\it Keywords:}  TBD
+\vfill
+
+\newpage
+%\spacingset{1.5} % DON'T change the spacing!
+
+
+
+\section{Introduction}
+\label{sec:intro}
+Motivation is removing duplications from large datasets such that post-processing can happen. Goal: scale to billions of databases, while providing some uncertainty propagation. 
+
+I think we should create synthetic data that looks like the U.S. Census for a particular state for our experiments. For example, we can look at counties in Wyoming, which is the smallest state. The aggregate of course would be the entire state. 
+
+\paragraph{Baseline}
+\begin{enumerate}
+\item Given the size of Wyoming, dblink can run all of it in order to give a baseline. 
+\item We can also do a comparison to fastlink to give another baseline. 
+\end{enumerate}
+
+
+\paragraph{Algorithm 1}
+\begin{enumerate}
+\item An alternative that is needed at scale is the following: running dblink for each county. 
+\item Then run fastlink using the output of dblink for all the counties. 
+\item What is the precision, recall, population size, posterior standard error and how does this compare to the baselines? 
+\item What is gained and lost? 
+\end{enumerate}
+
+\paragraph{Algorithm 2}
+\begin{enumerate}
+\item Run fastlink for the state, and remove links that are low probability. 
+\item Then run dblink for the counties. What is the precision, recall, population size, posterior standard error and how does this compare to the baselines? 
+\item What is gained and lost? 
+\end{enumerate}
+
+\paragraph{Questions}
+
+\begin{enumerate}
+\item Do we see a benefit over algorithm 1 versus algorithm 2? My intuition is that Algorithm 1 should be much better than Algorithm 2. 
+\item We need to set up a synthetic data set to generate counties and states. We could try using FEBRL. 
+\item It would be good to start with a very small synthetic data set with a made up region that is quite small that has sub-regions that are not very large to test out this proposed method before applying it to something more realistic. 
+\item Other ideas for synthetic data generation?
+\end{enumerate}
+
+\clearpage
+\newpage
+\section{Related Work}
+
+\section{Proposed Methodology}
+
+\section{Evaluation Metrics}
+
+\section{Data Sets}
+
+\section{Results}
+
+\section{Discussion}
+
+\clearpage
+\newpage
+
+\bibliographystyle{apalike}
+\bibliography{canonical}
+\clearpage
+\newpage
+
+
+\end{document}
